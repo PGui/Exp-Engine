@@ -35,3 +35,6 @@ x64/
 x86/
 
 !*.obj
+
+!*lib/Debug/
+!*lib/Release/
