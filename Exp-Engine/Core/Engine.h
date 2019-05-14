@@ -52,6 +52,8 @@ namespace Exp
 		static float m_deltaTime;// = 1.0f / 60.0f;
 		static float m_lastTime;// = 0.0f;
 		static float m_accumulatedTime;// = 0.0f;
+		static const double m_updatePeriod;// = 1/60;
+		static const int m_maxUpdatesPerLoop;
 
 		//Camera
 		static Camera * m_Camera;// = nullptr;

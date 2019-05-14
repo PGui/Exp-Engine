@@ -17,6 +17,8 @@ GLFWwindow*  Exp::Engine::m_slaveWindow = nullptr;
 float Exp::Engine::m_deltaTime = 1.0f / 60.0f;
 float Exp::Engine::m_lastTime = 0.0f;
 float Exp::Engine::m_accumulatedTime = 0.0f;
+const double Exp::Engine::m_updatePeriod = 1.0f/60.0f;
+const int Exp::Engine::m_maxUpdatesPerLoop = 4;
 
 //Camera
 Exp::Camera * Exp::Engine::m_Camera = nullptr;
@@ -34,6 +36,7 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 	}
 
 	// Use https://gist.github.com/Madsy/6980061
+	//Check http://blog.slapware.eu/game-engine/programming/multithreaded-renderloop-part1/
 	//main window
 	Exp::Engine::m_mainWindow = InitWindow("Exp-Engine");
 	//window used by second thread
@@ -97,16 +100,19 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 
 		// Avoid spiral of death
 		// Drop world time from the update in order to keep up
-		/*if (m_accumulatedTime >= updatePeriod * maxUpdatesPerLoop) {
-			accumulatedTime = updatePeriod * maxUpdatesPerLoop;
+		if (m_accumulatedTime >= m_updatePeriod * m_maxUpdatesPerLoop) 
+		{
+			m_accumulatedTime = m_updatePeriod * m_maxUpdatesPerLoop;
 		}
-*/
-		/*while (accumulatedTime >= updatePeriod) {
-			accumulatedTime -= updatePeriod;
-			Update(sceneNumber++, &heap);
-		}*/
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+		while (m_accumulatedTime >= m_updatePeriod) 
+		{
+			m_accumulatedTime -= m_updatePeriod;
+			std::this_thread::sleep_for(std::chrono::milliseconds(15));
+			//Update(sceneNumber++, &heap);
+		}
+
+		
 		std::cout << "Update done. Launching rendering..." << std::endl;
 		//Signal render
 		Exp::Engine::syncState->syncSempahore.Signal();
