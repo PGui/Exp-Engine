@@ -38,6 +38,21 @@
     <Filter Include="CommandBuffer\cmds">
       <UniqueIdentifier>{5481859e-f1e3-4988-8070-e0dbf3a607a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Hash">
+      <UniqueIdentifier>{8221c71e-da31-40a0-9a88-025bf7d6500b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{4fa900aa-2334-4a97-bdc9-ba37671d2b06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Threading">
+      <UniqueIdentifier>{e83345ca-bbc5-473c-b512-9e2ba81257a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{06624007-e567-43ba-bb70-c4fcebf28294}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{3bb1d0e2-d355-4574-afd9-c6c3a60f9c43}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Glad\glad.c">
@@ -67,6 +82,18 @@
     </ClCompile>
     <ClCompile Include="CommandBuffer\cmds\GLCommands.cpp">
       <Filter>CommandBuffer\cmds</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera\Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Threading\Semaphore.cpp">
+      <Filter>Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Engine.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\RenderThread.cpp">
+      <Filter>Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -846,6 +873,21 @@
     </ClInclude>
     <ClInclude Include="CommandBuffer\cmds\GLCommands.h">
       <Filter>CommandBuffer\cmds</Filter>
+    </ClInclude>
+    <ClInclude Include="Hash\Hash.h">
+      <Filter>Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera\Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Threading\Semaphore.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Engine.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\RenderThread.h">
+      <Filter>Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
