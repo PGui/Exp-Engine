@@ -106,8 +106,6 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 		glfwPollEvents();
 
 		// Logic
-		//rmt_ScopedCPUSample(LogicLoop, 0);
-
 		float currentTime = (float)glfwGetTime();
 		m_deltaTime = currentTime - m_lastTime;
 		m_lastTime = currentTime;
@@ -130,11 +128,10 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 
 		//std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
-		
 		std::cout << "Update done. Launching rendering..." << std::endl;
-		//Signal render
+		
 		rmt_BeginCPUSample(WaitForRenderer, 0);
-		//Exp::Engine::syncState->syncSempahore.Signal();
+		//Signal render
 		syncState->syncQueue.Push(sceneNumber++);
 		rmt_EndCPUSample();
 
@@ -142,9 +139,9 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 	}
 
 	Exp::Engine::syncState->shouldQuit.store(true);
+
 	// Signal the render thread so it doesn't deadlock
-	//Exp::Engine::syncState->syncSempahore.Signal();
-	syncState->syncQueue.Push(0); //Force the render thread to end if it is waiting.
+	//syncState->syncQueue.Push(0); //Force the render thread to end if it is waiting.
 
 	// Wait for them to clean up
 	ftl::JoinThread(renderThread);
@@ -156,6 +153,8 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 	glfwDestroyWindow(Exp::Engine::m_mainWindow);
 	glfwDestroyWindow(Exp::Engine::m_slaveWindow);
 	glfwTerminate();
+
+	rmt_DestroyGlobalInstance(rmt);
 }
 
 GLFWwindow * Exp::Engine::InitWindow(std::string title, bool fullScreen, GLFWwindow* shared, bool visible)

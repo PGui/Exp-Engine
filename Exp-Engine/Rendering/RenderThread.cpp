@@ -29,9 +29,8 @@ namespace Exp
 			rmt_EndCPUSample();
 
 			std::cout << "Starting rendering... "<< SceneNumber << std::endl;
-
 			rmt_BeginCPUSample(DrawFrame, 0);
-			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+			std::this_thread::sleep_for(std::chrono::milliseconds(16));
 			rmt_EndCPUSample();
 
 			//End loop
