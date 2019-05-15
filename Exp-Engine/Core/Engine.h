@@ -18,7 +18,7 @@
 
 //#include "../rendering/renderer.h"
 //#include "../scene/Scene.h"
-
+#include <Remotery/Remotery.h>
 
 namespace Exp
 {
@@ -70,6 +70,14 @@ namespace Exp
 		static void MainJob(ftl::TaskScheduler *taskScheduler, void *arg);
 
 		static GLFWwindow * InitWindow(std::string title, bool fullScreen = false, GLFWwindow* shared = nullptr, bool visible = true);
+
+		static void ParallelJob(ftl::TaskScheduler *taskScheduler, void *arg) 
+		{
+			int i = *reinterpret_cast<int*>(arg);
+			rmt_ScopedCPUSample(ParallelJob, 0);
+			std::cout << "Job " << i << std::endl;
+			std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		}
 
 
 		//Callbacks

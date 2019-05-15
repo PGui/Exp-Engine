@@ -35,75 +35,90 @@ bool Exp::Engine::m_debugLight = false;
 
 void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 {
-	Remotery* rmt;
-	rmt_CreateGlobalInstance(&rmt);
+	//Remotery* rmt;
+	//rmt_CreateGlobalInstance(&rmt);
 
-	rmt_SetCurrentThreadName("Main");
+	//rmt_SetCurrentThreadName("Main");
 
-	if (!glfwInit()) 
-	{
-		std::cout << "Failed to initialize glfw" << std::endl;
-		return;
-	}
+	//if (!glfwInit()) 
+	//{
+	//	std::cout << "Failed to initialize glfw" << std::endl;
+	//	return;
+	//}
 
-	// Use https://gist.github.com/Madsy/6980061
-	//Check http://blog.slapware.eu/game-engine/programming/multithreaded-renderloop-part1/
-	//main window
-	Exp::Engine::m_mainWindow = InitWindow("Exp-Engine");
-	//window used by second thread
-	Exp::Engine::m_slaveWindow = InitWindow("", false, m_mainWindow, false);
+	//// Use https://gist.github.com/Madsy/6980061
+	////Check http://blog.slapware.eu/game-engine/programming/multithreaded-renderloop-part1/
+	////main window
+	//Exp::Engine::m_mainWindow = InitWindow("Exp-Engine");
+	////window used by second thread
+	//Exp::Engine::m_slaveWindow = InitWindow("", false, m_mainWindow, false);
 
-	if (!Exp::Engine::m_mainWindow || !Exp::Engine::m_slaveWindow)
-	{
-		glfwTerminate();
-		std::cout << "Failed to create glfw windows." << std::endl;
-		return;
-	}
+	//if (!Exp::Engine::m_mainWindow || !Exp::Engine::m_slaveWindow)
+	//{
+	//	glfwTerminate();
+	//	std::cout << "Failed to create glfw windows." << std::endl;
+	//	return;
+	//}
 
-	glfwMakeContextCurrent(Exp::Engine::m_mainWindow);
+	//glfwMakeContextCurrent(Exp::Engine::m_mainWindow);
 
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize glad." << std::endl;
-		glfwTerminate();
-		return;
-	}
+	//if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	//{
+	//	std::cout << "Failed to initialize glad." << std::endl;
+	//	glfwTerminate();
+	//	return;
+	//}
 
-	glfwSetInputMode(Exp::Engine::m_mainWindow, GLFW_CURSOR, GLFW_CURSOR);
+	//glfwSetInputMode(Exp::Engine::m_mainWindow, GLFW_CURSOR, GLFW_CURSOR);
 
-	glfwSetErrorCallback(Exp::Engine::glfw_error_callback);
-	glfwSetFramebufferSizeCallback(Exp::Engine::m_mainWindow, framebuffer_size_callback);
+	//glfwSetErrorCallback(Exp::Engine::glfw_error_callback);
+	//glfwSetFramebufferSizeCallback(Exp::Engine::m_mainWindow, framebuffer_size_callback);
 
-	int nrAttributes;
-	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-	std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
+	//int nrAttributes;
+	//glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+	//std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
 
-	Exp::Engine::syncState = new GameSyncState();
+	//Exp::Engine::syncState = new GameSyncState();
 
-	//Launch Render Thread
-	ThreadArgs *renderArgs = new ThreadArgs;
-	renderArgs->mainWindow = Exp::Engine::m_mainWindow;
-	renderArgs->slaveWindow = Exp::Engine::m_slaveWindow;
-	renderArgs->syncState = Exp::Engine::syncState;
+	////Launch Render Thread
+	//ThreadArgs *renderArgs = new ThreadArgs;
+	//renderArgs->mainWindow = Exp::Engine::m_mainWindow;
+	//renderArgs->slaveWindow = Exp::Engine::m_slaveWindow;
+	//renderArgs->syncState = Exp::Engine::syncState;
 
-	ftl::ThreadType renderThread;
-	if (!ftl::CreateThread(1048576, RenderThreadStart, renderArgs, 0, &renderThread)) 
-	{
-		std::cout << "Failed to start the render thread" << std::endl;
-	}
+	//ftl::ThreadType renderThread;
+	//if (!ftl::CreateThread(1048576, RenderThreadStart, renderArgs, 0, &renderThread)) 
+	//{
+	//	std::cout << "Failed to start the render thread" << std::endl;
+	//}
+
+	ThreadArgs *logicArgs = static_cast<ThreadArgs *>(arg);
+	GLFWwindow *window = logicArgs->mainWindow;
+	GameSyncState *syncState = logicArgs->syncState;
+	delete logicArgs;
 
 	//Init Cam
 	Exp::Engine::m_Camera = new Camera(glm::vec3(0.0f));
 
 	uint64 sceneNumber = 1;
 
+	glfwMakeContextCurrent(nullptr);
+
+	size_t numTasks = 50;
+	ftl::Task *tasks = new ftl::Task[numTasks];
+	int *numbers = new int[numTasks];
+	for (uint64 i = 0ull; i < numTasks; ++i) 
+	{
+		numbers[i] = i;
+		tasks[i] = { Exp::Engine::ParallelJob , &numbers[i] };
+	}
+
 	// Loop until there is a quit message from the window or the user.
 	while (!glfwWindowShouldClose(Exp::Engine::m_mainWindow)) 
 	{
 		rmt_ScopedCPUSample(LogicLoop, 0);
 		std::cout << "Start update." << std::endl;
-		// Check for events
-		glfwPollEvents();
+		
 
 		// Logic
 		float currentTime = (float)glfwGetTime();
@@ -119,14 +134,23 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 			m_accumulatedTime = m_updatePeriod * m_maxUpdatesPerLoop;
 		}
 
-		while (m_accumulatedTime >= m_updatePeriod) 
+		//while (m_accumulatedTime >= m_updatePeriod) 
+		//{
+		//	m_accumulatedTime -= m_updatePeriod;
+		//	std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		//	//Update(sceneNumber++, &heap);
+		//}
+		
 		{
-			m_accumulatedTime -= m_updatePeriod;
-			std::this_thread::sleep_for(std::chrono::milliseconds(10));
-			//Update(sceneNumber++, &heap);
-		}
+			rmt_ScopedCPUSample(MainThreadJobs, 0);
+			//// Schedule the tasks
+			ftl::AtomicCounter counter(taskScheduler);
+			taskScheduler->AddTasks(numTasks, tasks, &counter);
 
-		//std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+			// Wait for the tasks to complete
+			taskScheduler->WaitForCounter(&counter, 0, true);
+
+		}
 
 		std::cout << "Update done. Launching rendering..." << std::endl;
 		
@@ -135,26 +159,16 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 		syncState->syncQueue.Push(sceneNumber++);
 		rmt_EndCPUSample();
 
+		// Check for events
+		glfwPollEvents();
 		std::this_thread::sleep_for(std::chrono::milliseconds(0));
 	}
 
-	Exp::Engine::syncState->shouldQuit.store(true);
+	delete[] tasks;
 
-	// Signal the render thread so it doesn't deadlock
-	//syncState->syncQueue.Push(0); //Force the render thread to end if it is waiting.
-
-	// Wait for them to clean up
-	ftl::JoinThread(renderThread);
-
+	
 	//Destroy
 	delete Exp::Engine::m_Camera;
-	delete Exp::Engine::syncState;
-
-	glfwDestroyWindow(Exp::Engine::m_mainWindow);
-	glfwDestroyWindow(Exp::Engine::m_slaveWindow);
-	glfwTerminate();
-
-	rmt_DestroyGlobalInstance(rmt);
 }
 
 GLFWwindow * Exp::Engine::InitWindow(std::string title, bool fullScreen, GLFWwindow* shared, bool visible)
