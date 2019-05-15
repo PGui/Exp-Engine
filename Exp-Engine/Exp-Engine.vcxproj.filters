@@ -53,6 +53,9 @@
     <Filter Include="Rendering">
       <UniqueIdentifier>{3bb1d0e2-d355-4574-afd9-c6c3a60f9c43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Remotery">
+      <UniqueIdentifier>{4c8dd764-f985-443b-8fc4-a7b79226f126}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Glad\glad.c">
@@ -94,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="Rendering\RenderThread.cpp">
       <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Remotery\Remotery.c">
+      <Filter>Remotery</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -888,6 +894,12 @@
     </ClInclude>
     <ClInclude Include="Rendering\RenderThread.h">
       <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Threading\SpscQueue.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Threading\Typedefs.h">
+      <Filter>Threading</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

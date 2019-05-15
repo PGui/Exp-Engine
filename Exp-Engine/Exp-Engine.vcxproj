@@ -137,6 +137,7 @@
     <ClCompile Include="Imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Remotery\Remotery.c" />
     <ClCompile Include="Rendering\RenderThread.cpp" />
     <ClCompile Include="StbImage\stb_image.cpp" />
     <ClCompile Include="Threading\Semaphore.cpp" />
@@ -406,6 +407,8 @@
     <ClInclude Include="Rendering\RenderThread.h" />
     <ClInclude Include="StbImage\stb_image.h" />
     <ClInclude Include="Threading\Semaphore.h" />
+    <ClInclude Include="Threading\SpscQueue.h" />
+    <ClInclude Include="Threading\Typedefs.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Glm\detail\func_common.inl" />

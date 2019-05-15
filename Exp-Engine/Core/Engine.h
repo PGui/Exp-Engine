@@ -14,7 +14,7 @@
 
 #include "../camera/Camera.h"
 #include "../Threading/Semaphore.h"
-
+#include "../Threading/SpscQueue.h"
 
 //#include "../rendering/renderer.h"
 //#include "../scene/Scene.h"
@@ -25,9 +25,11 @@ namespace Exp
 	struct GameSyncState
 	{
 		GameSyncState()
-			: shouldQuit(false) {}
+			: shouldQuit(false),
+			  syncQueue(4) {}
 
-		Exp::Semaphore syncSempahore;
+		//Exp::Semaphore syncSempahore;
+		Exp::SPSCQueue syncQueue;
 		std::atomic_bool shouldQuit;
 	};
 

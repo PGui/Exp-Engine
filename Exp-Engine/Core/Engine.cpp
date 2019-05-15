@@ -6,14 +6,20 @@
 
 #include "../Rendering/RenderThread.h"
 
+#include <Remotery/Remotery.h>
+
+//Screen sizes
 unsigned int Exp::Engine::m_screenWidth = 1280;
 unsigned int Exp::Engine::m_screenHeight = 768;
 
+//Sync State
 Exp::GameSyncState * Exp::Engine::syncState = nullptr;
 
+//Windows
 GLFWwindow*  Exp::Engine::m_mainWindow = nullptr;
 GLFWwindow*  Exp::Engine::m_slaveWindow = nullptr;
 
+//Timers
 float Exp::Engine::m_deltaTime = 1.0f / 60.0f;
 float Exp::Engine::m_lastTime = 0.0f;
 float Exp::Engine::m_accumulatedTime = 0.0f;
@@ -29,6 +35,11 @@ bool Exp::Engine::m_debugLight = false;
 
 void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 {
+	Remotery* rmt;
+	rmt_CreateGlobalInstance(&rmt);
+
+	rmt_SetCurrentThreadName("Main");
+
 	if (!glfwInit()) 
 	{
 		std::cout << "Failed to initialize glfw" << std::endl;
@@ -45,7 +56,7 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 	if (!Exp::Engine::m_mainWindow || !Exp::Engine::m_slaveWindow)
 	{
 		glfwTerminate();
-		std::cout << "Failed to create glfw windows" << std::endl;
+		std::cout << "Failed to create glfw windows." << std::endl;
 		return;
 	}
 
@@ -84,8 +95,13 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 	//Init Cam
 	Exp::Engine::m_Camera = new Camera(glm::vec3(0.0f));
 
+	uint64 sceneNumber = 1;
+
 	// Loop until there is a quit message from the window or the user.
-	while (!glfwWindowShouldClose(Exp::Engine::m_mainWindow)) {
+	while (!glfwWindowShouldClose(Exp::Engine::m_mainWindow)) 
+	{
+		rmt_ScopedCPUSample(LogicLoop, 0);
+		std::cout << "Start update." << std::endl;
 		// Check for events
 		glfwPollEvents();
 
@@ -108,19 +124,27 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 		while (m_accumulatedTime >= m_updatePeriod) 
 		{
 			m_accumulatedTime -= m_updatePeriod;
-			std::this_thread::sleep_for(std::chrono::milliseconds(15));
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 			//Update(sceneNumber++, &heap);
 		}
+
+		//std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 
 		
 		std::cout << "Update done. Launching rendering..." << std::endl;
 		//Signal render
-		Exp::Engine::syncState->syncSempahore.Signal();
+		rmt_BeginCPUSample(WaitForRenderer, 0);
+		//Exp::Engine::syncState->syncSempahore.Signal();
+		syncState->syncQueue.Push(sceneNumber++);
+		rmt_EndCPUSample();
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(0));
 	}
 
 	Exp::Engine::syncState->shouldQuit.store(true);
 	// Signal the render thread so it doesn't deadlock
-	Exp::Engine::syncState->syncSempahore.Signal();
+	//Exp::Engine::syncState->syncSempahore.Signal();
+	syncState->syncQueue.Push(0); //Force the render thread to end if it is waiting.
 
 	// Wait for them to clean up
 	ftl::JoinThread(renderThread);
@@ -167,7 +191,7 @@ void Exp::Engine::framebuffer_size_callback(GLFWwindow * window, int width, int 
 	glViewport(0, 0, m_screenWidth, m_screenHeight);
 	if (m_Camera)
 	{
-		m_Camera->setPerspective(m_Camera->_fovY, (float)width / (float)height, m_Camera->_nearPlane, m_Camera->_farPlane);
+		m_Camera->SetPerspective(m_Camera->m_fovY, (float)width / (float)height, m_Camera->m_nearPlane, m_Camera->m_farPlane);
 	}
 }
 
