@@ -20,12 +20,13 @@ GLFWwindow*  Exp::Engine::m_mainWindow = nullptr;
 GLFWwindow*  Exp::Engine::m_slaveWindow = nullptr;
 
 //Timers
-double Exp::Engine::m_deltaTime = 1.0 / 60.0;
+double Exp::Engine::m_deltaTime = 0.0;
 double Exp::Engine::m_lastTime = 0.0;
+double Exp::Engine::m_timer = 0.0;
 double Exp::Engine::m_accumulatedTime = 0.0;
 const double Exp::Engine::m_updatePeriod = 1.0/60.0;
 const double Exp::Engine::m_precisionUpdatePeriod = 1.0 / 59.0;
-const int Exp::Engine::m_maxUpdatesPerLoop = 4;
+const int Exp::Engine::m_maxUpdatesPerLoop = 1;
 
 //Camera
 Exp::Camera * Exp::Engine::m_Camera = nullptr;
@@ -58,52 +59,55 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 		tasks[i] = { Exp::Engine::ParallelJob , &numbers[i] };
 	}
 
+	bool resync = true;
+	m_lastTime = glfwGetTime(), m_timer = m_lastTime;
+	int frames = 0, updates = 0;
+
 	// Loop until there is a quit message from the window or the user.
 	while (!glfwWindowShouldClose(Exp::Engine::m_mainWindow))
 	{
 		rmt_ScopedCPUSample(LogicLoop, 0);
 
-		rmt_BeginCPUSample(PollEvents, 0);
-		// Check for events
-		glfwPollEvents();
-		rmt_EndCPUSample();
 		
+
 		// Logic
 		double currentTime = glfwGetTime();
-		m_deltaTime = currentTime - m_lastTime;
+		m_deltaTime += (currentTime - m_lastTime) / m_updatePeriod;
 		m_lastTime = currentTime;
 
 		//std::cout << m_deltaTime << std::endl;
 
-		if (abs(m_deltaTime - 1.0 / 120.0) < .0002) {
-			m_deltaTime = 1.0 / 120.0;
-		}
-		if (abs(m_deltaTime - 1.0 / 60.0) < .0002) {
-			m_deltaTime = 1.0 / 60.0;
-		}
-		if (abs(m_deltaTime - 1.0 / 30.0) < .0002) {
-			m_deltaTime = 1.0 / 30.0;
-		}
+		//if (abs(m_deltaTime - 1.0 / 120.0) < .0002) {
+		//	m_deltaTime = 1.0 / 120.0;
+		//}
+		//if (abs(m_deltaTime - 1.0 / 60.0) < .0002) {
+		//	m_deltaTime = 1.0 / 60.0;
+		//}
+		//if (abs(m_deltaTime - 1.0 / 30.0) < .0002) {
+		//	m_deltaTime = 1.0 / 30.0;
+		//}
 
-		m_accumulatedTime += m_deltaTime;
+		//m_accumulatedTime += m_deltaTime;
+
+		////spiral of death protection
+		//if (m_accumulatedTime > m_updatePeriod * 8) {
+		//	resync = true;
+		//}
+
+		////timer resync if requested
+		//if (resync) {
+		//	m_accumulatedTime = 0;
+		//	m_deltaTime = m_updatePeriod;
+		//	resync = false;
+		//}
+
 		//m_accumulatedTime = glm::clamp(m_accumulatedTime, 0.0, 8.0 / 60.0);
-		if (m_accumulatedTime >= m_updatePeriod * m_maxUpdatesPerLoop)
+		/*if (m_accumulatedTime >= m_updatePeriod * m_maxUpdatesPerLoop)
 		{
 			m_accumulatedTime = m_updatePeriod * m_maxUpdatesPerLoop;
-		}
+		}*/
 
-		{
-			rmt_ScopedCPUSample(MainThreadJobs, 0);
-			//// Schedule the tasks
-			ftl::AtomicCounter counter(taskScheduler);
-			taskScheduler->AddTasks((uint)numTasks, tasks, &counter);
-
-			// Wait for the tasks to complete
-			taskScheduler->WaitForCounter(&counter, 0, true);
-		}
-		m_accumulatedTime -= 1.0 / 60.0;
-
-		while (m_accumulatedTime >= 1.0/60.0)
+		while (m_deltaTime >= 1.0)
 		{
 			{
 				rmt_ScopedCPUSample(MainThreadJobs, 0);
@@ -114,14 +118,24 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 				// Wait for the tasks to complete
 				taskScheduler->WaitForCounter(&counter, 0, true);
 			}
-			m_accumulatedTime -= 1.0/60.0;
-			if (m_accumulatedTime < 1.0 / 59.0 - 1.0 / 60.0)
-				m_accumulatedTime = 0.0;
+			updates++;
+			m_deltaTime--;
 		}
 
 		rmt_BeginCPUSample(WaitForRenderer, 0);
 		syncState->syncQueue.Push(sceneNumber++);
 		//syncSemaphore->Signal();
+		rmt_EndCPUSample();
+
+		if (glfwGetTime() - m_timer > 1.0) {
+			m_timer++;
+			std::cout << "FPS: " << frames << " Updates:" << updates << std::endl;
+			updates = 0, frames = 0;
+		}
+
+		rmt_BeginCPUSample(PollEvents, 0);
+		// Check for events
+		glfwPollEvents();
 		rmt_EndCPUSample();
 	}
 
