@@ -28,7 +28,8 @@ namespace Exp
 			: shouldQuit(false),
 			  syncQueue(4) {}
 
-		//Exp::Semaphore syncSempahore;
+		Exp::Semaphore syncMTSempahore;
+		Exp::Semaphore syncRTSempahore;
 		Exp::SPSCQueue syncQueue;
 		std::atomic_bool shouldQuit;
 	};
@@ -54,7 +55,6 @@ namespace Exp
 
 		static double m_deltaTime;// = 1.0 / 60.0;
 		static double m_lastTime;// = 0.0;
-		static double m_timer;// = 0.0;
 		static double m_accumulatedTime;// = 0.0;
 		static const double m_updatePeriod;// = 1/60;
 		static const double m_precisionUpdatePeriod;
@@ -79,7 +79,7 @@ namespace Exp
 			int i = *reinterpret_cast<int*>(arg);
 			rmt_ScopedCPUSample(ParallelJob, 0);
 			//std::cout << "Job " << i << std::endl;
-			std::this_thread::sleep_for(std::chrono::milliseconds(3));
+			std::this_thread::sleep_for(std::chrono::milliseconds(2));
 			/*int sum = 0;
 			int loopCount = 10000000;
 			for (int i = 0; i < loopCount; ++i)

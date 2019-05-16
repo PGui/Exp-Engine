@@ -34,6 +34,8 @@ namespace Exp
 		glfwMakeContextCurrent(mainWindow);
 		glfwSetFramebufferSizeCallback(mainWindow, Exp::Engine::framebuffer_size_callback);
 
+		syncState->syncMTSempahore.Signal();
+
 		rmt_BindOpenGL();
 		//TEST
 		// build and compile our shader program
@@ -120,25 +122,27 @@ namespace Exp
 			rmt_ScopedCPUSample(RenderLoop, 0);
 
 			rmt_BeginCPUSample(WaitForNewScene, 0);
-			uint64 SceneNumber = syncState->syncQueue.Pop();
-			//syncSemaphore->Wait();
+			//uint64 SceneNumber = syncState->syncQueue.Pop();
+			syncState->syncRTSempahore.Wait();
 			rmt_EndCPUSample();
 
-			{
-				rmt_ScopedCPUSample(DrawTriangle, 0)
-				glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-				glClear(GL_COLOR_BUFFER_BIT);
+			rmt_BeginCPUSample(DrawTriangle, 0);
+			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
 
-				// draw our first triangle
-				glUseProgram(shaderProgram);
-				glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-				//glDrawArrays(GL_TRIANGLES, 0, 6);
-				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-				// glBindVertexArray(0); // no need to unbind it every time 
+			// draw our first triangle
+			glUseProgram(shaderProgram);
+			glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+			//glDrawArrays(GL_TRIANGLES, 0, 6);
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			// glBindVertexArray(0); // no need to unbind it every time 
+			rmt_EndCPUSample();
 
-				glfwSwapBuffers(mainWindow);
-			}
-			
+			rmt_BeginCPUSample(SwapBuffers, 0);
+			glfwSwapBuffers(mainWindow);
+			rmt_EndCPUSample();
+
+			syncState->syncMTSempahore.Signal();
 		}
 
 		rmt_UnbindOpenGL();
