@@ -38,6 +38,7 @@ namespace Exp
 		GLFWwindow * mainWindow;
 		GLFWwindow * slaveWindow;
 		GameSyncState * syncState;
+		Semaphore * syncSemaphore;
 	};
 
 	class Engine
@@ -77,7 +78,7 @@ namespace Exp
 			int i = *reinterpret_cast<int*>(arg);
 			rmt_ScopedCPUSample(ParallelJob, 0);
 			//std::cout << "Job " << i << std::endl;
-			std::this_thread::sleep_for(std::chrono::milliseconds(4));
+			std::this_thread::sleep_for(std::chrono::milliseconds(3));
 		}
 
 

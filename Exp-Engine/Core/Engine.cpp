@@ -25,7 +25,7 @@ double Exp::Engine::m_lastTime = 0.0;
 double Exp::Engine::m_accumulatedTime = 0.0;
 const double Exp::Engine::m_updatePeriod = 1.0/60.0;
 const double Exp::Engine::m_precisionUpdatePeriod = 1.0 / 59.0;
-const int Exp::Engine::m_maxUpdatesPerLoop = 2;
+const int Exp::Engine::m_maxUpdatesPerLoop = 4;
 
 //Camera
 Exp::Camera * Exp::Engine::m_Camera = nullptr;
@@ -39,6 +39,7 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 	ThreadArgs *logicArgs = static_cast<ThreadArgs *>(arg);
 	GLFWwindow *window = logicArgs->mainWindow;
 	GameSyncState *syncState = logicArgs->syncState;
+	Semaphore *syncSemaphore = logicArgs->syncSemaphore;
 	delete logicArgs;
 
 	//Init Cam
@@ -48,7 +49,7 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 
 	glfwMakeContextCurrent(nullptr);
 
-	size_t numTasks = 25;
+	size_t numTasks = 12;
 	ftl::Task *tasks = new ftl::Task[numTasks];
 	int *numbers = new int[numTasks];
 	for (uint64 i = 0ull; i < numTasks; ++i) 
@@ -61,12 +62,19 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 	while (!glfwWindowShouldClose(Exp::Engine::m_mainWindow))
 	{
 		rmt_ScopedCPUSample(LogicLoop, 0);
+
+		rmt_BeginCPUSample(PollEvents, 0);
+		// Check for events
+		glfwPollEvents();
+		rmt_EndCPUSample();
 		
 		// Logic
 		double currentTime = glfwGetTime();
 		m_deltaTime = currentTime - m_lastTime;
 		m_lastTime = currentTime;
-		
+
+		//std::cout << m_deltaTime << std::endl;
+
 		if (abs(m_deltaTime - 1.0 / 120.0) < .0002) {
 			m_deltaTime = 1.0 / 120.0;
 		}
@@ -78,12 +86,24 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 		}
 
 		m_accumulatedTime += m_deltaTime;
+		//m_accumulatedTime = glm::clamp(m_accumulatedTime, 0.0, 8.0 / 60.0);
 		if (m_accumulatedTime >= m_updatePeriod * m_maxUpdatesPerLoop)
 		{
 			m_accumulatedTime = m_updatePeriod * m_maxUpdatesPerLoop;
 		}
 
-		while (m_accumulatedTime >= m_updatePeriod)
+		{
+			rmt_ScopedCPUSample(MainThreadJobs, 0);
+			//// Schedule the tasks
+			ftl::AtomicCounter counter(taskScheduler);
+			taskScheduler->AddTasks((uint)numTasks, tasks, &counter);
+
+			// Wait for the tasks to complete
+			taskScheduler->WaitForCounter(&counter, 0, true);
+		}
+		m_accumulatedTime -= 1.0 / 60.0;
+
+		while (m_accumulatedTime >= 1.0/60.0)
 		{
 			{
 				rmt_ScopedCPUSample(MainThreadJobs, 0);
@@ -94,19 +114,14 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 				// Wait for the tasks to complete
 				taskScheduler->WaitForCounter(&counter, 0, true);
 			}
-
-			m_accumulatedTime -= m_updatePeriod;
-			if (m_accumulatedTime < (m_precisionUpdatePeriod - m_updatePeriod))
+			m_accumulatedTime -= 1.0/60.0;
+			if (m_accumulatedTime < 1.0 / 59.0 - 1.0 / 60.0)
 				m_accumulatedTime = 0.0;
 		}
 
-		rmt_BeginCPUSample(PollEvents, 0);
-		// Check for events
-		glfwPollEvents();
-		rmt_EndCPUSample();
-
 		rmt_BeginCPUSample(WaitForRenderer, 0);
 		syncState->syncQueue.Push(sceneNumber++);
+		//syncSemaphore->Signal();
 		rmt_EndCPUSample();
 	}
 

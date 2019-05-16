@@ -235,6 +235,8 @@ int main()
 
 	glfwSetErrorCallback(Exp::Engine::glfw_error_callback);
 
+	glfwPollEvents();
+
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
 	std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
@@ -243,11 +245,14 @@ int main()
 
 	Exp::Engine::syncState = new Exp::GameSyncState();
 
+	Exp::Semaphore * syncSemaphore = new Exp::Semaphore();
+
 	//Launch Render Thread
 	Exp::ThreadArgs *renderArgs = new Exp::ThreadArgs;
 	renderArgs->mainWindow = Exp::Engine::m_mainWindow;
 	renderArgs->slaveWindow = Exp::Engine::m_slaveWindow;
 	renderArgs->syncState = Exp::Engine::syncState;
+	renderArgs->syncSemaphore = syncSemaphore;
 
 	ftl::ThreadType renderThread;
 	if (!ftl::CreateThread(1048576, Exp::RenderThreadStart, renderArgs, 0, &renderThread))
@@ -259,6 +264,7 @@ int main()
 	logicArgs->mainWindow = Exp::Engine::m_mainWindow;
 	logicArgs->slaveWindow = Exp::Engine::m_slaveWindow;
 	logicArgs->syncState = Exp::Engine::syncState;
+	logicArgs->syncSemaphore = syncSemaphore;
 
 	ftl::TaskScheduler taskScheduler;
 	taskScheduler.Run(512, Exp::Engine::MainJob, logicArgs, ftl::GetNumHardwareThreads() - 1);
@@ -280,6 +286,7 @@ int main()
 	delete logicArgs;*/
 
 	delete Exp::Engine::syncState;
+	delete syncSemaphore;
 
 	return 0;
 }

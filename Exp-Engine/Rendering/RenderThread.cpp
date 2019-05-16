@@ -22,6 +22,7 @@ namespace Exp
 		GLFWwindow * mainWindow = renderArgs->mainWindow;
 		GLFWwindow * slaveWindow = renderArgs->slaveWindow;
 		Exp::GameSyncState * syncState = renderArgs->syncState;
+		Exp::Semaphore * syncSemaphore = renderArgs->syncSemaphore;
 		delete renderArgs;
 
 		rmt_SetCurrentThreadName("Render");
@@ -120,21 +121,24 @@ namespace Exp
 
 			rmt_BeginCPUSample(WaitForNewScene, 0);
 			uint64 SceneNumber = syncState->syncQueue.Pop();
+			//syncSemaphore->Wait();
 			rmt_EndCPUSample();
 
-			rmt_BeginCPUSample(DrawTriangle, 0);
-			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+			{
+				rmt_ScopedCPUSample(DrawTriangle, 0)
+				glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+				glClear(GL_COLOR_BUFFER_BIT);
 
-			// draw our first triangle
-			glUseProgram(shaderProgram);
-			glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-			//glDrawArrays(GL_TRIANGLES, 0, 6);
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-			// glBindVertexArray(0); // no need to unbind it every time 
+				// draw our first triangle
+				glUseProgram(shaderProgram);
+				glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+				//glDrawArrays(GL_TRIANGLES, 0, 6);
+				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+				// glBindVertexArray(0); // no need to unbind it every time 
 
-			glfwSwapBuffers(mainWindow);
-			rmt_EndCPUSample();
+				glfwSwapBuffers(mainWindow);
+			}
+			
 		}
 
 		rmt_UnbindOpenGL();
