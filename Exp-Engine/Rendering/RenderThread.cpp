@@ -31,9 +31,9 @@ namespace Exp
 		ftl::SetCurrentThreadAffinity(ftl::GetNumHardwareThreads() - 1);
 
 		glfwMakeContextCurrent(mainWindow);
+		glfwSetFramebufferSizeCallback(mainWindow, Exp::Engine::framebuffer_size_callback);
 
 		rmt_BindOpenGL();
-
 		//TEST
 		// build and compile our shader program
 	// ------------------------------------
@@ -112,20 +112,17 @@ namespace Exp
 		// You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
 		// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
 		glBindVertexArray(0);
-
 		//TEST
 
 		while (!syncState->shouldQuit.load(std::memory_order_relaxed)) 
 		{
 			rmt_ScopedCPUSample(RenderLoop, 0);
 
-
 			rmt_BeginCPUSample(WaitForNewScene, 0);
 			uint64 SceneNumber = syncState->syncQueue.Pop();
 			rmt_EndCPUSample();
 
-			std::cout << "Starting rendering... "<< SceneNumber << std::endl;
-			rmt_BeginCPUSample(DrawFrame, 0);
+			rmt_BeginCPUSample(DrawTriangle, 0);
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
@@ -136,14 +133,8 @@ namespace Exp
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 			// glBindVertexArray(0); // no need to unbind it every time 
 
-			// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-			// -------------------------------------------------------------------------------
 			glfwSwapBuffers(mainWindow);
 			rmt_EndCPUSample();
-
-			//End loop
-			std::cout << "Rendering done..." << SceneNumber << std::endl;
-			std::this_thread::sleep_for(std::chrono::milliseconds(0));
 		}
 
 		rmt_UnbindOpenGL();

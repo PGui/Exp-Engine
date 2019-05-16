@@ -20,11 +20,12 @@ GLFWwindow*  Exp::Engine::m_mainWindow = nullptr;
 GLFWwindow*  Exp::Engine::m_slaveWindow = nullptr;
 
 //Timers
-float Exp::Engine::m_deltaTime = 1.0f / 60.0f;
-float Exp::Engine::m_lastTime = 0.0f;
-float Exp::Engine::m_accumulatedTime = 0.0f;
-const double Exp::Engine::m_updatePeriod = 1.0f/60.0f;
-const int Exp::Engine::m_maxUpdatesPerLoop = 4;
+double Exp::Engine::m_deltaTime = 1.0 / 60.0;
+double Exp::Engine::m_lastTime = 0.0;
+double Exp::Engine::m_accumulatedTime = 0.0;
+const double Exp::Engine::m_updatePeriod = 1.0/60.0;
+const double Exp::Engine::m_precisionUpdatePeriod = 1.0 / 59.0;
+const int Exp::Engine::m_maxUpdatesPerLoop = 2;
 
 //Camera
 Exp::Camera * Exp::Engine::m_Camera = nullptr;
@@ -35,63 +36,6 @@ bool Exp::Engine::m_debugLight = false;
 
 void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 {
-	//Remotery* rmt;
-	//rmt_CreateGlobalInstance(&rmt);
-
-	//rmt_SetCurrentThreadName("Main");
-
-	//if (!glfwInit()) 
-	//{
-	//	std::cout << "Failed to initialize glfw" << std::endl;
-	//	return;
-	//}
-
-	//// Use https://gist.github.com/Madsy/6980061
-	////Check http://blog.slapware.eu/game-engine/programming/multithreaded-renderloop-part1/
-	////main window
-	//Exp::Engine::m_mainWindow = InitWindow("Exp-Engine");
-	////window used by second thread
-	//Exp::Engine::m_slaveWindow = InitWindow("", false, m_mainWindow, false);
-
-	//if (!Exp::Engine::m_mainWindow || !Exp::Engine::m_slaveWindow)
-	//{
-	//	glfwTerminate();
-	//	std::cout << "Failed to create glfw windows." << std::endl;
-	//	return;
-	//}
-
-	//glfwMakeContextCurrent(Exp::Engine::m_mainWindow);
-
-	//if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	//{
-	//	std::cout << "Failed to initialize glad." << std::endl;
-	//	glfwTerminate();
-	//	return;
-	//}
-
-	//glfwSetInputMode(Exp::Engine::m_mainWindow, GLFW_CURSOR, GLFW_CURSOR);
-
-	//glfwSetErrorCallback(Exp::Engine::glfw_error_callback);
-	//glfwSetFramebufferSizeCallback(Exp::Engine::m_mainWindow, framebuffer_size_callback);
-
-	//int nrAttributes;
-	//glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-	//std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
-
-	//Exp::Engine::syncState = new GameSyncState();
-
-	////Launch Render Thread
-	//ThreadArgs *renderArgs = new ThreadArgs;
-	//renderArgs->mainWindow = Exp::Engine::m_mainWindow;
-	//renderArgs->slaveWindow = Exp::Engine::m_slaveWindow;
-	//renderArgs->syncState = Exp::Engine::syncState;
-
-	//ftl::ThreadType renderThread;
-	//if (!ftl::CreateThread(1048576, RenderThreadStart, renderArgs, 0, &renderThread)) 
-	//{
-	//	std::cout << "Failed to start the render thread" << std::endl;
-	//}
-
 	ThreadArgs *logicArgs = static_cast<ThreadArgs *>(arg);
 	GLFWwindow *window = logicArgs->mainWindow;
 	GameSyncState *syncState = logicArgs->syncState;
@@ -104,64 +48,66 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 
 	glfwMakeContextCurrent(nullptr);
 
-	size_t numTasks = 50;
+	size_t numTasks = 25;
 	ftl::Task *tasks = new ftl::Task[numTasks];
 	int *numbers = new int[numTasks];
 	for (uint64 i = 0ull; i < numTasks; ++i) 
 	{
-		numbers[i] = i;
+		numbers[i] = (int)i;
 		tasks[i] = { Exp::Engine::ParallelJob , &numbers[i] };
 	}
 
 	// Loop until there is a quit message from the window or the user.
-	while (!glfwWindowShouldClose(Exp::Engine::m_mainWindow)) 
+	while (!glfwWindowShouldClose(Exp::Engine::m_mainWindow))
 	{
 		rmt_ScopedCPUSample(LogicLoop, 0);
-		std::cout << "Start update." << std::endl;
 		
-
 		// Logic
-		float currentTime = (float)glfwGetTime();
+		double currentTime = glfwGetTime();
 		m_deltaTime = currentTime - m_lastTime;
 		m_lastTime = currentTime;
+		
+		if (abs(m_deltaTime - 1.0 / 120.0) < .0002) {
+			m_deltaTime = 1.0 / 120.0;
+		}
+		if (abs(m_deltaTime - 1.0 / 60.0) < .0002) {
+			m_deltaTime = 1.0 / 60.0;
+		}
+		if (abs(m_deltaTime - 1.0 / 30.0) < .0002) {
+			m_deltaTime = 1.0 / 30.0;
+		}
 
 		m_accumulatedTime += m_deltaTime;
-
-		// Avoid spiral of death
-		// Drop world time from the update in order to keep up
-		if (m_accumulatedTime >= m_updatePeriod * m_maxUpdatesPerLoop) 
+		if (m_accumulatedTime >= m_updatePeriod * m_maxUpdatesPerLoop)
 		{
 			m_accumulatedTime = m_updatePeriod * m_maxUpdatesPerLoop;
 		}
 
-		//while (m_accumulatedTime >= m_updatePeriod) 
-		//{
-		//	m_accumulatedTime -= m_updatePeriod;
-		//	std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		//	//Update(sceneNumber++, &heap);
-		//}
-		
+		while (m_accumulatedTime >= m_updatePeriod)
 		{
-			rmt_ScopedCPUSample(MainThreadJobs, 0);
-			//// Schedule the tasks
-			ftl::AtomicCounter counter(taskScheduler);
-			taskScheduler->AddTasks(numTasks, tasks, &counter);
+			{
+				rmt_ScopedCPUSample(MainThreadJobs, 0);
+				//// Schedule the tasks
+				ftl::AtomicCounter counter(taskScheduler);
+				taskScheduler->AddTasks((uint)numTasks, tasks, &counter);
 
-			// Wait for the tasks to complete
-			taskScheduler->WaitForCounter(&counter, 0, true);
+				// Wait for the tasks to complete
+				taskScheduler->WaitForCounter(&counter, 0, true);
+			}
 
+			m_accumulatedTime -= m_updatePeriod;
+			if (m_accumulatedTime < (m_precisionUpdatePeriod - m_updatePeriod))
+				m_accumulatedTime = 0.0;
 		}
 
-		std::cout << "Update done. Launching rendering..." << std::endl;
-		
-		rmt_BeginCPUSample(WaitForRenderer, 0);
-		//Signal render
-		syncState->syncQueue.Push(sceneNumber++);
-		rmt_EndCPUSample();
-
+		rmt_BeginCPUSample(PollEvents, 0);
 		// Check for events
 		glfwPollEvents();
-		std::this_thread::sleep_for(std::chrono::milliseconds(0));
+		rmt_EndCPUSample();
+
+		rmt_BeginCPUSample(WaitForRenderer, 0);
+		syncState->syncQueue.Push(sceneNumber++);
+		rmt_EndCPUSample();
 	}
 
 	delete[] tasks;

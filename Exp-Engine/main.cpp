@@ -234,7 +234,6 @@ int main()
 	glfwSetInputMode(Exp::Engine::m_mainWindow, GLFW_CURSOR, GLFW_CURSOR);
 
 	glfwSetErrorCallback(Exp::Engine::glfw_error_callback);
-	//glfwSetFramebufferSizeCallback(Exp::Engine::m_mainWindow, framebuffer_size_callback);
 
 	int nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
@@ -253,7 +252,7 @@ int main()
 	ftl::ThreadType renderThread;
 	if (!ftl::CreateThread(1048576, Exp::RenderThreadStart, renderArgs, 0, &renderThread))
 	{
-		std::cout << "Failed to start the render thread" << std::endl;
+		std::cout << "Failed to start the render thread." << std::endl;
 	}
 
 	Exp::ThreadArgs *logicArgs = new Exp::ThreadArgs;
@@ -271,7 +270,6 @@ int main()
 	// Wait for them to clean up
 	ftl::JoinThread(renderThread);
 
-	
 	glfwDestroyWindow(Exp::Engine::m_mainWindow);
 	glfwDestroyWindow(Exp::Engine::m_slaveWindow);
 	glfwTerminate();
