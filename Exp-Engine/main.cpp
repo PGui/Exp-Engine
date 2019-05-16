@@ -267,7 +267,7 @@ int main()
 	logicArgs->syncSemaphore = syncSemaphore;
 
 	ftl::TaskScheduler taskScheduler;
-	taskScheduler.Run(512, Exp::Engine::MainJob, logicArgs, ftl::GetNumHardwareThreads() - 1, ftl::EmptyQueueBehavior::Sleep);
+	taskScheduler.Run(512, Exp::Engine::MainJob, logicArgs, ftl::GetNumHardwareThreads() - 1, ftl::EmptyQueueBehavior::Spin);
 
 	Exp::Engine::syncState->shouldQuit.store(true);
 	// Signal the render thread so it doesn't deadlock

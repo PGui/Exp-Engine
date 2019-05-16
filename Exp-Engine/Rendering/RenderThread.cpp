@@ -126,7 +126,7 @@ namespace Exp
 			syncState->syncRTSempahore.Wait();
 			rmt_EndCPUSample();
 
-			rmt_BeginCPUSample(DrawTriangle, 0);
+			rmt_BeginOpenGLSample(DrawTriangle, 0);
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
@@ -136,7 +136,7 @@ namespace Exp
 			//glDrawArrays(GL_TRIANGLES, 0, 6);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 			// glBindVertexArray(0); // no need to unbind it every time 
-			rmt_EndCPUSample();
+			rmt_EndOpenGLSample();
 
 			rmt_BeginCPUSample(SwapBuffers, 0);
 			glfwSwapBuffers(mainWindow);

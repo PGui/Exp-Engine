@@ -25,7 +25,7 @@ double Exp::Engine::m_lastTime = 0.0;
 double Exp::Engine::m_accumulatedTime = 0.0;
 const double Exp::Engine::m_updatePeriod = 1.0/60.0;
 const double Exp::Engine::m_precisionUpdatePeriod = 1.0 / 59.0;
-const int Exp::Engine::m_maxUpdatesPerLoop = 1;
+const int Exp::Engine::m_maxUpdatesPerLoop = 2;
 
 //Camera
 Exp::Camera * Exp::Engine::m_Camera = nullptr;
@@ -76,11 +76,32 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 
 		// Logic
 		double currentTime = glfwGetTime();
-		m_deltaTime += (currentTime - m_lastTime) / m_updatePeriod;
+		m_deltaTime = (currentTime - m_lastTime);/* / m_updatePeriod;*/
 		m_lastTime = currentTime;
 
-		while (m_deltaTime >= 1.0)
+		if (abs(m_deltaTime - 1.0 / 120.0) < .0002) {
+			m_deltaTime = 1.0 / 120.0;
+		}
+		if (abs(m_deltaTime - 1.0 / 60.0) < .0002) {
+			m_deltaTime = 1.0 / 60.0;
+		}
+		if (abs(m_deltaTime - 1.0 / 30.0) < .0002) {
+			m_deltaTime = 1.0 / 30.0;
+		}
+
+		m_accumulatedTime += m_deltaTime;
+
+		// Avoid spiral of death
+		// Drop world time from the update in order to keep up
+		if (m_accumulatedTime >= m_updatePeriod * m_maxUpdatesPerLoop) {
+			m_accumulatedTime = m_updatePeriod * m_maxUpdatesPerLoop;
+		}
+
+		while (m_accumulatedTime >= m_updatePeriod)
 		{
+			m_accumulatedTime -= m_updatePeriod;
+			if (m_accumulatedTime < (1.0 / 59.0) - m_updatePeriod) 
+				m_accumulatedTime = 0;
 			{
 				rmt_ScopedCPUSample(MainThreadJobs, 0);
 				//// Schedule the tasks
@@ -90,7 +111,6 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 				// Wait for the tasks to complete
 				taskScheduler->WaitForCounter(&counter, 0, true);
 			}
-			m_deltaTime--;
 		}
 
 		rmt_BeginCPUSample(WaitForRenderer, 0);
