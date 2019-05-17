@@ -126,7 +126,7 @@ namespace Exp
 			syncState->syncRTSempahore.Wait();
 			rmt_EndCPUSample();
 
-			rmt_BeginOpenGLSample(DrawTriangle, 0);
+			rmt_BeginOpenGLSample(DrawTriangle);
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 

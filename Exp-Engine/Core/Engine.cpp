@@ -49,7 +49,7 @@ void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 
 	glfwMakeContextCurrent(nullptr);
 
-	size_t numTasks = 15;
+	size_t numTasks = 6;
 	ftl::Task *tasks = new ftl::Task[numTasks];
 	int *numbers = new int[numTasks];
 	for (uint64 i = 0ull; i < numTasks; ++i) 

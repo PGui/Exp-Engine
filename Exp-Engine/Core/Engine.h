@@ -79,7 +79,7 @@ namespace Exp
 			int i = *reinterpret_cast<int*>(arg);
 			rmt_ScopedCPUSample(ParallelJob, 0);
 			//std::cout << "Job " << i << std::endl;
-			std::this_thread::sleep_for(std::chrono::milliseconds(2));
+			std::this_thread::sleep_for(std::chrono::milliseconds(3));
 			/*int sum = 0;
 			int loopCount = 10000000;
 			for (int i = 0; i < loopCount; ++i)

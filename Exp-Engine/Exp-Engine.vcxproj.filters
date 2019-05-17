@@ -56,6 +56,9 @@
     <Filter Include="Remotery">
       <UniqueIdentifier>{4c8dd764-f985-443b-8fc4-a7b79226f126}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Ftl">
+      <UniqueIdentifier>{bb370299-3dc2-4050-941d-38572bbfd212}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Glad\glad.c">
@@ -100,6 +103,12 @@
     </ClCompile>
     <ClCompile Include="Remotery\Remotery.c">
       <Filter>Remotery</Filter>
+    </ClCompile>
+    <ClCompile Include="Ftl\atomic_counter.cpp">
+      <Filter>Ftl</Filter>
+    </ClCompile>
+    <ClCompile Include="Ftl\task_scheduler.cpp">
+      <Filter>Ftl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
