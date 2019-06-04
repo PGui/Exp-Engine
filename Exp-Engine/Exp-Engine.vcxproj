@@ -139,6 +139,8 @@
     <ClCompile Include="Imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Module\ModuleInterface.cpp" />
+    <ClCompile Include="Profiling\RemoteryModule.cpp" />
     <ClCompile Include="Remotery\Remotery.c" />
     <ClCompile Include="Rendering\RenderThread.cpp" />
     <ClCompile Include="StbImage\stb_image.cpp" />
@@ -398,6 +400,7 @@
     <ClInclude Include="Glm\vec4.hpp" />
     <ClInclude Include="Glm\vector_relational.hpp" />
     <ClInclude Include="Hash\Hash.h" />
+    <ClInclude Include="Helpers\Singleton.h" />
     <ClInclude Include="Imgui\imconfig.h" />
     <ClInclude Include="Imgui\imgui.h" />
     <ClInclude Include="Imgui\imgui_impl_glfw.h" />
@@ -406,6 +409,8 @@
     <ClInclude Include="Imgui\imstb_rectpack.h" />
     <ClInclude Include="Imgui\imstb_textedit.h" />
     <ClInclude Include="Imgui\imstb_truetype.h" />
+    <ClInclude Include="Module\ModuleInterface.h" />
+    <ClInclude Include="Profiling\RemoteryModule.h" />
     <ClInclude Include="Rendering\RenderThread.h" />
     <ClInclude Include="StbImage\stb_image.h" />
     <ClInclude Include="Threading\Semaphore.h" />

@@ -59,6 +59,15 @@
     <Filter Include="Ftl">
       <UniqueIdentifier>{bb370299-3dc2-4050-941d-38572bbfd212}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Module">
+      <UniqueIdentifier>{4e157597-4004-4100-a589-2d8bdb3728f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helpers">
+      <UniqueIdentifier>{76495c91-73b5-48e9-8937-fc51a23b996f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Profiling">
+      <UniqueIdentifier>{1068a850-f772-4d22-b890-5e78719ab1c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Glad\glad.c">
@@ -109,6 +118,12 @@
     </ClCompile>
     <ClCompile Include="Ftl\task_scheduler.cpp">
       <Filter>Ftl</Filter>
+    </ClCompile>
+    <ClCompile Include="Module\ModuleInterface.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Profiling\RemoteryModule.cpp">
+      <Filter>Profiling</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -909,6 +924,15 @@
     </ClInclude>
     <ClInclude Include="Threading\Typedefs.h">
       <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Module\ModuleInterface.h">
+      <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Profiling\RemoteryModule.h">
+      <Filter>Profiling</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers\Singleton.h">
+      <Filter>Helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -195,101 +195,113 @@
 
 #include "Core/Engine.h"
 #include "Rendering/RenderThread.h"
+
+#include "Module/ModuleInterface.h"
+#include "Profiling/RemoteryModule.h"
+
 int main()
 {
-	Remotery* rmt;
-	rmt_CreateGlobalInstance(&rmt);
+	//Remotery* rmt;
+	//rmt_CreateGlobalInstance(&rmt);
 
-	rmt_SetCurrentThreadName("Main");
+	//rmt_SetCurrentThreadName("Main");
 
-	if (!glfwInit())
-	{
-		std::cout << "Failed to initialize glfw" << std::endl;
-		return -1;
-	}
+	//if (!glfwInit())
+	//{
+	//	std::cout << "Failed to initialize glfw" << std::endl;
+	//	return -1;
+	//}
 
-	// Use https://gist.github.com/Madsy/6980061
-	//Check http://blog.slapware.eu/game-engine/programming/multithreaded-renderloop-part1/
-	//main window
-	Exp::Engine::m_mainWindow = Exp::Engine::InitWindow("Exp-Engine");
-	//window used by second thread
-	Exp::Engine::m_slaveWindow = Exp::Engine::InitWindow("", false, Exp::Engine::m_mainWindow, false);
+	//// Use https://gist.github.com/Madsy/6980061
+	////Check http://blog.slapware.eu/game-engine/programming/multithreaded-renderloop-part1/
+	////main window
+	//Exp::Engine::m_mainWindow = Exp::Engine::InitWindow("Exp-Engine");
+	////window used by second thread
+	//Exp::Engine::m_slaveWindow = Exp::Engine::InitWindow("", false, Exp::Engine::m_mainWindow, false);
 
-	if (!Exp::Engine::m_mainWindow || !Exp::Engine::m_slaveWindow)
-	{
-		glfwTerminate();
-		std::cout << "Failed to create glfw windows." << std::endl;
-		return -1;
-	}
+	//if (!Exp::Engine::m_mainWindow || !Exp::Engine::m_slaveWindow)
+	//{
+	//	glfwTerminate();
+	//	std::cout << "Failed to create glfw windows." << std::endl;
+	//	return -1;
+	//}
 
-	glfwMakeContextCurrent(Exp::Engine::m_mainWindow);
+	//glfwMakeContextCurrent(Exp::Engine::m_mainWindow);
 
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
-		std::cout << "Failed to initialize glad." << std::endl;
-		glfwTerminate();
-		return -1;
-	}
+	//if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	//{
+	//	std::cout << "Failed to initialize glad." << std::endl;
+	//	glfwTerminate();
+	//	return -1;
+	//}
 
-	glfwSetInputMode(Exp::Engine::m_mainWindow, GLFW_CURSOR, GLFW_CURSOR);
+	//glfwSetInputMode(Exp::Engine::m_mainWindow, GLFW_CURSOR, GLFW_CURSOR);
 
-	glfwSetErrorCallback(Exp::Engine::glfw_error_callback);
+	//glfwSetErrorCallback(Exp::Engine::glfw_error_callback);
 
-	glfwPollEvents();
+	//glfwPollEvents();
 
-	int nrAttributes;
-	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-	std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
+	//int nrAttributes;
+	//glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+	//std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
 
-	glfwMakeContextCurrent(nullptr);
+	//glfwMakeContextCurrent(nullptr);
 
-	Exp::Engine::syncState = new Exp::GameSyncState();
+	//Exp::Engine::syncState = new Exp::GameSyncState();
 
-	Exp::Semaphore * syncSemaphore = new Exp::Semaphore();
+	//Exp::Semaphore * syncSemaphore = new Exp::Semaphore();
 
-	//Launch Render Thread
-	Exp::ThreadArgs *renderArgs = new Exp::ThreadArgs;
-	renderArgs->mainWindow = Exp::Engine::m_mainWindow;
-	renderArgs->slaveWindow = Exp::Engine::m_slaveWindow;
-	renderArgs->syncState = Exp::Engine::syncState;
-	renderArgs->syncSemaphore = syncSemaphore;
+	////Launch Render Thread
+	//Exp::ThreadArgs *renderArgs = new Exp::ThreadArgs;
+	//renderArgs->mainWindow = Exp::Engine::m_mainWindow;
+	//renderArgs->slaveWindow = Exp::Engine::m_slaveWindow;
+	//renderArgs->syncState = Exp::Engine::syncState;
+	//renderArgs->syncSemaphore = syncSemaphore;
 
-	ftl::ThreadType renderThread;
-	if (!ftl::CreateThread(1048576, Exp::RenderThreadStart, renderArgs, 0, &renderThread))
-	{
-		std::cout << "Failed to start the render thread." << std::endl;
-	}
+	//ftl::ThreadType renderThread;
+	//if (!ftl::CreateThread(1048576, Exp::RenderThreadStart, renderArgs, 0, &renderThread))
+	//{
+	//	std::cout << "Failed to start the render thread." << std::endl;
+	//}
 
-	Exp::ThreadArgs *logicArgs = new Exp::ThreadArgs;
-	logicArgs->mainWindow = Exp::Engine::m_mainWindow;
-	logicArgs->slaveWindow = Exp::Engine::m_slaveWindow;
-	logicArgs->syncState = Exp::Engine::syncState;
-	logicArgs->syncSemaphore = syncSemaphore;
+	//Exp::ThreadArgs *logicArgs = new Exp::ThreadArgs;
+	//logicArgs->mainWindow = Exp::Engine::m_mainWindow;
+	//logicArgs->slaveWindow = Exp::Engine::m_slaveWindow;
+	//logicArgs->syncState = Exp::Engine::syncState;
+	//logicArgs->syncSemaphore = syncSemaphore;
 
-	ftl::TaskScheduler taskScheduler;
-	taskScheduler.Run(512, Exp::Engine::MainJob, logicArgs, ftl::GetNumHardwareThreads() - 1, ftl::EmptyQueueBehavior::Sleep);
+	//ftl::TaskScheduler taskScheduler;
+	//taskScheduler.Run(512, Exp::Engine::MainJob, logicArgs, ftl::GetNumHardwareThreads() - 1, ftl::EmptyQueueBehavior::Sleep);
 
-	Exp::Engine::syncState->shouldQuit.store(true);
-	// Signal the render thread so it doesn't deadlock
-	//Exp::Engine::syncState->syncQueue.Push(0); //Force the render thread to end if it is waiting.
-	Exp::Engine::syncState->syncMTSempahore.Signal();
-	Exp::Engine::syncState->syncRTSempahore.Signal();
+	//Exp::Engine::syncState->shouldQuit.store(true);
+	//// Signal the render thread so it doesn't deadlock
+	////Exp::Engine::syncState->syncQueue.Push(0); //Force the render thread to end if it is waiting.
+	//Exp::Engine::syncState->syncMTSempahore.Signal();
+	//Exp::Engine::syncState->syncRTSempahore.Signal();
 
 
-	// Wait for them to clean up
-	ftl::JoinThread(renderThread);
+	//// Wait for them to clean up
+	//ftl::JoinThread(renderThread);
 
-	glfwDestroyWindow(Exp::Engine::m_mainWindow);
-	glfwDestroyWindow(Exp::Engine::m_slaveWindow);
-	glfwTerminate();
+	//glfwDestroyWindow(Exp::Engine::m_mainWindow);
+	//glfwDestroyWindow(Exp::Engine::m_slaveWindow);
+	//glfwTerminate();
 
-	rmt_DestroyGlobalInstance(rmt);
+	//rmt_DestroyGlobalInstance(rmt);
 
-	/*delete renderArgs;
-	delete logicArgs;*/
+	///*delete renderArgs;
+	//delete logicArgs;*/
 
-	delete Exp::Engine::syncState;
-	delete syncSemaphore;
+	//delete Exp::Engine::syncState;
+	//delete syncSemaphore;
+
+	Exp::IModuleInterface * RemoteryModule = &Exp::Singleton<Exp::RemoteryModule>::Get();
+	RemoteryModule->StartUp();
+
+	RemoteryModule->Shutdown();
+
+
+	//Exp::RemoteryModule::Get().Shutdown();
 
 	return 0;
 }
