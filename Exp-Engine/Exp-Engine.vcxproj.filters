@@ -125,6 +125,9 @@
     <ClCompile Include="Profiling\RemoteryModule.cpp">
       <Filter>Profiling</Filter>
     </ClCompile>
+    <ClCompile Include="Module\ModuleManager.cpp">
+      <Filter>Module</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Glm\common.hpp">
@@ -933,6 +936,9 @@
     </ClInclude>
     <ClInclude Include="Helpers\Singleton.h">
       <Filter>Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Module\ModuleManager.h">
+      <Filter>Module</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

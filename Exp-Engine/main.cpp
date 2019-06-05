@@ -196,7 +196,7 @@
 #include "Core/Engine.h"
 #include "Rendering/RenderThread.h"
 
-#include "Module/ModuleInterface.h"
+#include "Module/ModuleManager.h"
 #include "Profiling/RemoteryModule.h"
 
 int main()
@@ -295,13 +295,16 @@ int main()
 	//delete Exp::Engine::syncState;
 	//delete syncSemaphore;
 
-	Exp::IModuleInterface * RemoteryModule = &Exp::Singleton<Exp::RemoteryModule>::Get();
-	RemoteryModule->StartUp();
-
-	RemoteryModule->Shutdown();
+	Exp::ModuleManager::Get().AddModule<Exp::RemoteryModule>("Remotery");
+	Exp::ModuleManager::Get().InitializeModules();
 
 
-	//Exp::RemoteryModule::Get().Shutdown();
+	Exp::RemoteryModule * RemoteryModule = Exp::ModuleManager::Get().GetModule<Exp::RemoteryModule>("Remotery");
 
+	RemoteryModule->Print();
+
+
+
+	Exp::ModuleManager::Get().ShutdownModules();
 	return 0;
 }

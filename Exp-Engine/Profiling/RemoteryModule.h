@@ -16,6 +16,8 @@ namespace Exp
 		virtual void StartUp();
 
 		virtual void Shutdown();
+
+		void Print();
 	};
 }
 

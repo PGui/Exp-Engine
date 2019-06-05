@@ -4,10 +4,6 @@
 
 namespace Exp
 {
-	/*RemoteryModule::RemoteryModule(){}
-
-	RemoteryModule::~RemoteryModule(){}*/
-
 	void RemoteryModule::StartUp()
 	{
 		std::cout << "	void RemoteryModule::StartUp() Interface ctor" << std::endl;
@@ -17,5 +13,9 @@ namespace Exp
 	{
 		std::cout << "	void RemoteryModule::StartUp() Interface dtor" << std::endl;
 		rmt_DestroyGlobalInstance(rmt);
+	}
+	void RemoteryModule::Print()
+	{
+		std::cout << "Here is the remotery module." << std::endl;
 	}
 }

@@ -140,6 +140,7 @@
     <ClCompile Include="Imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Module\ModuleInterface.cpp" />
+    <ClCompile Include="Module\ModuleManager.cpp" />
     <ClCompile Include="Profiling\RemoteryModule.cpp" />
     <ClCompile Include="Remotery\Remotery.c" />
     <ClCompile Include="Rendering\RenderThread.cpp" />
@@ -410,6 +411,7 @@
     <ClInclude Include="Imgui\imstb_textedit.h" />
     <ClInclude Include="Imgui\imstb_truetype.h" />
     <ClInclude Include="Module\ModuleInterface.h" />
+    <ClInclude Include="Module\ModuleManager.h" />
     <ClInclude Include="Profiling\RemoteryModule.h" />
     <ClInclude Include="Rendering\RenderThread.h" />
     <ClInclude Include="StbImage\stb_image.h" />
