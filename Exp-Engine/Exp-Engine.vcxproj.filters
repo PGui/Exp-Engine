@@ -104,9 +104,6 @@
     <ClCompile Include="Threading\Semaphore.cpp">
       <Filter>Threading</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Engine.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="Rendering\RenderThread.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
@@ -127,6 +124,9 @@
     </ClCompile>
     <ClCompile Include="Module\ModuleManager.cpp">
       <Filter>Module</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\CoreModule.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -916,9 +916,6 @@
     <ClInclude Include="Threading\Semaphore.h">
       <Filter>Threading</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Engine.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Rendering\RenderThread.h">
       <Filter>Rendering</Filter>
     </ClInclude>
@@ -939,6 +936,9 @@
     </ClInclude>
     <ClInclude Include="Module\ModuleManager.h">
       <Filter>Module</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\CoreModule.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

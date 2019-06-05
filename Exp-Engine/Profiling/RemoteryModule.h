@@ -4,7 +4,8 @@
 
 namespace Exp
 {
-	class RemoteryModule : public IModuleInterface
+	class RemoteryModule : 
+		public IModuleInterface
 	{
 	protected:
 		Remotery* rmt;

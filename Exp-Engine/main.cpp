@@ -193,118 +193,32 @@
 //	glViewport(0, 0, width, height);
 //}
 
-#include "Core/Engine.h"
+#include "Core/CoreModule.h"
 #include "Rendering/RenderThread.h"
 
 #include "Module/ModuleManager.h"
 #include "Profiling/RemoteryModule.h"
 
-int main()
+void MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 {
-	//Remotery* rmt;
-	//rmt_CreateGlobalInstance(&rmt);
-
-	//rmt_SetCurrentThreadName("Main");
-
-	//if (!glfwInit())
-	//{
-	//	std::cout << "Failed to initialize glfw" << std::endl;
-	//	return -1;
-	//}
-
-	//// Use https://gist.github.com/Madsy/6980061
-	////Check http://blog.slapware.eu/game-engine/programming/multithreaded-renderloop-part1/
-	////main window
-	//Exp::Engine::m_mainWindow = Exp::Engine::InitWindow("Exp-Engine");
-	////window used by second thread
-	//Exp::Engine::m_slaveWindow = Exp::Engine::InitWindow("", false, Exp::Engine::m_mainWindow, false);
-
-	//if (!Exp::Engine::m_mainWindow || !Exp::Engine::m_slaveWindow)
-	//{
-	//	glfwTerminate();
-	//	std::cout << "Failed to create glfw windows." << std::endl;
-	//	return -1;
-	//}
-
-	//glfwMakeContextCurrent(Exp::Engine::m_mainWindow);
-
-	//if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	//{
-	//	std::cout << "Failed to initialize glad." << std::endl;
-	//	glfwTerminate();
-	//	return -1;
-	//}
-
-	//glfwSetInputMode(Exp::Engine::m_mainWindow, GLFW_CURSOR, GLFW_CURSOR);
-
-	//glfwSetErrorCallback(Exp::Engine::glfw_error_callback);
-
-	//glfwPollEvents();
-
-	//int nrAttributes;
-	//glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-	//std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
-
-	//glfwMakeContextCurrent(nullptr);
-
-	//Exp::Engine::syncState = new Exp::GameSyncState();
-
-	//Exp::Semaphore * syncSemaphore = new Exp::Semaphore();
-
-	////Launch Render Thread
-	//Exp::ThreadArgs *renderArgs = new Exp::ThreadArgs;
-	//renderArgs->mainWindow = Exp::Engine::m_mainWindow;
-	//renderArgs->slaveWindow = Exp::Engine::m_slaveWindow;
-	//renderArgs->syncState = Exp::Engine::syncState;
-	//renderArgs->syncSemaphore = syncSemaphore;
-
-	//ftl::ThreadType renderThread;
-	//if (!ftl::CreateThread(1048576, Exp::RenderThreadStart, renderArgs, 0, &renderThread))
-	//{
-	//	std::cout << "Failed to start the render thread." << std::endl;
-	//}
-
-	//Exp::ThreadArgs *logicArgs = new Exp::ThreadArgs;
-	//logicArgs->mainWindow = Exp::Engine::m_mainWindow;
-	//logicArgs->slaveWindow = Exp::Engine::m_slaveWindow;
-	//logicArgs->syncState = Exp::Engine::syncState;
-	//logicArgs->syncSemaphore = syncSemaphore;
-
-	//ftl::TaskScheduler taskScheduler;
-	//taskScheduler.Run(512, Exp::Engine::MainJob, logicArgs, ftl::GetNumHardwareThreads() - 1, ftl::EmptyQueueBehavior::Sleep);
-
-	//Exp::Engine::syncState->shouldQuit.store(true);
-	//// Signal the render thread so it doesn't deadlock
-	////Exp::Engine::syncState->syncQueue.Push(0); //Force the render thread to end if it is waiting.
-	//Exp::Engine::syncState->syncMTSempahore.Signal();
-	//Exp::Engine::syncState->syncRTSempahore.Signal();
-
-
-	//// Wait for them to clean up
-	//ftl::JoinThread(renderThread);
-
-	//glfwDestroyWindow(Exp::Engine::m_mainWindow);
-	//glfwDestroyWindow(Exp::Engine::m_slaveWindow);
-	//glfwTerminate();
-
-	//rmt_DestroyGlobalInstance(rmt);
-
-	///*delete renderArgs;
-	//delete logicArgs;*/
-
-	//delete Exp::Engine::syncState;
-	//delete syncSemaphore;
-
+	//Add modules
 	Exp::ModuleManager::Get().AddModule<Exp::RemoteryModule>("Remotery");
+	Exp::ModuleManager::Get().AddModule<Exp::CoreModule>("Core");
+	//Initialize them
 	Exp::ModuleManager::Get().InitializeModules();
 
-
-	Exp::RemoteryModule * RemoteryModule = Exp::ModuleManager::Get().GetModule<Exp::RemoteryModule>("Remotery");
-
-	RemoteryModule->Print();
-
-
+	//Launch main loop
+	Exp::CoreModule * CoreModule = Exp::ModuleManager::Get().GetModule<Exp::CoreModule>("Core");
+	CoreModule->taskScheduler = taskScheduler;
+	CoreModule->RunEngine();
 
 	Exp::ModuleManager::Get().ShutdownModules();
+}
+
+int main()
+{
+	ftl::TaskScheduler taskScheduler;
+	taskScheduler.Run(512, MainJob, nullptr, ftl::GetNumHardwareThreads(), ftl::EmptyQueueBehavior::Sleep);
+
 	return 0;
 }
