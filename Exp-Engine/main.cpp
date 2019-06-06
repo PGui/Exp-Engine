@@ -199,11 +199,14 @@
 #include "Module/ModuleManager.h"
 #include "Profiling/RemoteryModule.h"
 
+#include "Input/InputModule.h"
+
 void MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 {
 	//Add modules
 	Exp::ModuleManager::Get().AddModule<Exp::RemoteryModule>("Remotery");
 	Exp::ModuleManager::Get().AddModule<Exp::CoreModule>("Core");
+	Exp::ModuleManager::Get().AddModule<Exp::InputModule>("Input");
 	//Initialize them
 	Exp::ModuleManager::Get().InitializeModules();
 

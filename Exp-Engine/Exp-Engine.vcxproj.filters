@@ -68,6 +68,9 @@
     <Filter Include="Profiling">
       <UniqueIdentifier>{1068a850-f772-4d22-b890-5e78719ab1c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{a46fd372-b978-4605-bea6-9057940f68ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Glad\glad.c">
@@ -127,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="Core\CoreModule.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\InputModule.cpp">
+      <Filter>Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -939,6 +945,9 @@
     </ClInclude>
     <ClInclude Include="Core\CoreModule.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputModule.h">
+      <Filter>Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

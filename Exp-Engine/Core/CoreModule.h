@@ -16,6 +16,8 @@
 
 #include "../camera/Camera.h"
 
+#include "../Input/InputModule.h"
+
 namespace Exp
 {
 	class CoreModule:
@@ -45,8 +47,8 @@ namespace Exp
 
 	public:
 		//IModuleInterface
-		void StartUp();
-		void Shutdown();
+		virtual void StartUp();
+		virtual void Shutdown();
 
 		// Methods
 		GLFWwindow * InitWindow(std::string title, bool fullScreen = false, GLFWwindow* shared = nullptr, bool visible = true);

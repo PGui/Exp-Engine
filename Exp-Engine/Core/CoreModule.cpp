@@ -8,6 +8,8 @@
 
 #include <Remotery/Remotery.h>
 
+#include "../Module/ModuleManager.h"
+
 GLFWwindow * Exp::CoreModule::InitWindow(std::string title, bool fullScreen, GLFWwindow* shared, bool visible)
 {
 	GLFWwindow* win;
@@ -45,6 +47,10 @@ void Exp::CoreModule::RunEngine()
 		rmt_EndCPUSample();
 
 		NewFrame();
+
+		InputModule * Input = ModuleManager::Get().GetModule<Exp::InputModule>("Input");
+
+		std::cout << (float)Input->GetMouseDelta().x << " " << (float)Input->GetMouseDelta().y << std::endl;
 
 		// Logic
 		double currentTime = glfwGetTime();
@@ -129,6 +135,18 @@ void Exp::CoreModule::NewFrame()
 
 void Exp::CoreModule::framebuffer_size_callback(GLFWwindow * window, int width, int height)
 {
+	if (CoreModule * Core = ModuleManager::Get().GetModule<Exp::CoreModule>("Core"))
+	{
+		Core->m_screenWidth = width;
+		Core->m_screenHeight = height;
+		glViewport(0, 0, Core->m_screenWidth, Core->m_screenHeight);
+
+		Core->m_Camera.SetPerspective(
+			Core->m_Camera.m_fovY, 
+			(float)width / (float)height, 
+			Core->m_Camera.m_nearPlane, 
+			Core->m_Camera.m_farPlane);
+	}
 }
 void Exp::CoreModule::glfw_error_callback(int error, const char * description)
 {
@@ -162,7 +180,9 @@ void Exp::CoreModule::StartUp()
 		return;
 	}
 
-	glfwSetInputMode(Exp::CoreModule::m_mainWindow, GLFW_CURSOR, GLFW_CURSOR);
+	glfwSetInputMode(m_mainWindow, GLFW_CURSOR, GLFW_CURSOR);
+
+	glfwSetFramebufferSizeCallback(m_mainWindow, framebuffer_size_callback);
 
 	// Setup Dear ImGui context
 	const char* glsl_version = "#version 330";
@@ -274,22 +294,4 @@ void Exp::CoreModule::Shutdown()
 
 	////Destroy
 	//delete Exp::Engine::m_Camera;
-//}
-
-
-//
-//void Exp::Engine::framebuffer_size_callback(GLFWwindow * window, int width, int height)
-//{
-//	m_screenWidth = width;
-//	m_screenHeight = height;
-//	glViewport(0, 0, m_screenWidth, m_screenHeight);
-//	if (m_Camera)
-//	{
-//		m_Camera->SetPerspective(m_Camera->m_fovY, (float)width / (float)height, m_Camera->m_nearPlane, m_Camera->m_farPlane);
-//	}
-//}
-//
-//void Exp::Engine::glfw_error_callback(int error, const char * description)
-//{
-//	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 //}
