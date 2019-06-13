@@ -49,8 +49,7 @@ void Exp::CoreModule::RunEngine()
 		NewFrame();
 
 		InputModule * Input = ModuleManager::Get().GetModule<Exp::InputModule>("Input");
-
-		std::cout << (float)Input->GetMouseDelta().x << " " << (float)Input->GetMouseDelta().y << std::endl;
+		Input->Update(m_deltaTime);
 
 		// Logic
 		double currentTime = glfwGetTime();
@@ -117,12 +116,7 @@ void Exp::CoreModule::RunEngine()
 		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		ImGui::EndFrame();
-		ImGui::Render();
-
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		glfwSwapBuffers(m_mainWindow);
+		EndFrame();
 	}
 }
 
@@ -131,6 +125,16 @@ void Exp::CoreModule::NewFrame()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
+}
+
+void Exp::CoreModule::EndFrame()
+{
+	ImGui::EndFrame();
+	ImGui::Render();
+
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	glfwSwapBuffers(m_mainWindow);
 }
 
 void Exp::CoreModule::framebuffer_size_callback(GLFWwindow * window, int width, int height)

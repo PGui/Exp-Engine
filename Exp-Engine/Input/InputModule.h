@@ -17,6 +17,10 @@ namespace Exp
 		glm::vec2 lastPos = glm::vec2();
 		glm::vec2 delta = glm::vec2();
 
+		bool keysDown[512];
+
+		GLFWwindow * window = nullptr;
+
 	public:
 		InputModule();
 		virtual ~InputModule();
@@ -31,6 +35,14 @@ namespace Exp
 
 	public:
 		const glm::vec2 GetMouseDelta();
+
+		//Todo : Come up with something better, but that'll do for now.
+		const bool IsKeyPressed(int key);
+		const bool IsKeyReleased(int key);
+		const bool KeyPressed(int key);
+		const bool KeyReleased(int key);
+
+		void Update(const float & deltaTime);
 	};
 }
 

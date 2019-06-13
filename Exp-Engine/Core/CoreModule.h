@@ -57,6 +57,7 @@ namespace Exp
 		void RunEngine();
 
 		void NewFrame();
+		void EndFrame();
 
 		//Callbacks
 		static void framebuffer_size_callback(GLFWwindow * window, int width, int height);
