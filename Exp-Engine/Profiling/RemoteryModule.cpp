@@ -6,12 +6,12 @@ namespace Exp
 {
 	void RemoteryModule::StartUp()
 	{
-		std::cout << "	void RemoteryModule::StartUp() Interface ctor" << std::endl;
+		std::cout << "RemoteryModule StartUp" << std::endl;
 		rmt_CreateGlobalInstance(&rmt);
 	}
 	void RemoteryModule::Shutdown()
 	{
-		std::cout << "	void RemoteryModule::StartUp() Interface dtor" << std::endl;
+		std::cout << "RemoteryModule Shutdown" << std::endl;
 		rmt_DestroyGlobalInstance(rmt);
 	}
 	void RemoteryModule::Print()

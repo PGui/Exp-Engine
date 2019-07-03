@@ -20,7 +20,7 @@
 
 namespace Exp
 {
-	class CoreModule:
+	class EngineModule:
 		public IModuleInterface
 	{
 	public:

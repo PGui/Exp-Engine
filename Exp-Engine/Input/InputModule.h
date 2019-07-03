@@ -1,7 +1,7 @@
 #pragma once
 #include "../Module/ModuleManager.h"
 #include "../Module/ModuleInterface.h"
-#include "../Core/CoreModule.h"
+#include "../Core/EngineModule.h"
 #include <iostream>
 
 #include "../Glm/glm.hpp"

@@ -13,7 +13,7 @@ Exp::InputModule::~InputModule()
 
 void Exp::InputModule::StartUp()
 {
-	if (CoreModule * Core = Exp::ModuleManager::Get().GetModule<CoreModule>("Core"))
+	if (EngineModule * Core = Exp::ModuleManager::Get().GetModule<EngineModule>("Core"))
 	{
 		window = Core->m_mainWindow;
 		glfwSetCursorPosCallback(Core->m_mainWindow, Exp::InputModule::glfw_mouse);
@@ -23,10 +23,13 @@ void Exp::InputModule::StartUp()
 	{
 		std::cout << "Error 'Core' Module not initialized." << std::endl;
 	}
+
+	std::cout << "InputModule StartUp" << std::endl;
 }
 
 void Exp::InputModule::Shutdown()
 {
+	std::cout << "InputModule Shutdown" << std::endl;
 }
 
 const glm::vec2 Exp::InputModule::GetMouseDelta()
@@ -72,7 +75,6 @@ void Exp::InputModule::Update(const float & deltaTime)
 		delta = glm::vec2((float)(lastPos.x - xpos), (float)(lastPos.y - ypos));
 		lastPos = glm::vec2(xpos, ypos);
 	}
-	
 }
 
 //Static cb

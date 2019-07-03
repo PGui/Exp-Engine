@@ -128,7 +128,7 @@
   <ItemGroup>
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="CommandBuffer\cmds\GLCommands.cpp" />
-    <ClCompile Include="Core\CoreModule.cpp" />
+    <ClCompile Include="Core\EngineModule.cpp" />
     <ClCompile Include="Ftl\atomic_counter.cpp" />
     <ClCompile Include="Ftl\task_scheduler.cpp" />
     <ClCompile Include="Glad\glad.c" />
@@ -140,11 +140,15 @@
     <ClCompile Include="Imgui\imgui_widgets.cpp" />
     <ClCompile Include="Input\InputModule.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh\Cube.cpp" />
+    <ClCompile Include="Mesh\Mesh.cpp" />
+    <ClCompile Include="Mesh\Plane.cpp" />
+    <ClCompile Include="Mesh\Quad.cpp" />
     <ClCompile Include="Module\ModuleInterface.cpp" />
     <ClCompile Include="Module\ModuleManager.cpp" />
     <ClCompile Include="Profiling\RemoteryModule.cpp" />
     <ClCompile Include="Remotery\Remotery.c" />
-    <ClCompile Include="Rendering\RenderThread.cpp" />
+    <ClCompile Include="Rendering\RenderingModule.cpp" />
     <ClCompile Include="StbImage\stb_image.cpp" />
     <ClCompile Include="Threading\Semaphore.cpp" />
   </ItemGroup>
@@ -160,7 +164,7 @@
     <ClInclude Include="CommandBuffer\LinearAllocator.h" />
     <ClInclude Include="CommandBuffer\MemoryUtil.h" />
     <ClInclude Include="CommandBuffer\RenderContext.h" />
-    <ClInclude Include="Core\CoreModule.h" />
+    <ClInclude Include="Core\EngineModule.h" />
     <ClInclude Include="Glm\common.hpp" />
     <ClInclude Include="Glm\detail\compute_common.hpp" />
     <ClInclude Include="Glm\detail\compute_vector_relational.hpp" />
@@ -412,10 +416,14 @@
     <ClInclude Include="Imgui\imstb_textedit.h" />
     <ClInclude Include="Imgui\imstb_truetype.h" />
     <ClInclude Include="Input\InputModule.h" />
+    <ClInclude Include="Mesh\Cube.h" />
+    <ClInclude Include="Mesh\Mesh.h" />
+    <ClInclude Include="Mesh\Plane.h" />
+    <ClInclude Include="Mesh\Quad.h" />
     <ClInclude Include="Module\ModuleInterface.h" />
     <ClInclude Include="Module\ModuleManager.h" />
     <ClInclude Include="Profiling\RemoteryModule.h" />
-    <ClInclude Include="Rendering\RenderThread.h" />
+    <ClInclude Include="Rendering\RenderingModule.h" />
     <ClInclude Include="StbImage\stb_image.h" />
     <ClInclude Include="Threading\Semaphore.h" />
     <ClInclude Include="Threading\SpscQueue.h" />

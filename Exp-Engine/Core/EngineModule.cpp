@@ -1,16 +1,14 @@
-#include "CoreModule.h"
+#include "EngineModule.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 //#include <memory_lib/tagged_heap.h>
 #include "../Threading/Semaphore.h"
 
-#include "../Rendering/RenderThread.h"
-
 #include <Remotery/Remotery.h>
 
 #include "../Module/ModuleManager.h"
 
-GLFWwindow * Exp::CoreModule::InitWindow(std::string title, bool fullScreen, GLFWwindow* shared, bool visible)
+GLFWwindow * Exp::EngineModule::InitWindow(std::string title, bool fullScreen, GLFWwindow* shared, bool visible)
 {
 	GLFWwindow* win;
 
@@ -35,7 +33,7 @@ GLFWwindow * Exp::CoreModule::InitWindow(std::string title, bool fullScreen, GLF
 	
 	return win;
 }
-void Exp::CoreModule::RunEngine()
+void Exp::EngineModule::RunEngine()
 {
 	while (!glfwWindowShouldClose(m_mainWindow))
 	{
@@ -120,14 +118,14 @@ void Exp::CoreModule::RunEngine()
 	}
 }
 
-void Exp::CoreModule::NewFrame()
+void Exp::EngineModule::NewFrame()
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 }
 
-void Exp::CoreModule::EndFrame()
+void Exp::EngineModule::EndFrame()
 {
 	ImGui::EndFrame();
 	ImGui::Render();
@@ -137,9 +135,9 @@ void Exp::CoreModule::EndFrame()
 	glfwSwapBuffers(m_mainWindow);
 }
 
-void Exp::CoreModule::framebuffer_size_callback(GLFWwindow * window, int width, int height)
+void Exp::EngineModule::framebuffer_size_callback(GLFWwindow * window, int width, int height)
 {
-	if (CoreModule * Core = ModuleManager::Get().GetModule<Exp::CoreModule>("Core"))
+	if (EngineModule * Core = ModuleManager::Get().GetModule<Exp::EngineModule>("Core"))
 	{
 		Core->m_screenWidth = width;
 		Core->m_screenHeight = height;
@@ -152,13 +150,14 @@ void Exp::CoreModule::framebuffer_size_callback(GLFWwindow * window, int width, 
 			Core->m_Camera.m_farPlane);
 	}
 }
-void Exp::CoreModule::glfw_error_callback(int error, const char * description)
+void Exp::EngineModule::glfw_error_callback(int error, const char * description)
 {
 	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 }
 
-void Exp::CoreModule::StartUp()
+void Exp::EngineModule::StartUp()
 {
+
 	if (!glfwInit())
 	{
 		std::cout << "Failed to initialize glfw" << std::endl;
@@ -168,7 +167,7 @@ void Exp::CoreModule::StartUp()
 	//main window
 	m_mainWindow = InitWindow("Exp-Engine");
 
-	if (!Exp::CoreModule::m_mainWindow )
+	if (!Exp::EngineModule::m_mainWindow )
 	{
 		glfwTerminate();
 		std::cout << "Failed to create glfw windows." << std::endl;
@@ -201,15 +200,19 @@ void Exp::CoreModule::StartUp()
 	// Setup Platform/Renderer bindings
 	ImGui_ImplGlfw_InitForOpenGL(m_mainWindow, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
+
+	std::cout << "EngineModule StartUp" << std::endl;
 }
 
-void Exp::CoreModule::Shutdown()
+void Exp::EngineModule::Shutdown()
 {
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 
 	glfwDestroyWindow(m_mainWindow);
+
+	std::cout << "EngineModule Shutdown" << std::endl;
 }
 
 

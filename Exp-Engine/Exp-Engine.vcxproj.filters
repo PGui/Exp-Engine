@@ -71,6 +71,9 @@
     <Filter Include="Input">
       <UniqueIdentifier>{a46fd372-b978-4605-bea6-9057940f68ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Mesh">
+      <UniqueIdentifier>{3aeab4cd-7ca3-4470-be8f-62e374a656ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Glad\glad.c">
@@ -107,9 +110,6 @@
     <ClCompile Include="Threading\Semaphore.cpp">
       <Filter>Threading</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\RenderThread.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="Remotery\Remotery.c">
       <Filter>Remotery</Filter>
     </ClCompile>
@@ -128,11 +128,26 @@
     <ClCompile Include="Module\ModuleManager.cpp">
       <Filter>Module</Filter>
     </ClCompile>
-    <ClCompile Include="Core\CoreModule.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
     <ClCompile Include="Input\InputModule.cpp">
       <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\EngineModule.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh\Cube.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh\Mesh.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh\Plane.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh\Quad.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\RenderingModule.cpp">
+      <Filter>Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -922,9 +937,6 @@
     <ClInclude Include="Threading\Semaphore.h">
       <Filter>Threading</Filter>
     </ClInclude>
-    <ClInclude Include="Rendering\RenderThread.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="Threading\SpscQueue.h">
       <Filter>Threading</Filter>
     </ClInclude>
@@ -943,11 +955,26 @@
     <ClInclude Include="Module\ModuleManager.h">
       <Filter>Module</Filter>
     </ClInclude>
-    <ClInclude Include="Core\CoreModule.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="Input\InputModule.h">
       <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\EngineModule.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh\Cube.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh\Mesh.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh\Plane.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh\Quad.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\RenderingModule.h">
+      <Filter>Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
