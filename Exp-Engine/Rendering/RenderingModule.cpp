@@ -1,5 +1,6 @@
 #include "RenderingModule.h"
 #include <iostream>
+#include <Remotery/Remotery.h>
 
 namespace Exp
 {
@@ -14,6 +15,7 @@ namespace Exp
 
 	void RenderingModule::StartUp()
 	{
+		rmt_ScopedCPUSample(RenderingModuleStartUp, 0)
 		std::cout << "RenderingModule StartUp" << std::endl;
 	}
 

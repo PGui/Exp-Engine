@@ -47,7 +47,7 @@ void Exp::EngineModule::RunEngine()
 		NewFrame();
 
 		InputModule * Input = ModuleManager::Get().GetModule<Exp::InputModule>("Input");
-		Input->Update(m_deltaTime);
+		Input->Update((float)m_deltaTime);
 
 		// Logic
 		double currentTime = glfwGetTime();
@@ -157,6 +157,7 @@ void Exp::EngineModule::glfw_error_callback(int error, const char * description)
 
 void Exp::EngineModule::StartUp()
 {
+	rmt_ScopedCPUSample(EngineModuleStartUp, 0);
 
 	if (!glfwInit())
 	{

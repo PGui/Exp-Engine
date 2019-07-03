@@ -148,7 +148,10 @@
     <ClCompile Include="Module\ModuleManager.cpp" />
     <ClCompile Include="Profiling\RemoteryModule.cpp" />
     <ClCompile Include="Remotery\Remotery.c" />
+    <ClCompile Include="Rendering\Material.cpp" />
     <ClCompile Include="Rendering\RenderingModule.cpp" />
+    <ClCompile Include="Rendering\Shader.cpp" />
+    <ClCompile Include="Rendering\Texture.cpp" />
     <ClCompile Include="StbImage\stb_image.cpp" />
     <ClCompile Include="Threading\Semaphore.cpp" />
   </ItemGroup>
@@ -423,7 +426,11 @@
     <ClInclude Include="Module\ModuleInterface.h" />
     <ClInclude Include="Module\ModuleManager.h" />
     <ClInclude Include="Profiling\RemoteryModule.h" />
+    <ClInclude Include="Rendering\Material.h" />
     <ClInclude Include="Rendering\RenderingModule.h" />
+    <ClInclude Include="Rendering\Shader.h" />
+    <ClInclude Include="Rendering\ShadingTypes.h" />
+    <ClInclude Include="Rendering\Texture.h" />
     <ClInclude Include="StbImage\stb_image.h" />
     <ClInclude Include="Threading\Semaphore.h" />
     <ClInclude Include="Threading\SpscQueue.h" />

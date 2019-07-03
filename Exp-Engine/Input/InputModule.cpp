@@ -1,5 +1,5 @@
 #include "InputModule.h"
-
+#include <Remotery/Remotery.h>
 
 
 Exp::InputModule::InputModule()
@@ -13,6 +13,8 @@ Exp::InputModule::~InputModule()
 
 void Exp::InputModule::StartUp()
 {
+	rmt_ScopedCPUSample(InputModuleStartUp, 0);
+
 	if (EngineModule * Core = Exp::ModuleManager::Get().GetModule<EngineModule>("Core"))
 	{
 		window = Core->m_mainWindow;
