@@ -23,6 +23,5 @@ namespace Exp
 	{
 		std::cout << "RenderingModule Shutdown" << std::endl;
 	}
-
 }
 

@@ -14,12 +14,13 @@
 #include "../imgui/imgui_impl_glfw.h"
 #include "../imgui/imgui_impl_opengl3.h"
 
-#include "../camera/Camera.h"
-
-#include "../Input/InputModule.h"
+#include "../Camera/Camera.h"
 
 namespace Exp
 {
+	class InputModule;
+	class RenderingModule;
+
 	class EngineModule:
 		public IModuleInterface
 	{
@@ -43,7 +44,12 @@ namespace Exp
 
 		//Debug render parameters
 		bool m_wireframe = false;
-		bool m_debugLight =false;
+		bool m_debugLight = false;
+
+	// Modules
+	public:
+		InputModule * m_inputModule = nullptr;
+		RenderingModule * m_renderingModule = nullptr;
 
 	public:
 		//IModuleInterface

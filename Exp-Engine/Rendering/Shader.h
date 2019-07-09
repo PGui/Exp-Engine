@@ -16,7 +16,6 @@
 
 namespace Exp
 {
-
 	class Shader
 	{
 	public:

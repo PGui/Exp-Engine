@@ -140,6 +140,7 @@
     <ClCompile Include="Imgui\imgui_widgets.cpp" />
     <ClCompile Include="Input\InputModule.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MaterialLibrary\MaterialLibraryModule.cpp" />
     <ClCompile Include="Mesh\Cube.cpp" />
     <ClCompile Include="Mesh\Mesh.cpp" />
     <ClCompile Include="Mesh\Plane.cpp" />
@@ -152,6 +153,12 @@
     <ClCompile Include="Rendering\RenderingModule.cpp" />
     <ClCompile Include="Rendering\Shader.cpp" />
     <ClCompile Include="Rendering\Texture.cpp" />
+    <ClCompile Include="Resources\ModelLoader.cpp" />
+    <ClCompile Include="Resources\Resources.cpp" />
+    <ClCompile Include="Resources\ShaderLoader.cpp" />
+    <ClCompile Include="Resources\TextureLoader.cpp" />
+    <ClCompile Include="Scene\Scene.cpp" />
+    <ClCompile Include="Scene\SceneNode.cpp" />
     <ClCompile Include="StbImage\stb_image.cpp" />
     <ClCompile Include="Threading\Semaphore.cpp" />
   </ItemGroup>
@@ -419,6 +426,7 @@
     <ClInclude Include="Imgui\imstb_textedit.h" />
     <ClInclude Include="Imgui\imstb_truetype.h" />
     <ClInclude Include="Input\InputModule.h" />
+    <ClInclude Include="MaterialLibrary\MaterialLibraryModule.h" />
     <ClInclude Include="Mesh\Cube.h" />
     <ClInclude Include="Mesh\Mesh.h" />
     <ClInclude Include="Mesh\Plane.h" />
@@ -431,6 +439,12 @@
     <ClInclude Include="Rendering\Shader.h" />
     <ClInclude Include="Rendering\ShadingTypes.h" />
     <ClInclude Include="Rendering\Texture.h" />
+    <ClInclude Include="Resources\ModelLoader.h" />
+    <ClInclude Include="Resources\Resources.h" />
+    <ClInclude Include="Resources\ShaderLoader.h" />
+    <ClInclude Include="Resources\TextureLoader.h" />
+    <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Scene\SceneNode.h" />
     <ClInclude Include="StbImage\stb_image.h" />
     <ClInclude Include="Threading\Semaphore.h" />
     <ClInclude Include="Threading\SpscQueue.h" />

@@ -74,6 +74,15 @@
     <Filter Include="Mesh">
       <UniqueIdentifier>{3aeab4cd-7ca3-4470-be8f-62e374a656ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{9d3a5491-cd12-4459-a4d2-30ce063d6f6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{f9af9540-346e-449d-a763-d2a74bc6f727}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MaterialLibrary">
+      <UniqueIdentifier>{8cf05900-2295-401e-8595-aaec5284185b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Glad\glad.c">
@@ -157,6 +166,27 @@
     </ClCompile>
     <ClCompile Include="Rendering\Texture.cpp">
       <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\ModelLoader.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\Resources.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\ShaderLoader.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Resources\TextureLoader.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneNode.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialLibrary\MaterialLibraryModule.cpp">
+      <Filter>MaterialLibrary</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -996,6 +1026,27 @@
     </ClInclude>
     <ClInclude Include="Rendering\Texture.h">
       <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\ModelLoader.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Resources.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\ShaderLoader.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\TextureLoader.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneNode.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialLibrary\MaterialLibraryModule.h">
+      <Filter>MaterialLibrary</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

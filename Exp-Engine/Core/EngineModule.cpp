@@ -7,6 +7,8 @@
 #include <Remotery/Remotery.h>
 
 #include "../Module/ModuleManager.h"
+#include "../Rendering/RenderingModule.h"
+#include "../Input/InputModule.h"
 
 GLFWwindow * Exp::EngineModule::InitWindow(std::string title, bool fullScreen, GLFWwindow* shared, bool visible)
 {
@@ -35,6 +37,9 @@ GLFWwindow * Exp::EngineModule::InitWindow(std::string title, bool fullScreen, G
 }
 void Exp::EngineModule::RunEngine()
 {
+	m_inputModule = ModuleManager::Get().GetModule<InputModule>("Input");
+	m_renderingModule = ModuleManager::Get().GetModule<RenderingModule>("Rendering");
+
 	while (!glfwWindowShouldClose(m_mainWindow))
 	{
 		rmt_ScopedCPUSample(LogicLoop, 0);
@@ -46,8 +51,7 @@ void Exp::EngineModule::RunEngine()
 
 		NewFrame();
 
-		InputModule * Input = ModuleManager::Get().GetModule<Exp::InputModule>("Input");
-		Input->Update((float)m_deltaTime);
+		m_inputModule->Update((float)m_deltaTime);
 
 		// Logic
 		double currentTime = glfwGetTime();
@@ -137,7 +141,7 @@ void Exp::EngineModule::EndFrame()
 
 void Exp::EngineModule::framebuffer_size_callback(GLFWwindow * window, int width, int height)
 {
-	if (EngineModule * Core = ModuleManager::Get().GetModule<Exp::EngineModule>("Core"))
+	if (EngineModule * Core = ModuleManager::Get().GetModule<Exp::EngineModule>("Engine"))
 	{
 		Core->m_screenWidth = width;
 		Core->m_screenHeight = height;

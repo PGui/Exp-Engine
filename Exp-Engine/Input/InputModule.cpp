@@ -15,7 +15,7 @@ void Exp::InputModule::StartUp()
 {
 	rmt_ScopedCPUSample(InputModuleStartUp, 0);
 
-	if (EngineModule * Core = Exp::ModuleManager::Get().GetModule<EngineModule>("Core"))
+	if (EngineModule * Core = Exp::ModuleManager::Get().GetModule<EngineModule>("Engine"))
 	{
 		window = Core->m_mainWindow;
 		glfwSetCursorPosCallback(Core->m_mainWindow, Exp::InputModule::glfw_mouse);

@@ -15,6 +15,3 @@ namespace Exp
 		virtual void Shutdown();
 	};
 }
-
-
-

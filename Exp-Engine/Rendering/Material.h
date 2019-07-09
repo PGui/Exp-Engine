@@ -7,7 +7,6 @@
 
 namespace Exp
 {
-
 	class Material
 	{
 	public:
