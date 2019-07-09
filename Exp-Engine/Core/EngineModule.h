@@ -32,10 +32,11 @@ namespace Exp
 
 		GLFWwindow*  m_mainWindow = nullptr;
 
+		// Deltatime
 		double m_deltaTime = 1.0 / 60.0;
 		double m_lastTime = 0.0;
 		double m_accumulatedTime = 0.0;
-		const double m_updatePeriod = 1/60;
+		const double m_updatePeriod = 1.0/60.0;
 		//const double m_precisionUpdatePeriod ;
 		const int m_maxUpdatesPerLoop = 1;
 
@@ -64,6 +65,11 @@ namespace Exp
 
 		void NewFrame();
 		void EndFrame();
+
+		// Delta time
+		void ComputeDeltatime();
+
+	public:
 
 		//Callbacks
 		static void framebuffer_size_callback(GLFWwindow * window, int width, int height);
