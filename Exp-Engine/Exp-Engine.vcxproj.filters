@@ -1048,6 +1048,9 @@
     <ClInclude Include="MaterialLibrary\MaterialLibraryModule.h">
       <Filter>MaterialLibrary</Filter>
     </ClInclude>
+    <ClInclude Include="Rendering\Buffers.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Glm\detail\func_common.inl">

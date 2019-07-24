@@ -6,6 +6,7 @@
 
 #include <cassert>
 #include <cstdint>
+#include <string>
 #ifndef NDEBUG
 #include "MemoryUtil.h"
 #endif
@@ -346,8 +347,8 @@ namespace cb
 
 	inline std::ostream& operator<<(std::ostream& stream, cb::DrawKey key)
 	{
-		stream << key.viewportId << ", layer: " << cb::toString(cb::ViewLayerType(key.viewLayer)) << "-"
-			<< cb::toString(cb::TranslucencyType(key.translucency)) << ", ";
+		stream << cb::toString(cb::ViewLayerType(key.viewportId)) << std::string(", layer: ") << cb::toString(cb::ViewLayerType(key.viewLayer)) << std::string("-")
+			<< cb::toString(cb::TranslucencyType(key.translucency)) << std::string(", ");
 
 		if (key.custom.enabled)
 			stream << "custom command, priority: " << key.custom.priority;

@@ -23,5 +23,16 @@ namespace Exp
 	{
 		std::cout << "RenderingModule Shutdown" << std::endl;
 	}
+
+	void RenderingModule::Render()
+	{
+		rmt_ScopedCPUSample(Rendering, 0)
+
+		m_geometryCommands.sort();
+
+		// nothing to pass as GL doesn't have any contexts
+		m_geometryCommands.submit(nullptr, true);
+	}
+
 }
 

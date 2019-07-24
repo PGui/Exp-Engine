@@ -90,10 +90,24 @@ void Exp::EngineModule::RunEngine()
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();
+
+			{
+				const auto key = cb::DrawKey::makeDefault(0, cb::ViewLayerType::e3D);
+				auto* cmd = m_renderingModule->m_geometryCommands.addCommand<cmds::ClearColor>(key);
+				cmd->red = clear_color.r;
+				cmd->green = clear_color.g;
+				cmd->blue = clear_color.b;
+				cmd->alpha = clear_color.a;
+				cmd->flags = GL_COLOR_BUFFER_BIT;
+
+				CB_DEBUG_COMMAND_TAG(cmd);
+				CB_DEBUG_COMMAND_TAG_MSG(cmd, "ClearColor");
+				CB_DEBUG_COMMAND_SET_MSG(cmd, "ClearColor");
+			}
 		}
 
-		glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-		glClear(GL_COLOR_BUFFER_BIT);
+		//Rendering
+		m_renderingModule->Render();
 
 		EndFrame();
 	}

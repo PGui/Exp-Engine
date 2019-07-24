@@ -434,6 +434,7 @@
     <ClInclude Include="Module\ModuleInterface.h" />
     <ClInclude Include="Module\ModuleManager.h" />
     <ClInclude Include="Profiling\RemoteryModule.h" />
+    <ClInclude Include="Rendering\Buffers.h" />
     <ClInclude Include="Rendering\Material.h" />
     <ClInclude Include="Rendering\RenderingModule.h" />
     <ClInclude Include="Rendering\Shader.h" />
