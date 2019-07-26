@@ -9,6 +9,9 @@
 #include "../Module/ModuleManager.h"
 #include "../Rendering/RenderingModule.h"
 #include "../Input/InputModule.h"
+#include "../MaterialLibrary/MaterialLibraryModule.h"
+
+#include "../Scene/SceneNode.h"
 
 GLFWwindow * Exp::EngineModule::InitWindow(std::string title, bool fullScreen, GLFWwindow* shared, bool visible)
 {
@@ -39,6 +42,10 @@ void Exp::EngineModule::RunEngine()
 {
 	m_inputModule = ModuleManager::Get().GetModule<InputModule>("Input");
 	m_renderingModule = ModuleManager::Get().GetModule<RenderingModule>("Rendering");
+	m_materialLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary");
+
+	//TEST
+	SceneNode * Bunny = Resources::LoadMesh(nullptr, "bunny", "../resources/models/bunny/bunny.obj");
 
 	while (!glfwWindowShouldClose(m_mainWindow))
 	{
@@ -51,25 +58,7 @@ void Exp::EngineModule::RunEngine()
 
 		NewFrame();
 
-		ComputeDeltatime();
-
-		m_inputModule->Update((float)m_deltaTime);
-
-		int updates = 0;
-		while (m_accumulatedTime >= m_updatePeriod)
-		{
-			
-			m_accumulatedTime -= m_updatePeriod;
-			if (m_accumulatedTime < (1.0 / 59.0) - m_updatePeriod)
-			{
-				m_accumulatedTime = 0;
-			}
-			{
-				rmt_ScopedCPUSample(MainThreadJobs, 0);
-				//std::cout << "Updating " << updates << " ..." << std::endl;
-				updates++;
-			}
-		}
+		Update();
 
 		static glm::vec4 clear_color = glm::vec4(0.45f, 0.55f, 0.60f, 1.00f);
 		{
@@ -106,6 +95,8 @@ void Exp::EngineModule::RunEngine()
 			}
 		}
 
+		m_renderingModule->PushMesh(Bunny);
+
 		//Rendering
 		m_renderingModule->Render();
 
@@ -118,6 +109,48 @@ void Exp::EngineModule::NewFrame()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
+}
+
+void Exp::EngineModule::Update()
+{
+	rmt_ScopedCPUSample(MainThreadUpdate, 0);
+
+	ComputeDeltatime();
+
+	int updates = 0;
+	while (m_accumulatedTime >= m_updatePeriod)
+	{
+		m_accumulatedTime -= m_updatePeriod;
+		if (m_accumulatedTime < (1.0 / 59.0) - m_updatePeriod)
+		{
+			m_accumulatedTime = 0;
+		}
+		{
+			m_inputModule->Update((float)m_deltaTime);
+
+			{
+				rmt_ScopedCPUSample(CameraUpdate, 0);
+
+				if (m_inputModule->IsKeyPressed(GLFW_KEY_W))
+					m_Camera.UpdateKey((float)m_deltaTime, CameraMovement::FORWARD);
+				if (m_inputModule->IsKeyPressed(GLFW_KEY_S))
+					m_Camera.UpdateKey((float)m_deltaTime, CameraMovement::BACKWARD);
+				if (m_inputModule->IsKeyPressed(GLFW_KEY_A))
+					m_Camera.UpdateKey((float)m_deltaTime, CameraMovement::LEFT);
+				if (m_inputModule->IsKeyPressed(GLFW_KEY_D))
+					m_Camera.UpdateKey((float)m_deltaTime, CameraMovement::RIGHT);
+				if (m_inputModule->IsKeyPressed(GLFW_KEY_SPACE))
+					m_Camera.UpdateKey((float)m_deltaTime, CameraMovement::UP);
+				if (m_inputModule->IsKeyPressed(GLFW_KEY_LEFT_CONTROL))
+					m_Camera.UpdateKey((float)m_deltaTime, CameraMovement::DOWN);
+				glm::vec2 mouseDelta = m_inputModule->GetMouseDelta();
+				m_Camera.UpdateMouse(mouseDelta.x, mouseDelta.y);
+				m_Camera.Update((float)m_deltaTime);
+			}
+			
+			updates++;
+		}
+	}
 }
 
 void Exp::EngineModule::EndFrame()

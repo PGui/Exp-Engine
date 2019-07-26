@@ -23,11 +23,11 @@ namespace Exp
 		///@note Returns true if there are more passes to bind.
 		CB_FORCE_INLINE bool operator()(cb::MaterialId material) const
 		{
-			//if (material.id == 0) // first material is a dummy, nothing to bind
-			//	return false;
+			if (material.id == 0) // first material is a dummy, nothing to bind
+				return false;
 
-			//const Material&  mat = materials[material.id];
-			//assert(mat.shader);
+			/*Exp::Material* mat = materials[material.id];
+			assert(mat != nullptr && mat->GetShader() != nullptr);*/
 			//if (mat.shader != activeShader)
 			//{
 			//	//bind only if different shaders
@@ -41,14 +41,13 @@ namespace Exp
 			//	activeMaterial = material.id;
 			//}
 
-			//return false;
 			return false;
 		}
 
 		void debugMsg(cb::MaterialId material)
 		{
 			if (material.id != 0) // first material is a dummy
-				std::cout << "Binding \'%s\' material " << materials[material.id].name.c_str() << std::endl;
+				std::cout << "Binding \'%s\' material " << materials[material.id]->GetShader()->Name << std::endl;
 		}
 
 		void reset()
@@ -57,7 +56,7 @@ namespace Exp
 			activeShader = nullptr;
 		}
 
-		std::vector<Material> materials;
+		std::vector<Exp::Material*> materials;
 		mutable	int activeMaterial = -1;
 		mutable Shader* activeShader = nullptr;
 	};

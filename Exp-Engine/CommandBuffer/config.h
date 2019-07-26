@@ -1,7 +1,7 @@
 #pragma once
 
 /// Uses more memory to align all commands to the command packet such that allocations are faster.
-#define CB_COMMAND_PACKET_ALIGNED 1
+#define CB_COMMAND_PACKET_ALIGNED 0
 
 /// Tag commands with message for debugging purposes.
 #define CB_DEBUG_TAG_COMMANDS 0

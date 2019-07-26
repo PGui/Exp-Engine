@@ -62,6 +62,7 @@ const bool Exp::InputModule::KeyReleased(int key)
 
 void Exp::InputModule::Update(const float & deltaTime)
 {
+	rmt_ScopedCPUSample(InputModuleUpdate, 0);
 	//Mouse delta
 	if (window)
 	{

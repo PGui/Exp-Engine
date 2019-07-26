@@ -20,6 +20,7 @@ namespace Exp
 {
 	class InputModule;
 	class RenderingModule;
+	class MaterialLibraryModule;
 
 	class EngineModule:
 		public IModuleInterface
@@ -51,6 +52,7 @@ namespace Exp
 	public:
 		InputModule * m_inputModule = nullptr;
 		RenderingModule * m_renderingModule = nullptr;
+		MaterialLibraryModule * m_materialLibraryModule = nullptr;
 
 	public:
 		//IModuleInterface
@@ -64,6 +66,7 @@ namespace Exp
 		void RunEngine();
 
 		void NewFrame();
+		void Update();
 		void EndFrame();
 
 		// Delta time
