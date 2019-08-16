@@ -36,12 +36,12 @@ namespace Exp
 
 	void RenderingModule::InitGL()
 	{
-		//glEnable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
 
 		projUBOLocation = 0; // Fixed in shaders
 		glGenBuffers(1, &projUBOId);
 		glBindBuffer(GL_UNIFORM_BUFFER, projUBOId);
-		glBufferData(GL_UNIFORM_BUFFER, sizeof(ProjUBO), &projUBOData, GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(ProjectionUBO), &projUBOData, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 
@@ -51,8 +51,6 @@ namespace Exp
 		{
 			projUBOData.m_viewMatrix = this->RenderCamera->m_view;
 			projUBOData.m_projectionMatrix = this->RenderCamera->m_projection;
-			projUBOData.m_inverseViewMatrix = glm::inverse(RenderCamera->m_view);
-			projUBOData.m_inverseProjMatrix = glm::inverse(RenderCamera->m_projection);
 
 			const auto key = cb::DrawKey::makeCustom(cb::ViewLayerType::eHighest, 0);
 			auto* cmd = m_geometryCommands.addCommand<BeginFrameCommand>(key);

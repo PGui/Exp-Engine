@@ -14,7 +14,7 @@ namespace Exp
 		MaterialBinder* materialBinder;
 		GLCache* glCache;
 		GLuint projUBOId;
-		ProjUBO projUBOData;
+		ProjectionUBO projUBOData;
 
 		static void execute(const void* data, cb::RenderContext* rc)
 		{
@@ -24,11 +24,11 @@ namespace Exp
 			//cmd.glCache->Reset();
 
 			glBindBuffer(GL_UNIFORM_BUFFER, cmd.projUBOId);
-			glBufferData(GL_UNIFORM_BUFFER, sizeof(ProjUBO), &cmd.projUBOData, GL_STATIC_DRAW);
+			glBufferData(GL_UNIFORM_BUFFER, sizeof(ProjectionUBO), &cmd.projUBOData, GL_STATIC_DRAW);
 
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-			glBindBufferRange(GL_UNIFORM_BUFFER, 0, cmd.projUBOId, 0, sizeof(ProjUBO));
+			glBindBufferRange(GL_UNIFORM_BUFFER, 0, cmd.projUBOId, 0, sizeof(ProjectionUBO));
 
 		}
 	};

@@ -1,12 +1,12 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <iostream>
-
 #include <ftl/task_scheduler.h>
 #include <ftl/atomic_counter.h>
 #include <ftl/task.h>
+
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <iostream>
 
 #include "../Module/ModuleInterface.h"
 

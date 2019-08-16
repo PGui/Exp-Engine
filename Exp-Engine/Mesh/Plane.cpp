@@ -11,9 +11,9 @@ namespace Exp
 		float dX = 1.0f / xSegments;
 		float dY = 1.0f / ySegments;
 
-		for (int y = 0; y <= ySegments; ++y)
+		for (unsigned int y = 0; y <= ySegments; ++y)
 		{
-			for (int x = 0; x <= xSegments; ++x)
+			for (unsigned int x = 0; x <= xSegments; ++x)
 			{
 				Positions.push_back(glm::vec3(dX * x * 2.0f - 1.0f, dY * y * 2.0f - 1.0f, 0.0f));
 				UV.push_back(glm::vec2(dX * x, 1.0f - y * dY));
@@ -21,11 +21,11 @@ namespace Exp
 			}
 		}
 
-		for (int y = 0; y < ySegments; ++y)
+		for (unsigned int y = 0; y < ySegments; ++y)
 		{
 			if (!oddRow) // even rows: y == 0, y == 2; and so on
 			{
-				for (int x = 0; x <= xSegments; ++x)
+				for (unsigned int x = 0; x <= xSegments; ++x)
 				{
 					Indices.push_back(y       * (xSegments + 1) + x);
 					Indices.push_back((y + 1) * (xSegments + 1) + x);

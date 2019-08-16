@@ -194,6 +194,9 @@
     <ClCompile Include="Rendering\CustomCommands.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="Rendering\CommandBuffer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Glm\common.hpp">
@@ -1061,6 +1064,12 @@
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Rendering\CustomCommands.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\CommandBuffer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\RenderCommand.h">
       <Filter>Rendering</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "../Module/ModuleInterface.h"
 #include "../CommandBuffer/cmds/GLCommands.h"
 #include "../Scene/SceneNode.h"
@@ -14,13 +13,10 @@ namespace Exp
 	class Material;
 	class Camera;
 
-	struct ProjUBO
+	struct ProjectionUBO
 	{
-		// Pipeline matrices
 		glm::mat4 m_projectionMatrix;
-		glm::mat4 m_inverseProjMatrix;
 		glm::mat4 m_viewMatrix;
-		glm::mat4 m_inverseViewMatrix;
 	};
 
 	class RenderingModule :
@@ -37,9 +33,10 @@ namespace Exp
 
 		void UpdateGlobalUBO();
 
+		// Camera ProjectionUBO
 		GLuint projUBOLocation;
 		unsigned int projUBOId;
-		ProjUBO projUBOData;
+		ProjectionUBO projUBOData;
 
 		
 

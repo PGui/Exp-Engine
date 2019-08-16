@@ -1,6 +1,6 @@
 #include "EngineModule.h"
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
+
 //#include <memory_lib/tagged_heap.h>
 #include "../Threading/Semaphore.h"
 
@@ -15,6 +15,8 @@
 #include "../Scene/Scene.h"
 
 #include "../Mesh/Cube.h"
+
+#include <GLFW/glfw3.h>
 
 GLFWwindow * Exp::EngineModule::InitWindow(std::string title, bool fullScreen, GLFWwindow* shared, bool visible)
 {

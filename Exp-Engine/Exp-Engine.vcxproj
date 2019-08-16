@@ -149,6 +149,7 @@
     <ClCompile Include="Module\ModuleManager.cpp" />
     <ClCompile Include="Profiling\RemoteryModule.cpp" />
     <ClCompile Include="Remotery\Remotery.c" />
+    <ClCompile Include="Rendering\CommandBuffer.cpp" />
     <ClCompile Include="Rendering\CustomCommands.cpp" />
     <ClCompile Include="Rendering\GLCache.cpp" />
     <ClCompile Include="Rendering\Material.cpp" />
@@ -437,9 +438,11 @@
     <ClInclude Include="Module\ModuleManager.h" />
     <ClInclude Include="Profiling\RemoteryModule.h" />
     <ClInclude Include="Rendering\Buffers.h" />
+    <ClInclude Include="Rendering\CommandBuffer.h" />
     <ClInclude Include="Rendering\CustomCommands.h" />
     <ClInclude Include="Rendering\GLCache.h" />
     <ClInclude Include="Rendering\Material.h" />
+    <ClInclude Include="Rendering\RenderCommand.h" />
     <ClInclude Include="Rendering\RenderingModule.h" />
     <ClInclude Include="Rendering\Shader.h" />
     <ClInclude Include="Rendering\ShadingTypes.h" />
