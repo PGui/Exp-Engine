@@ -44,7 +44,7 @@ namespace Exp
 		float x = deltaX * m_sensitivity;
 		float y = deltaY * m_sensitivity;
 
-		m_targetYaw += x;
+		m_targetYaw -= x;
 		m_targetPitch += y;
 
 		if (m_targetYaw == 0.0f) m_targetYaw = 0.01f;

@@ -101,7 +101,7 @@ void Exp::EngineModule::RunEngine()
 			}
 		}
 
-		//m_renderingModule->PushMesh(Bunny);
+		m_renderingModule->PushMesh(Bunny);
 		m_renderingModule->PushMesh(Cube);
 
 		//Rendering
@@ -160,8 +160,6 @@ void Exp::EngineModule::Update()
 			updates++;
 		}
 	}
-
-	std::cout << m_Camera.m_position.x << " " << m_Camera.m_position.y << " " << m_Camera.m_position.z << " " << std::endl;
 }
 
 void Exp::EngineModule::EndFrame()

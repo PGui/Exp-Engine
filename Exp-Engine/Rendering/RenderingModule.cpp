@@ -36,6 +36,8 @@ namespace Exp
 
 	void RenderingModule::InitGL()
 	{
+		//glEnable(GL_DEPTH_TEST);
+
 		projUBOLocation = 0; // Fixed in shaders
 		glGenBuffers(1, &projUBOId);
 		glBindBuffer(GL_UNIFORM_BUFFER, projUBOId);

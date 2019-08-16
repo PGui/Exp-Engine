@@ -8,22 +8,26 @@ namespace Exp
 	{
 	private:
 		// gl toggles
-		bool m_DepthTest;
-		bool m_Blend;
-		bool m_CullFace;
+		bool m_DepthTest	= true;
+		bool m_Blend		= false;
+		bool m_CullFace		= true;
 
 		// gl state
-		GLenum m_DepthFunc;
-		GLenum m_BlendSrc;
-		GLenum m_BlendDst;
-		GLenum m_FrontFace;
-		GLenum m_PolygonMode;
+		GLenum m_DepthFunc	 = GL_LESS;
+		GLenum m_BlendSrc	 = GL_ONE;
+		GLenum m_BlendDst    = GL_ONE_MINUS_SRC_ALPHA;
+		GLenum m_FrontFace	 = GL_BACK;
+		GLenum m_PolygonMode = GL_FILL;
 
 		// shaders
-		unsigned int m_ActiveShaderID;
+		unsigned int m_ActiveShaderID = -1;
 	public:
-		GLCache();
-		~GLCache();
+		static GLCache& getInstance()
+		{
+			static GLCache instance; 
+			return instance;
+		}
+		
 
 		// update GL state if requested state is different from current GL state.
 		void SetDepthTest(bool enable);
@@ -39,5 +43,10 @@ namespace Exp
 		// switch shader only if a different ID is requested.
 		// note that we won't use this too often, as we already sort render state on shader ID.
 		void SwitchShader(unsigned int ID);
+	private:
+		GLCache() {}
+	public:
+		GLCache(GLCache const&) = delete;
+		void operator=(GLCache const&) = delete;
 	};
 }

@@ -63,10 +63,5 @@ namespace Exp
 		std::map<std::string, UniformValue>        Uniforms;
 
 		Shader * MatShader;
-
-
-
 	};
-
-
 }

@@ -20,7 +20,6 @@ namespace Exp
 	struct MaterialBinder
 	{
 		EngineModule* module;
-		GLCache m_GlCache;
 
 		struct Material
 		{
@@ -33,7 +32,7 @@ namespace Exp
 		///@note Returns true if there are more passes to bind.
 		bool operator()(cb::MaterialId material)
 		{
-			m_GlCache.Reset();
+			GLCache::getInstance().Reset();
 
 			if (material.id == 0) // first material is a dummy, nothing to bind
 				return false;
@@ -59,15 +58,15 @@ namespace Exp
 
 			if (true)
 			{
-				m_GlCache.SetBlend(mat->Blend);
+				GLCache::getInstance().SetBlend(mat->Blend);
 				if (mat->Blend)
 				{
-					m_GlCache.SetBlendFunc(mat->BlendSrc, mat->BlendDst);
+					GLCache::getInstance().SetBlendFunc(mat->BlendSrc, mat->BlendDst);
 				}
-				m_GlCache.SetDepthFunc(mat->DepthCompare);
-				m_GlCache.SetDepthTest(mat->DepthTest);
-				m_GlCache.SetCull(mat->Cull);
-				m_GlCache.SetCullFace(mat->CullFace);
+				GLCache::getInstance().SetDepthFunc(mat->DepthCompare);
+				GLCache::getInstance().SetDepthTest(mat->DepthTest);
+				GLCache::getInstance().SetCull(mat->Cull);
+				GLCache::getInstance().SetCullFace(mat->CullFace);
 			}
 
 			auto samplers = mat->GetSamplerUniforms();

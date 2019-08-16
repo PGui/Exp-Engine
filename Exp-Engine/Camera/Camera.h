@@ -40,7 +40,7 @@ namespace Exp
 		float m_speed = 10.0f;
 		float m_sensitivity = 0.3f;
 
-		float m_damping = 5.0f;
+		float m_damping = 12.0f;
 
 		bool m_disableMouse = false;
 

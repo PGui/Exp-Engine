@@ -11,13 +11,7 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 
-//layout (std140) uniform Global
-//{
-//    mat4 projection;
-//	mat4 inverseProjection;
-//	mat4 view;
-//	mat4 inverseView;
-//};
+
 
 void main()
 {
