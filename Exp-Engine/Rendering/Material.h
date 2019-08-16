@@ -9,6 +9,7 @@ namespace Exp
 {
 	class Material
 	{
+		static int CurrentMaterialId;
 	public:
 		enum MaterialType
 		{
@@ -33,6 +34,8 @@ namespace Exp
 		void SetInt(std::string name, int value);
 		void SetFloat(std::string name, float value);
 		void SetVector(std::string name, glm::vec3 value);
+
+		int MaterialId;
 
 		MaterialType Type = MaterialType::MATERIAL_DEFAULT;
 

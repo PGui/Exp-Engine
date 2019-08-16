@@ -206,8 +206,9 @@ void MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 {
 	//Add modules
 	Exp::ModuleManager::Get().AddModule<Exp::RemoteryModule>("Remotery");
-	Exp::ModuleManager::Get().AddModule<Exp::RenderingModule>("Rendering");
+	
 	Exp::ModuleManager::Get().AddModule<Exp::EngineModule>("Engine");
+	Exp::ModuleManager::Get().AddModule<Exp::RenderingModule>("Rendering");
 	Exp::ModuleManager::Get().AddModule<Exp::MaterialLibraryModule>("MaterialLibrary");
 	Exp::ModuleManager::Get().AddModule<Exp::InputModule>("Input");
 	//Initialize them

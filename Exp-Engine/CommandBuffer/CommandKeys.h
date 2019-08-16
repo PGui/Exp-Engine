@@ -347,7 +347,7 @@ namespace cb
 
 	inline std::ostream& operator<<(std::ostream& stream, cb::DrawKey key)
 	{
-		stream << cb::toString(cb::ViewLayerType(key.viewportId)) << std::string(", layer: ") << cb::toString(cb::ViewLayerType(key.viewLayer)) << std::string("-")
+		/*stream << cb::toString(cb::ViewLayerType(key.viewportId)) << std::string(", layer: ") << cb::toString(cb::ViewLayerType(key.viewLayer)) << std::string("-")
 			<< cb::toString(cb::TranslucencyType(key.translucency)) << std::string(", ");
 
 		if (key.custom.enabled)
@@ -355,7 +355,7 @@ namespace cb
 		else if (cb::TranslucencyType(key.translucency) != cb::TranslucencyType::eOpaque)
 			stream << ", depth: " << key.transparent.depth << ", material id: " << key.transparent.materialId;
 		else if (key.isOpaqueMode())
-			stream << ", depth: " << key.opaque.depth << ", material id: " << key.opaque.materialId;
+			stream << ", depth: " << key.opaque.depth << ", material id: " << key.opaque.materialId;*/
 		return stream;
 	}
 } // namespace cb

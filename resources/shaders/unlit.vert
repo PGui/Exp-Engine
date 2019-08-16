@@ -7,9 +7,17 @@ layout (location = 4) in vec2 aBitangents;
 
 out vec2 TexCoords;
 
-uniform mat4 model;
-uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 view;
+uniform mat4 model;
+
+//layout (std140) uniform Global
+//{
+//    mat4 projection;
+//	mat4 inverseProjection;
+//	mat4 view;
+//	mat4 inverseView;
+//};
 
 void main()
 {

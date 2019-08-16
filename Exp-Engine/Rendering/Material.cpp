@@ -1,12 +1,13 @@
 #include "Material.h"
 
+int Exp::Material::CurrentMaterialId = 0;
+
 namespace Exp
 {
-
 	Material::Material(Shader * shader) :
-		MatShader(shader)
+		MatShader(shader),
+		MaterialId(++CurrentMaterialId)
 	{
-
 	}
 
 	Material::~Material()

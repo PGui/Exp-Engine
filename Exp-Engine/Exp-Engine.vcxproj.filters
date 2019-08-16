@@ -188,6 +188,12 @@
     <ClCompile Include="MaterialLibrary\MaterialLibraryModule.cpp">
       <Filter>MaterialLibrary</Filter>
     </ClCompile>
+    <ClCompile Include="Rendering\GLCache.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\CustomCommands.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Glm\common.hpp">
@@ -1049,6 +1055,12 @@
       <Filter>MaterialLibrary</Filter>
     </ClInclude>
     <ClInclude Include="Rendering\Buffers.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\GLCache.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\CustomCommands.h">
       <Filter>Rendering</Filter>
     </ClInclude>
   </ItemGroup>

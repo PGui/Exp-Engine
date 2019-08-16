@@ -12,6 +12,9 @@
 #include "../MaterialLibrary/MaterialLibraryModule.h"
 
 #include "../Scene/SceneNode.h"
+#include "../Scene/Scene.h"
+
+#include "../Mesh/Cube.h"
 
 GLFWwindow * Exp::EngineModule::InitWindow(std::string title, bool fullScreen, GLFWwindow* shared, bool visible)
 {
@@ -44,9 +47,12 @@ void Exp::EngineModule::RunEngine()
 	m_renderingModule = ModuleManager::Get().GetModule<RenderingModule>("Rendering");
 	m_materialLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary");
 
+	m_renderingModule->SetCamera(&m_Camera);
+
 	//TEST
 	SceneNode * Bunny = Resources::LoadMesh(nullptr, "bunny", "../resources/models/bunny/bunny.obj");
-
+	Cube myCube;
+	SceneNode* Cube = Scene::MakeSceneNode(&myCube, m_materialLibraryModule->GetMaterial("default"));
 	while (!glfwWindowShouldClose(m_mainWindow))
 	{
 		rmt_ScopedCPUSample(LogicLoop, 0);
@@ -81,7 +87,7 @@ void Exp::EngineModule::RunEngine()
 			ImGui::End();
 
 			{
-				const auto key = cb::DrawKey::makeDefault(0, cb::ViewLayerType::e3D);
+				const auto key = cb::DrawKey::makeCustom(cb::ViewLayerType::eHighest, 4);
 				auto* cmd = m_renderingModule->m_geometryCommands.addCommand<cmds::ClearColor>(key);
 				cmd->red = clear_color.r;
 				cmd->green = clear_color.g;
@@ -95,13 +101,16 @@ void Exp::EngineModule::RunEngine()
 			}
 		}
 
-		m_renderingModule->PushMesh(Bunny);
+		//m_renderingModule->PushMesh(Bunny);
+		m_renderingModule->PushMesh(Cube);
 
 		//Rendering
 		m_renderingModule->Render();
 
 		EndFrame();
 	}
+
+	delete Cube;
 }
 
 void Exp::EngineModule::NewFrame()
@@ -151,6 +160,8 @@ void Exp::EngineModule::Update()
 			updates++;
 		}
 	}
+
+	std::cout << m_Camera.m_position.x << " " << m_Camera.m_position.y << " " << m_Camera.m_position.z << " " << std::endl;
 }
 
 void Exp::EngineModule::EndFrame()

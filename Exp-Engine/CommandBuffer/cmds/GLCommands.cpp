@@ -54,7 +54,7 @@ namespace cmds
 		auto base = reinterpret_cast<const void*>(kIndexSizes[cmd.useShortIndices]);
 
 		glBindVertexArray(cmd.vao);
-		glDrawElements(cmd.primitive, cmd.count, kIndexTypes[cmd.useShortIndices], base);
+		glDrawElements(cmd.primitive, cmd.count, GL_UNSIGNED_INT, 0);
 	}
 
 	void drawInstanced(const void* commandData, cb::RenderContext*)
