@@ -87,20 +87,6 @@ void Exp::EngineModule::RunEngine()
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();
-
-			{
-				const auto key = cb::DrawKey::makeCustom(cb::ViewLayerType::eHighest, 4);
-				auto* cmd = m_renderingModule->m_geometryCommands.addCommand<cmds::ClearColor>(key);
-				cmd->red = clear_color.r;
-				cmd->green = clear_color.g;
-				cmd->blue = clear_color.b;
-				cmd->alpha = clear_color.a;
-				cmd->flags = GL_COLOR_BUFFER_BIT;
-
-				CB_DEBUG_COMMAND_TAG(cmd);
-				CB_DEBUG_COMMAND_TAG_MSG(cmd, "ClearColor");
-				CB_DEBUG_COMMAND_SET_MSG(cmd, "ClearColor");
-			}
 		}
 
 		m_renderingModule->PushMesh(Bunny);
@@ -128,6 +114,13 @@ void Exp::EngineModule::Update()
 
 	ComputeDeltatime();
 
+	m_inputModule->Update((float)m_deltaTime);
+
+	m_Camera.Update((float)m_deltaTime, m_inputModule);
+
+
+	//TODO Refactor
+
 	int updates = 0;
 	while (m_accumulatedTime >= m_updatePeriod)
 	{
@@ -137,7 +130,7 @@ void Exp::EngineModule::Update()
 			m_accumulatedTime = 0;
 		}
 		{
-			m_inputModule->Update((float)m_deltaTime);
+			/*m_inputModule->Update((float)m_deltaTime);
 
 			{
 				rmt_ScopedCPUSample(CameraUpdate, 0);
@@ -157,7 +150,7 @@ void Exp::EngineModule::Update()
 				glm::vec2 mouseDelta = m_inputModule->GetMouseDelta();
 				m_Camera.UpdateMouse(mouseDelta.x, mouseDelta.y);
 				m_Camera.Update((float)m_deltaTime);
-			}
+			}*/
 			
 			updates++;
 		}

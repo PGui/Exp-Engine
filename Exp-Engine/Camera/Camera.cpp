@@ -1,4 +1,6 @@
 #include "Camera.h"
+#include "../Input/InputModule.h"
+#include <Remotery/Remotery.h>
 
 namespace Exp
 {
@@ -19,8 +21,28 @@ namespace Exp
 		SetPerspective(m_fovY, m_aspectRatio, m_nearPlane, m_farPlane);
 	}
 
-	void Camera::Update(float deltatime)
+	void Camera::Update(float deltatime, InputModule * inputModule)
 	{
+		rmt_ScopedCPUSample(CameraUpdate, 0);
+
+		if (inputModule)
+		{
+			if (inputModule->IsKeyPressed(GLFW_KEY_W))
+				UpdateKey((float)deltatime, CameraMovement::FORWARD);
+			if (inputModule->IsKeyPressed(GLFW_KEY_S))
+				UpdateKey((float)deltatime, CameraMovement::BACKWARD);
+			if (inputModule->IsKeyPressed(GLFW_KEY_A))
+				UpdateKey((float)deltatime, CameraMovement::LEFT);
+			if (inputModule->IsKeyPressed(GLFW_KEY_D))
+				UpdateKey((float)deltatime, CameraMovement::RIGHT);
+			if (inputModule->IsKeyPressed(GLFW_KEY_SPACE))
+				UpdateKey((float)deltatime, CameraMovement::UP);
+			if (inputModule->IsKeyPressed(GLFW_KEY_LEFT_CONTROL))
+				UpdateKey((float)deltatime, CameraMovement::DOWN);
+			glm::vec2 mouseDelta = inputModule->GetMouseDelta();
+			UpdateMouse(mouseDelta.x, mouseDelta.y);
+		}
+
 		m_position = glm::lerp(m_position, m_targetPosition, glm::clamp(1.f - pow(1.f - m_damping / 60.f, 60.f * deltatime), 0.0f, 1.0f));
 		m_yaw = glm::lerp(m_yaw, m_targetYaw, glm::clamp(1.f - pow(1.f - m_damping * 2.0f / 60.f, 60.f * deltatime), 0.0f, 1.0f));
 		m_pitch = glm::lerp(m_pitch, m_targetPitch, glm::clamp(1.f - pow(1.f - m_damping * 2.0f / 60.f, 60.f * deltatime), 0.0f, 1.0f));

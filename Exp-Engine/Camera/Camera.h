@@ -5,8 +5,11 @@
 #include "../glm/gtx/compatibility.hpp"
 #include "../glm/gtc/matrix_transform.hpp"
 
+
 namespace Exp
 {
+	class InputModule;
+
 	enum CameraMovement {
 		FORWARD,
 		BACKWARD,
@@ -40,7 +43,7 @@ namespace Exp
 		float m_speed = 10.0f;
 		float m_sensitivity = 0.3f;
 
-		float m_damping = 12.0f;
+		float m_damping = 5.0f;
 
 		bool m_disableMouse = false;
 
@@ -56,7 +59,7 @@ namespace Exp
 
 		Camera(glm::vec3 position, glm::vec3 forward = glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f));
 
-		void Update(float deltatime);
+		void Update(float deltatime, InputModule* inputModule);
 
 		void UpdateMouse(float deltaX, float deltaY);
 		void UpdateKey(float deltaTime, CameraMovement direction);
