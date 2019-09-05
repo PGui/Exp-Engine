@@ -18,6 +18,10 @@
 
 #include <GLFW/glfw3.h>
 
+
+#include "../Rendering/Helper/shaderassist.h"
+
+
 GLFWwindow * Exp::EngineModule::InitWindow(std::string title, bool fullScreen, GLFWwindow* shared, bool visible)
 {
 	GLFWwindow* win;
@@ -45,6 +49,11 @@ GLFWwindow * Exp::EngineModule::InitWindow(std::string title, bool fullScreen, G
 }
 void Exp::EngineModule::RunEngine()
 {
+	//Start up SHader re commiler
+	ftl::Task task = { shaderWatcher };
+	ftl::AtomicCounter counter(taskScheduler);
+	taskScheduler->AddTask(task, &counter);
+
 	m_inputModule = ModuleManager::Get().GetModule<InputModule>("Input");
 	m_renderingModule = ModuleManager::Get().GetModule<RenderingModule>("Rendering");
 	m_materialLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary");
@@ -260,6 +269,11 @@ void Exp::EngineModule::StartUp()
 	ImGui_ImplGlfw_InitForOpenGL(m_mainWindow, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
+
+	
+	//shaderWatcher();
+
+
 	std::cout << "EngineModule StartUp" << std::endl;
 }
 
@@ -270,6 +284,8 @@ void Exp::EngineModule::Shutdown()
 	ImGui::DestroyContext();
 
 	glfwDestroyWindow(m_mainWindow);
+
+	quit = true;
 
 	std::cout << "EngineModule Shutdown" << std::endl;
 }

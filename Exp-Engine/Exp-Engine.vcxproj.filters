@@ -83,6 +83,9 @@
     <Filter Include="MaterialLibrary">
       <UniqueIdentifier>{8cf05900-2295-401e-8595-aaec5284185b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rendering\Helper">
+      <UniqueIdentifier>{44f78b13-5b76-4750-b796-4eb32e0090c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Glad\glad.c">
@@ -196,6 +199,9 @@
     </ClCompile>
     <ClCompile Include="Rendering\CommandBuffer.cpp">
       <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\Helper\shaderassist.h">
+      <Filter>Rendering\Helper</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1466,6 +1472,9 @@
     </None>
     <None Include="Glm\gtx\wrap.inl">
       <Filter>Glm\gtx</Filter>
+    </None>
+    <None Include="Rendering\Helper\shaderassist.ini">
+      <Filter>Rendering\Helper</Filter>
     </None>
   </ItemGroup>
 </Project>

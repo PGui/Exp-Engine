@@ -152,6 +152,7 @@
     <ClCompile Include="Rendering\CommandBuffer.cpp" />
     <ClCompile Include="Rendering\CustomCommands.cpp" />
     <ClCompile Include="Rendering\GLCache.cpp" />
+    <ClCompile Include="Rendering\Helper\shaderassist.h" />
     <ClCompile Include="Rendering\Material.cpp" />
     <ClCompile Include="Rendering\RenderingModule.cpp" />
     <ClCompile Include="Rendering\Shader.cpp" />
@@ -590,6 +591,7 @@
     <None Include="Glm\gtx\vector_angle.inl" />
     <None Include="Glm\gtx\vector_query.inl" />
     <None Include="Glm\gtx\wrap.inl" />
+    <None Include="Rendering\Helper\shaderassist.ini" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
