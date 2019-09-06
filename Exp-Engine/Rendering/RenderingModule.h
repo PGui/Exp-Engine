@@ -52,6 +52,8 @@ namespace Exp
 		bool m_Wireframe = false;
 
 	public:
+		std::shared_ptr<RenderTarget> GetGBuffer();
+
 		void SetCamera(Camera* Camera);
 
 		void PushMesh(SceneNode * Node);

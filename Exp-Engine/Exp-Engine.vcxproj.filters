@@ -200,6 +200,9 @@
     <ClCompile Include="Rendering\RenderTarget.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="Core\WindowParameters.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Glm\common.hpp">
@@ -1077,6 +1080,9 @@
     </ClInclude>
     <ClInclude Include="Rendering\RenderTarget.h">
       <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\WindowParameters.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

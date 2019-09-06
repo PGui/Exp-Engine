@@ -22,14 +22,15 @@ namespace Exp
 	class RenderingModule;
 	class MaterialLibraryModule;
 
+	
+
 	class EngineModule:
 		public IModuleInterface
 	{
 	public:
 		ftl::TaskScheduler * taskScheduler = nullptr;
 	public:
-		unsigned int m_screenWidth = 1280;
-		unsigned int m_screenHeight = 768;
+		
 
 		GLFWwindow*  m_mainWindow = nullptr;
 

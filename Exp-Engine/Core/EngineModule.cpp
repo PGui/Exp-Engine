@@ -16,7 +16,11 @@
 
 #include "../Mesh/Cube.h"
 
+#include "WindowParameters.h"
+
 #include <GLFW/glfw3.h>
+
+
 
 GLFWwindow * Exp::EngineModule::InitWindow(std::string title, bool fullScreen, GLFWwindow* shared, bool visible)
 {
@@ -39,7 +43,7 @@ GLFWwindow * Exp::EngineModule::InitWindow(std::string title, bool fullScreen, G
 			monitor = glfwGetPrimaryMonitor();
 	}
 	
-	win = glfwCreateWindow(m_screenWidth, m_screenHeight, title.c_str(), monitor, shared);
+	win = glfwCreateWindow(Exp::WinParameters.screenWidth, Exp::WinParameters.screenHeight, title.c_str(), monitor, shared);
 	
 	return win;
 }
@@ -183,17 +187,23 @@ void Exp::EngineModule::ComputeDeltatime()
 
 void Exp::EngineModule::framebuffer_size_callback(GLFWwindow * window, int width, int height)
 {
+	//TODO put this callback somewhere more global
 	if (EngineModule * Core = ModuleManager::Get().GetModule<Exp::EngineModule>("Engine"))
 	{
-		Core->m_screenWidth = width;
-		Core->m_screenHeight = height;
-		glViewport(0, 0, Core->m_screenWidth, Core->m_screenHeight);
+		Exp::WinParameters.screenWidth = width;
+		Exp::WinParameters.screenHeight = height;
+		glViewport(0, 0, Exp::WinParameters.screenWidth, Exp::WinParameters.screenHeight);
 
 		Core->m_Camera.SetPerspective(
 			Core->m_Camera.m_fovY, 
-			(float)width / (float)height, 
+			(float)Exp::WinParameters.screenWidth / (float)Exp::WinParameters.screenHeight,
 			Core->m_Camera.m_nearPlane, 
 			Core->m_Camera.m_farPlane);
+	}
+
+	if (RenderingModule * Renderer = ModuleManager::Get().GetModule<Exp::RenderingModule>("Rendering"))
+	{
+		Renderer->GetGBuffer()->Resize(width, height);
 	}
 }
 void Exp::EngineModule::glfw_error_callback(int error, const char * description)
@@ -212,7 +222,7 @@ void Exp::EngineModule::StartUp()
 	}
 
 	//main window
-	m_mainWindow = InitWindow("Exp-Engine");
+	m_mainWindow = InitWindow(Exp::WinParameters.title);
 
 	if (!Exp::EngineModule::m_mainWindow )
 	{
@@ -235,7 +245,7 @@ void Exp::EngineModule::StartUp()
 	glfwSetFramebufferSizeCallback(m_mainWindow, framebuffer_size_callback);
 
 	// Setup Dear ImGui context
-	const char* glsl_version = "#version 330";
+	const char* glsl_version = "#version 450";
 	
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();

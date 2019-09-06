@@ -1,23 +1,22 @@
 #include "RenderingModule.h"
 #include <iostream>
 #include <memory>
-#include <Remotery/Remotery.h>
 #include <stack>
 #include <string>
+#include <Remotery/Remotery.h>
 
-#include "../Mesh/Mesh.h"
 #include "Material.h"
-#include "../Camera/Camera.h"
-#include "../MaterialLibrary/MaterialLibraryModule.h"
 
 #include "../Module/ModuleManager.h"
-
-#include "CustomCommands.h"
+#include "../Core/EngineModule.h"
+#include "../MaterialLibrary/MaterialLibraryModule.h"
+#include "../Camera/Camera.h"
+#include "../Mesh/Mesh.h"
+#include "../Core/WindowParameters.h"
 
 
 namespace Exp
 {
-
 	RenderingModule::~RenderingModule()
 	{
 	}
@@ -47,7 +46,7 @@ namespace Exp
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		// Initialize Deferred Rendering
-		m_GBuffer = std::make_shared<RenderTarget>(1280, 768, GL_HALF_FLOAT, 3, true);
+		m_GBuffer = std::make_shared<RenderTarget>(Exp::WinParameters.screenWidth, Exp::WinParameters.screenHeight, GL_HALF_FLOAT, 3, true);
 		m_NDCPlane = std::make_shared<Quad>(1.0f, 1.0f);
 	}
 
@@ -120,6 +119,11 @@ namespace Exp
 		}
 
 		RenderMesh(mesh);
+	}
+
+	std::shared_ptr<RenderTarget> RenderingModule::GetGBuffer()
+	{
+		return m_GBuffer;
 	}
 
 	void RenderingModule::SetCamera(Camera* Camera)

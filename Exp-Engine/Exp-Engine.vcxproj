@@ -129,6 +129,7 @@
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="CommandBuffer\cmds\GLCommands.cpp" />
     <ClCompile Include="Core\EngineModule.cpp" />
+    <ClCompile Include="Core\WindowParameters.cpp" />
     <ClCompile Include="Ftl\atomic_counter.cpp" />
     <ClCompile Include="Ftl\task_scheduler.cpp" />
     <ClCompile Include="Glad\glad.c" />
@@ -179,6 +180,7 @@
     <ClInclude Include="CommandBuffer\MemoryUtil.h" />
     <ClInclude Include="CommandBuffer\RenderContext.h" />
     <ClInclude Include="Core\EngineModule.h" />
+    <ClInclude Include="Core\WindowParameters.h" />
     <ClInclude Include="Glm\common.hpp" />
     <ClInclude Include="Glm\detail\compute_common.hpp" />
     <ClInclude Include="Glm\detail\compute_vector_relational.hpp" />
