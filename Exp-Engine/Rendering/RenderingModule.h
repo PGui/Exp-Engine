@@ -1,9 +1,10 @@
 #pragma once
-
 #include "../Module/ModuleInterface.h"
 #include "../CommandBuffer/cmds/GLCommands.h"
 #include "../Scene/SceneNode.h"
 #include "../Glm/glm.hpp"
+
+#include "../Lighting/DirectionalLight.h"
 #include "CommandBuffer.h"
 #include "RenderCommand.h"
 #include "RenderTarget.h"
@@ -44,7 +45,11 @@ namespace Exp
 		unsigned int projUBOId;
 		ProjectionUBO projUBOData;
 
-		std::shared_ptr<RenderTarget> m_GBuffer;	
+
+		// lighting
+		std::vector<std::shared_ptr<DirectionalLight>> m_DirectionalLights;
+		std::shared_ptr<RenderTarget> m_GBuffer;
+		std::shared_ptr<RenderTarget> m_CustomTarget;
 		std::shared_ptr<Quad> m_NDCPlane;
 
 	private:
@@ -53,6 +58,7 @@ namespace Exp
 
 	public:
 		std::shared_ptr<RenderTarget> GetGBuffer();
+		std::shared_ptr<DirectionalLight> AddDirectionalLight(glm::vec3 Direction);
 
 		void SetCamera(Camera* Camera);
 
@@ -64,6 +70,8 @@ namespace Exp
 		void RenderMesh(Mesh* mesh);
 
 		void Blit(Texture* src, RenderTarget* dst = nullptr, Material* material=nullptr, std::string textureUniformName = "screenTexture");
+
+		void RenderDeferredDirLight(DirectionalLight* light);
 
 	public:
 		Camera* RenderCamera;

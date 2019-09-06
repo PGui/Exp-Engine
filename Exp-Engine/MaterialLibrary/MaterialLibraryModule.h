@@ -19,6 +19,7 @@ namespace Exp
 	private:
 		//Internal Default Materials that will be copied to create instances.
 		std::map<unsigned, Material*> DefaultMaterials;
+		std::map<unsigned, Shader*> DefaultShaders;
 
 		//Created materials from default materials or added materials.
 		std::vector<Material*> Materials;
@@ -31,7 +32,11 @@ namespace Exp
 
 		Material * GetMaterial(std::string name);
 
+		Shader* GetShader(std::string name);
+
+
 	private:
 		void GenerateDefaultMaterials();
+		void GenerateDefaultShaders();
 	};
 }

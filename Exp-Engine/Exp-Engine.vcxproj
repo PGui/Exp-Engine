@@ -140,6 +140,8 @@
     <ClCompile Include="Imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Imgui\imgui_widgets.cpp" />
     <ClCompile Include="Input\InputModule.cpp" />
+    <ClCompile Include="Lighting\DirectionalLight.cpp" />
+    <ClCompile Include="Lighting\Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MaterialLibrary\MaterialLibraryModule.cpp" />
     <ClCompile Include="Mesh\Cube.cpp" />
@@ -432,6 +434,8 @@
     <ClInclude Include="Imgui\imstb_textedit.h" />
     <ClInclude Include="Imgui\imstb_truetype.h" />
     <ClInclude Include="Input\InputModule.h" />
+    <ClInclude Include="Lighting\DirectionalLight.h" />
+    <ClInclude Include="Lighting\Light.h" />
     <ClInclude Include="MaterialLibrary\MaterialLibraryModule.h" />
     <ClInclude Include="Mesh\Cube.h" />
     <ClInclude Include="Mesh\Mesh.h" />

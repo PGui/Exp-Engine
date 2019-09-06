@@ -13,6 +13,7 @@ namespace Exp
 		rmt_ScopedCPUSample(MaterialLibraryModuleStartUp, 0);
 
 		GenerateDefaultMaterials();
+		GenerateDefaultShaders();
 
 		std::cout << "MaterialLibraryModule StartUp" << std::endl;
 	}
@@ -74,6 +75,16 @@ namespace Exp
 
 	}
 
+	void MaterialLibraryModule::GenerateDefaultShaders()
+	{
+		Shader* DeferredDirectionalLightShader = Resources::LoadShader("deferredDirectional", "../resources/shaders/directional.vert", "../resources/shaders/directional.frag");
+		DeferredDirectionalLightShader->use();
+		DeferredDirectionalLightShader->setInt("gPosition", 0);
+		DeferredDirectionalLightShader->setInt("gNormal", 1);
+		DeferredDirectionalLightShader->setInt("gAlbedoSpec", 2);
+		DefaultShaders[SID("deferredDirectional")] = DeferredDirectionalLightShader;
+	}
+
 	Material* MaterialLibraryModule::CreateMaterial(std::string base)
 	{
 		auto found = DefaultMaterials.find(SID(base));
@@ -97,6 +108,17 @@ namespace Exp
 		if (found != DefaultMaterials.end())
 		{
 			return DefaultMaterials[SID(name)];
+		}
+
+		return nullptr;
+	}
+
+	Shader* MaterialLibraryModule::GetShader(std::string name)
+	{
+		auto found = DefaultShaders.find(SID(name));
+		if (found != DefaultShaders.end())
+		{
+			return DefaultShaders[SID(name)];
 		}
 
 		return nullptr;

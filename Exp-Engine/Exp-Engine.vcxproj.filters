@@ -83,6 +83,9 @@
     <Filter Include="MaterialLibrary">
       <UniqueIdentifier>{8cf05900-2295-401e-8595-aaec5284185b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lighting">
+      <UniqueIdentifier>{e6e1e837-ab1b-4432-8f60-712a6959bb5e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Glad\glad.c">
@@ -202,6 +205,12 @@
     </ClCompile>
     <ClCompile Include="Core\WindowParameters.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Lighting\Light.cpp">
+      <Filter>Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="Lighting\DirectionalLight.cpp">
+      <Filter>Lighting</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1083,6 +1092,12 @@
     </ClInclude>
     <ClInclude Include="Core\WindowParameters.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Lighting\Light.h">
+      <Filter>Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Lighting\DirectionalLight.h">
+      <Filter>Lighting</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

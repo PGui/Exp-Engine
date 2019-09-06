@@ -57,8 +57,19 @@ void Exp::EngineModule::RunEngine()
 
 	//TEST
 	SceneNode * Bunny = Resources::LoadMesh(nullptr, "bunny", "../resources/models/bunny/bunny.obj");
+	SceneNode * Nano = Resources::LoadMesh(nullptr, "nano", "../resources/models/nanosuit/nanosuit.obj");
 	Cube myCube;
 	SceneNode* Cube = Scene::MakeSceneNode(&myCube, m_materialLibraryModule->GetMaterial("default"));
+
+	DirectionalLight* MyLight = m_renderingModule->AddDirectionalLight(glm::vec3(1.0, 1.0, 0.0)).get();
+	MyLight->m_Color = glm::vec3(1.0f, 1.0f, 1.0f);
+
+	/*DirectionalLight* MyLight2 = m_renderingModule->AddDirectionalLight(glm::vec3(0.0, 1.0, 1.0)).get();
+	MyLight2->m_Color = glm::vec3(1.0f, 1.0f, 0.0f);*/
+
+	//DirectionalLight* MyLight3 = m_renderingModule->AddDirectionalLight(glm::vec3(0.0, 1.0, 0.0)).get();
+	//MyLight3->m_Color = glm::vec3(0.0f, 1.0f, 1.0f);
+
 	while (!glfwWindowShouldClose(m_mainWindow))
 	{
 		rmt_ScopedCPUSample(LogicLoop, 0);
@@ -72,13 +83,19 @@ void Exp::EngineModule::RunEngine()
 
 		Update();
 
+		{
+			ImGui::Begin("FPS");
+			ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::End();
+		}
+
 		for (int i = 0; i < 3; ++i)
 		{
 			for (int j = 0; j < 3; ++j)
 			{
-				Bunny->SetPosition(glm::vec3(i * 5.0f, 1.0f, j * 5.0f));
-				Bunny->SetRotation(glm::vec4(0.0, 1.0, 0.0, sin(glfwGetTime() * 0.2f) * 360.0f));
-				m_renderingModule->PushMesh(Bunny);
+				Nano->SetPosition(glm::vec3(i * 5.0f, 1.0f, j * 5.0f));
+				Nano->SetRotation(glm::vec4(0.0, 1.0, 0.0, sin(glfwGetTime() * 0.2f) * 360.0f));
+				m_renderingModule->PushMesh(Nano);
 			}
 		}
 

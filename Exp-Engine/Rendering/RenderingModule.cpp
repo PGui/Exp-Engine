@@ -47,6 +47,7 @@ namespace Exp
 
 		// Initialize Deferred Rendering
 		m_GBuffer = std::make_shared<RenderTarget>(Exp::WinParameters.screenWidth, Exp::WinParameters.screenHeight, GL_HALF_FLOAT, 3, true);
+		m_CustomTarget = std::make_shared<RenderTarget>(1, 1, GL_HALF_FLOAT, 1, true);
 		m_NDCPlane = std::make_shared<Quad>(1.0f, 1.0f);
 	}
 
@@ -126,6 +127,14 @@ namespace Exp
 		return m_GBuffer;
 	}
 
+	std::shared_ptr<DirectionalLight> RenderingModule::AddDirectionalLight(glm::vec3 Direction)
+	{
+		std::shared_ptr<DirectionalLight> Light = std::make_shared<DirectionalLight>();
+		Light->m_Direction = Direction;
+		m_DirectionalLights.push_back(Light);
+		return Light;
+	}
+
 	void RenderingModule::SetCamera(Camera* Camera)
 	{
 		if (RenderCamera != Camera)
@@ -178,7 +187,7 @@ namespace Exp
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 		glDrawBuffers(3, attachments);
-		
+
 		GLCache::getInstance().SetPolygonMode(m_Wireframe ? GL_LINE : GL_FILL);
 
 		for (auto& CurrentRenderCommand : m_CommandBuffer.DeferredCommands)
@@ -189,9 +198,52 @@ namespace Exp
 		GLCache::getInstance().SetPolygonMode(GL_FILL);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		Blit(m_GBuffer->GetColorTexture(1));
+		// 4. Render deferred shader for each light
+		GLCache::getInstance().SetDepthTest(false);
+		GLCache::getInstance().SetBlend(true);
+		GLCache::getInstance().SetBlendFunc(GL_ONE, GL_ONE);
+
+		// bind gbuffer
+		m_GBuffer->GetColorTexture(0)->Bind(0);
+		m_GBuffer->GetColorTexture(1)->Bind(1);
+		m_GBuffer->GetColorTexture(2)->Bind(2);
+
+		if (true/*Lights*/)
+		{
+			// directional lights
+			for (auto it = m_DirectionalLights.begin(); it != m_DirectionalLights.end(); ++it)
+			{
+				RenderDeferredDirLight((*it).get());
+			}
+			// point lights
+			//m_GLCache.SetCullFace(GL_FRONT);
+			//for (auto it = m_PointLights.begin(); it != m_PointLights.end(); ++it)
+			//{
+			//	// only render point lights if within frustum
+			//	if (m_Camera->Frustum.Intersect((*it)->Position, (*it)->Radius))
+			//	{
+			//		renderDeferredPointLight(*it);
+			//	}
+			//}
+			//m_GLCache.SetCullFace(GL_BACK);
+		}
+
+		GLCache::getInstance().SetDepthTest(true);
+		GLCache::getInstance().SetBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		GLCache::getInstance().SetBlend(false);
+
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_GBuffer->ID);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
+		glBlitFramebuffer(0, 0, m_GBuffer->Width, m_GBuffer->Height, 0, 0, Exp::WinParameters.screenWidth, Exp::WinParameters.screenHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		
+		// Debug GBuffer
+		//GLCache::getInstance().SetPolygonMode(GL_LINE);
+		/*glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClear(GL_COLOR_BUFFER_BIT);
+		Blit(m_GBuffer->GetColorTexture(1));*/
 
 		m_CommandBuffer.Clear();
 	}
@@ -253,6 +305,36 @@ namespace Exp
 		command.Material = material;
 		command.Mesh = m_NDCPlane.get();
 		Render(&command, true);
+	}
+
+	void RenderingModule::RenderDeferredDirLight(DirectionalLight* light)
+	{
+		Shader* dirShader = nullptr;
+		//TODO refacto this Post Module Initialize
+		if (MaterialLibraryModule * MatLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary"))
+		{
+			dirShader = MatLibraryModule->GetShader("deferredDirectional");
+		}
+
+		if (dirShader)
+		{
+			dirShader->use();
+			dirShader->setVec3("lightDir", light->m_Direction);
+			dirShader->setVec3("lightColor", glm::normalize(light->m_Color) * light->m_Intensity);
+
+			dirShader->setInt("gPosition", 0);
+			dirShader->setInt("gNormal", 1);
+			dirShader->setInt("gAlbedoSpec", 2);
+
+			if (light->m_ShadowMapRT)
+			{
+				/*dirShader->SetMatrix("lightShadowViewProjection", light->LightSpaceViewProjection);
+				light->ShadowMapRT->GetDepthStencilTexture()->Bind(3);*/
+			}
+
+			RenderMesh(m_NDCPlane.get());
+		}
+		
 	}
 }
 
