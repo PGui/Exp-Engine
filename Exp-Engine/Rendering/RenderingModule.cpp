@@ -1,11 +1,16 @@
 #include "RenderingModule.h"
 #include <iostream>
+#include <memory>
 #include <Remotery/Remotery.h>
 #include <stack>
+#include <string>
 
 #include "../Mesh/Mesh.h"
 #include "Material.h"
 #include "../Camera/Camera.h"
+#include "../MaterialLibrary/MaterialLibraryModule.h"
+
+#include "../Module/ModuleManager.h"
 
 #include "CustomCommands.h"
 
@@ -40,6 +45,10 @@ namespace Exp
 		glBindBuffer(GL_UNIFORM_BUFFER, projUBOId);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(ProjectionUBO), &projUBOData, GL_STATIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+		// Initialize Deferred Rendering
+		m_GBuffer = std::make_shared<RenderTarget>(1280, 768, GL_HALF_FLOAT, 3, true);
+		m_NDCPlane = std::make_shared<Quad>(1.0f, 1.0f);
 	}
 
 	void RenderingModule::UpdateGlobalUBO()
@@ -154,17 +163,31 @@ namespace Exp
 	{
 		rmt_ScopedCPUSample(Rendering, 0)
 
-		glClearColor(0.1f, 0.1f, 1.0f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // we're not using the stencil buffer now
 
 		UpdateGlobalUBO();
 
 		m_CommandBuffer.Sort();
 
+		glBindFramebuffer(GL_FRAMEBUFFER, m_GBuffer->ID);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+		glDrawBuffers(3, attachments);
+		
+		GLCache::getInstance().SetPolygonMode(m_Wireframe ? GL_LINE : GL_FILL);
+
 		for (auto& CurrentRenderCommand : m_CommandBuffer.DeferredCommands)
 		{
 			Render(&CurrentRenderCommand, true);
 		}
+
+		GLCache::getInstance().SetPolygonMode(GL_FILL);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		Blit(m_GBuffer->GetColorTexture(1));
 
 		m_CommandBuffer.Clear();
 	}
@@ -172,7 +195,6 @@ namespace Exp
 	void RenderingModule::PushMeshRenderCommand(Mesh * mesh, Material * material, const glm::mat4 & transform)
 	{
 		m_CommandBuffer.Push(mesh, material, transform);
-		
 	}
 
 	void RenderingModule::RenderMesh(Mesh* mesh)
@@ -186,6 +208,47 @@ namespace Exp
 		{
 			glDrawArrays(mesh->Topology == Mesh::TOPOLOGY::TRIANGLE_STRIP ? GL_TRIANGLE_STRIP : GL_TRIANGLES, 0, mesh->Positions.size());
 		}
+	}
+
+	void RenderingModule::Blit(Texture* src, RenderTarget* dst, Material* material, std::string textureUniformName)
+	{
+		// if a destination target is given, bind to its framebuffer
+		if (dst)
+		{
+			glViewport(0, 0, dst->Width, dst->Height);
+			glBindFramebuffer(GL_FRAMEBUFFER, dst->ID);
+			/*if (dst->HasDepthAndStencil)
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+			else*/
+				glClear(GL_COLOR_BUFFER_BIT);
+		}
+		// else we bind to the default framebuffer
+		else
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			//glViewport(0, 0, m_RenderSize.x, m_RenderSize.y);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		}
+		// if no material is given, use default blit material
+		if (!material)
+		{
+			MaterialLibraryModule* MatLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary");
+			if (MatLibraryModule)
+			{
+				material = MatLibraryModule->GetMaterial("blit");
+			}
+			
+		}
+		// if a source render target is given, use its color buffer as input to material shader.
+		if (material && src)
+		{
+			material->SetTexture(textureUniformName, src, 0);
+		}
+		// render screen-space material to quad which will be displayed in dst's buffers.
+		RenderCommand command;
+		command.Material = material;
+		command.Mesh = m_NDCPlane.get();
+		Render(&command, true);
 	}
 }
 

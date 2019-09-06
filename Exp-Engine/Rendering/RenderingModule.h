@@ -6,6 +6,9 @@
 #include "../Glm/glm.hpp"
 #include "CommandBuffer.h"
 #include "RenderCommand.h"
+#include "RenderTarget.h"
+
+#include "../Mesh/Quad.h"
 
 #include "Buffers.h"
 
@@ -41,7 +44,12 @@ namespace Exp
 		unsigned int projUBOId;
 		ProjectionUBO projUBOData;
 
-		
+		std::shared_ptr<RenderTarget> m_GBuffer;	
+		std::shared_ptr<Quad> m_NDCPlane;
+
+	private:
+		//Debug
+		bool m_Wireframe = false;
 
 	public:
 		void SetCamera(Camera* Camera);
@@ -52,6 +60,8 @@ namespace Exp
 		void PushMeshRenderCommand(Mesh * mesh, Material * material, const glm::mat4 & transform);
 
 		void RenderMesh(Mesh* mesh);
+
+		void Blit(Texture* src, RenderTarget* dst = nullptr, Material* material=nullptr, std::string textureUniformName = "screenTexture");
 
 	public:
 		Camera* RenderCamera;

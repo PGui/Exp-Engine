@@ -52,8 +52,10 @@ namespace Exp
 		DefaultMaterials[SID("default")] = DefaultMaterial;*/
 
 		//Temp default
-		Material * DefaultMaterial = new Material(Resources::LoadShader("unlit", "../resources/shaders/unlit.vert", "../resources/shaders/unlit.frag"));
+		Material * DefaultMaterial = new Material(Resources::LoadShader("default", "../resources/shaders/g_buffer.vert", "../resources/shaders/g_buffer.frag"));
 		DefaultMaterial->SetTexture("material.diffuse", Resources::LoadTexture("default_diffuse", "../resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 0);
+		DefaultMaterial->SetTexture("material.specular", Resources::LoadTexture("default_specular", "../resources/texture/container2_specular.png", GL_TEXTURE_2D, GL_RGB), 0);
+		DefaultMaterial->SetTexture("material.normals", Resources::LoadTexture("default_normals", "../resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 0);
 		DefaultMaterials[SID("default")] = DefaultMaterial;
 
 		//Blit Material
