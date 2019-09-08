@@ -1,6 +1,7 @@
 #include "TextureLoader.h"
 #include "../StbImage/stb_image.h"
 #include "../Rendering/Texture.h"
+#include "../Rendering/TextureCube.h"
 
 namespace Exp
 {
@@ -53,5 +54,52 @@ namespace Exp
 		}
 
 		return texture;
+	}
+
+	TextureCube TextureLoader::LoadTextureCube(std::string top, std::string bottom, std::string left, std::string right, std::string front, std::string back)
+	{
+		TextureCube texture;
+
+		// disable y flip on cubemaps
+		stbi_set_flip_vertically_on_load(false);
+
+		std::vector<std::string> faces = { top, bottom, left, right, front, back };
+		for (unsigned int i = 0; i < faces.size(); ++i)
+		{
+			int width, height, nrComponents;
+			unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrComponents, 0);
+
+			if (data)
+			{
+				GLenum format;
+				if (nrComponents == 3)
+					format = GL_RGB;
+				else
+					format = GL_RGBA;
+
+				texture.GenerateFace(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, width, height, format, GL_UNSIGNED_BYTE, data);
+				stbi_image_free(data);
+			}
+			else
+			{
+				std::cout << "Cube texture at path: " << faces[i] << " failed to load." << std::endl;
+				stbi_image_free(data);
+				return texture;
+			}
+		}
+		if (texture.Mipmapping)
+			glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
+		return texture;
+	}
+	// --------------------------------------------------------------------------------------------
+	TextureCube TextureLoader::LoadTextureCube(std::string folder)
+	{
+		return TextureLoader::LoadTextureCube(folder + "right.jpg",
+			folder + "left.jpg",
+			folder + "top.jpg",
+			folder + "bottom.jpg",
+			folder + "front.jpg",
+			folder + "back.jpg");
 	}
 }

@@ -18,6 +18,7 @@ namespace Exp
 	class Mesh;
 	class Material;
 	class Camera;
+	class Skybox;
 
 	struct ProjectionUBO
 	{
@@ -52,6 +53,8 @@ namespace Exp
 		std::shared_ptr<RenderTarget> m_CustomTarget;
 		std::shared_ptr<Quad> m_NDCPlane;
 
+		// Skybox
+		std::shared_ptr<Skybox> CurrentSkybox;
 	private:
 		//Debug
 		bool m_Wireframe = false;
@@ -61,6 +64,9 @@ namespace Exp
 		std::shared_ptr<DirectionalLight> AddDirectionalLight(glm::vec3 Direction);
 
 		void SetCamera(Camera* Camera);
+
+		void SetSkybox(std::string folder);
+		void RenderSkybox();
 
 		void PushMesh(SceneNode * Node);
 		void Render();

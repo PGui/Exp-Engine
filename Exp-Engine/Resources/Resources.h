@@ -11,6 +11,7 @@ namespace Exp
 	class Renderer;
 	class Shader;
 	class Texture;
+	class TextureCube;
 	class Material;
 
 	/*
@@ -24,9 +25,10 @@ namespace Exp
 	{
 	private:
 		// we index all resources w/ a hashed string ID
-		static std::map<unsigned, Shader>      m_Shaders;
-		static std::map<unsigned, Texture>     m_Textures;
-		static std::map<unsigned, SceneNode*>  m_Meshes;
+		static std::map<unsigned, Shader>		m_Shaders;
+		static std::map<unsigned, Texture>		m_Textures;
+		static std::map<unsigned, TextureCube>  m_TexturesCube;
+		static std::map<unsigned, SceneNode*>	m_Meshes;
 	public:
 
 	private:
@@ -41,6 +43,9 @@ namespace Exp
 
 		static Texture*     LoadTexture(std::string name, std::string path, GLenum target = GL_TEXTURE_2D, GLenum format = GL_RGBA, bool srgb = false);
 		static Texture*     GetTexture(std::string name);
+
+		static TextureCube* LoadTextureCube(std::string name, std::string folder);
+		static TextureCube* GetTextureCube(std::string name);
 
 		static SceneNode*  LoadMesh(Renderer* renderer, std::string name, std::string path);
 		static SceneNode*  GetMesh(std::string name);

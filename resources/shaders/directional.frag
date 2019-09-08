@@ -20,6 +20,9 @@ uniform vec3 lightColor;
 uniform sampler2D lightShadowMap;
 uniform mat4 lightShadowViewProjection;
 
+const float kPi = 3.14159265;
+const float kShininess = 16.0;
+
 void main()
 {
     vec3 FragPos = texture(gPosition, TexCoords).rgb;
@@ -30,12 +33,14 @@ void main()
      // then calculate lighting as usual
     vec3 lighting  = Diffuse * 0.1; // hard-coded ambient component
     vec3 viewDir  = normalize(viewPos - FragPos);
+    vec3 halfwayDir = normalize(lightDir + viewDir);  
 
     // diffuse
     vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * lightColor;
     // specular
-    vec3 halfwayDir = normalize(lightDir + viewDir);  
-    float spec = pow(max(dot(Normal, halfwayDir), 0.0), 16.0);
+    
+    const float kEnergyConservation = ( 8.0 + kShininess ) / ( 8.0 * kPi ); 
+    float  spec = kEnergyConservation * pow(max(dot(Normal, halfwayDir), 0.0), kShininess);
     vec3 specular = lightColor * spec * Specular;
     // attenuation
     lighting += diffuse + specular;

@@ -9,6 +9,7 @@
 namespace Exp
 {
 	class Texture;
+	class TextureCube;
 
 	class TextureLoader
 	{
@@ -17,6 +18,8 @@ namespace Exp
 		~TextureLoader();
 
 		static Texture loadTexture(std::string path, GLenum target, GLenum internalFormat, bool srgb);
+		static TextureCube LoadTextureCube(std::string top, std::string bottom, std::string left, std::string right, std::string front, std::string back);
+		static TextureCube LoadTextureCube(std::string folder);
 	};
 }
 

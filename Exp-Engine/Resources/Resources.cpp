@@ -8,6 +8,7 @@
 #include "../Rendering/Shader.h"
 #include "../Rendering/Material.h"
 #include "../Rendering/Texture.h"
+#include "../Rendering/TextureCube.h"
 #include "../Mesh/Mesh.h"
 
 #include "../Scene/Scene.h"
@@ -21,9 +22,10 @@
 namespace Exp
 {
 
-	std::map<unsigned, Shader>      Resources::m_Shaders = std::map<unsigned, Shader>();
-	std::map<unsigned, Texture>     Resources::m_Textures = std::map<unsigned, Texture>();
-	std::map<unsigned, SceneNode*>  Resources::m_Meshes = std::map<unsigned, SceneNode*>();
+	std::map<unsigned, Shader>      Resources::m_Shaders		= std::map<unsigned, Shader>();
+	std::map<unsigned, Texture>     Resources::m_Textures		= std::map<unsigned, Texture>();
+	std::map<unsigned, TextureCube> Resources::m_TexturesCube	= std::map<unsigned, TextureCube>();
+	std::map<unsigned, SceneNode*>  Resources::m_Meshes			= std::map<unsigned, SceneNode*>();
 	// --------------------------------------------------------------------------------------------
 	void Resources::Init()
 	{
@@ -108,6 +110,35 @@ namespace Exp
 		else
 		{
 			std::cout << "Requested texture: " + name + " not found!" << std::endl;
+			return nullptr;
+		}
+	}
+
+	TextureCube* Resources::LoadTextureCube(std::string name, std::string folder)
+	{
+		unsigned int id = SID(name);
+
+		// if texture already exists, return that handle
+		if (Resources::m_TexturesCube.find(id) != Resources::m_TexturesCube.end())
+			return &Resources::m_TexturesCube[id];
+
+		TextureCube texture = TextureLoader::LoadTextureCube(folder);
+		Resources::m_TexturesCube[id] = texture;
+		return &Resources::m_TexturesCube[id];
+	}
+
+	TextureCube* Resources::GetTextureCube(std::string name)
+	{
+		unsigned int id = SID(name);
+
+		// if shader exists, return that handle
+		if (Resources::m_TexturesCube.find(id) != Resources::m_TexturesCube.end())
+		{
+			return &Resources::m_TexturesCube[id];
+		}
+		else
+		{
+			std::cout << "Requested texture cube: " << name << " not found!" << std::endl;
 			return nullptr;
 		}
 	}

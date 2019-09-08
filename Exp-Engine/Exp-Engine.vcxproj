@@ -160,12 +160,14 @@
     <ClCompile Include="Rendering\RenderTarget.cpp" />
     <ClCompile Include="Rendering\Shader.cpp" />
     <ClCompile Include="Rendering\Texture.cpp" />
+    <ClCompile Include="Rendering\TextureCube.cpp" />
     <ClCompile Include="Resources\ModelLoader.cpp" />
     <ClCompile Include="Resources\Resources.cpp" />
     <ClCompile Include="Resources\ShaderLoader.cpp" />
     <ClCompile Include="Resources\TextureLoader.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneNode.cpp" />
+    <ClCompile Include="Scene\Skybox.cpp" />
     <ClCompile Include="StbImage\stb_image.cpp" />
     <ClCompile Include="Threading\Semaphore.cpp" />
   </ItemGroup>
@@ -455,12 +457,14 @@
     <ClInclude Include="Rendering\Shader.h" />
     <ClInclude Include="Rendering\ShadingTypes.h" />
     <ClInclude Include="Rendering\Texture.h" />
+    <ClInclude Include="Rendering\TextureCube.h" />
     <ClInclude Include="Resources\ModelLoader.h" />
     <ClInclude Include="Resources\Resources.h" />
     <ClInclude Include="Resources\ShaderLoader.h" />
     <ClInclude Include="Resources\TextureLoader.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneNode.h" />
+    <ClInclude Include="Scene\Skybox.h" />
     <ClInclude Include="StbImage\stb_image.h" />
     <ClInclude Include="Threading\Semaphore.h" />
     <ClInclude Include="Threading\SpscQueue.h" />

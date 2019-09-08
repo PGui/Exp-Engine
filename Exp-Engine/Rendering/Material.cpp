@@ -89,6 +89,19 @@ namespace Exp
 
 	}
 
+	void Material::SetTextureCube(std::string name, TextureCube* value, unsigned int unit)
+	{
+		SamplerUniforms[name].Unit = unit;
+		SamplerUniforms[name].Type = SHADER_TYPE_SAMPLERCUBE;
+		SamplerUniforms[name].TextureCube = value;
+
+		if (MatShader)
+		{
+			MatShader->use();
+			MatShader->setInt(name, unit);
+		}
+	}
+
 	void Material::SetInt(std::string name, int value)
 	{
 		Uniforms[name].Type = SHADER_TYPE_INT;

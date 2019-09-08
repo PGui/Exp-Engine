@@ -212,6 +212,12 @@
     <ClCompile Include="Lighting\DirectionalLight.cpp">
       <Filter>Lighting</Filter>
     </ClCompile>
+    <ClCompile Include="Rendering\TextureCube.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Skybox.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Glm\common.hpp">
@@ -1098,6 +1104,12 @@
     </ClInclude>
     <ClInclude Include="Lighting\DirectionalLight.h">
       <Filter>Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\TextureCube.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Skybox.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

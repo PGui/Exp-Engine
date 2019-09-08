@@ -26,7 +26,7 @@ namespace Exp
 
 	private:
 		std::vector<SceneNode*> Children;
-		SceneNode * Parent;
+		SceneNode * Parent = nullptr;
 
 		glm::mat4 Transform = glm::mat4(1.0f);
 		glm::mat4 PreviousTransform = glm::mat4(1.0f);

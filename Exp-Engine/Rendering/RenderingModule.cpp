@@ -14,6 +14,8 @@
 #include "../Mesh/Mesh.h"
 #include "../Core/WindowParameters.h"
 
+#include "../Scene/Skybox.h"
+
 
 namespace Exp
 {
@@ -97,7 +99,10 @@ namespace Exp
 		auto samplers = material->GetSamplerUniforms();
 		for (auto it = samplers.begin(); it != samplers.end(); ++it)
 		{
-			it->second.Texture->Bind(it->second.Unit);
+			if (it->second.Type == SHADER_TYPE_SAMPLERCUBE)
+				it->second.TextureCube->Bind(it->second.Unit);
+			else
+				it->second.Texture->Bind(it->second.Unit);
 		}
 
 		auto uniforms = material->GetUniforms();
@@ -140,6 +145,28 @@ namespace Exp
 		if (RenderCamera != Camera)
 		{
 			RenderCamera = Camera;
+		}
+	}
+
+	void RenderingModule::SetSkybox(std::string folder)
+	{
+		CurrentSkybox = std::make_shared<Skybox>();
+		CurrentSkybox->SetCubemap(Resources::LoadTextureCube("skybox", folder));
+	}
+
+	void RenderingModule::RenderSkybox()
+	{
+		if (CurrentSkybox.get())
+		{
+			GLCache::getInstance().SetPolygonMode(m_Wireframe ? GL_LINE : GL_FILL);
+
+			RenderCommand command;
+			command.Mesh = CurrentSkybox->Mesh;
+			command.Material = CurrentSkybox->Material;
+			command.Transform = CurrentSkybox->GetTransform();
+			Render(&command, true);
+
+			GLCache::getInstance().SetPolygonMode(GL_FILL);
 		}
 	}
 
@@ -238,6 +265,8 @@ namespace Exp
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
 		glBlitFramebuffer(0, 0, m_GBuffer->Width, m_GBuffer->Height, 0, 0, Exp::WinParameters.screenWidth, Exp::WinParameters.screenHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		RenderSkybox();
 		
 		// Debug GBuffer
 		//GLCache::getInstance().SetPolygonMode(GL_LINE);

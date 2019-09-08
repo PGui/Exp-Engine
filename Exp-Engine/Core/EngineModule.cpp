@@ -15,7 +15,7 @@
 #include "../Scene/Scene.h"
 
 #include "../Mesh/Cube.h"
-
+#include "../Mesh/Plane.h"
 #include "WindowParameters.h"
 
 #include <GLFW/glfw3.h>
@@ -54,12 +54,19 @@ void Exp::EngineModule::RunEngine()
 	m_materialLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary");
 
 	m_renderingModule->SetCamera(&m_Camera);
+	m_renderingModule->SetSkybox("../resources/Skyboxes/Fjaderholmarna/");
 
 	//TEST
 	SceneNode * Bunny = Resources::LoadMesh(nullptr, "bunny", "../resources/models/bunny/bunny.obj");
-	SceneNode * Nano = Resources::LoadMesh(nullptr, "nano", "../resources/models/nanosuit/nanosuit.obj");
+	//SceneNode * Nano = Resources::LoadMesh(nullptr, "nano", "../resources/models/nanosuit/nanosuit.obj");
+	//SceneNode * Sponza = Resources::LoadMesh(nullptr, "nano", "../resources/models/sponza/sponza.obj");
 	Cube myCube;
 	SceneNode* Cube = Scene::MakeSceneNode(&myCube, m_materialLibraryModule->GetMaterial("default"));
+
+	Plane myPlane(10,10);
+	SceneNode* PlaneNode = Scene::MakeSceneNode(&myPlane, m_materialLibraryModule->GetMaterial("default"));
+	PlaneNode->SetScale(glm::vec3(30, 1, 30));
+	PlaneNode->SetRotation(glm::vec4(1, 0, 0, 90.0f));
 
 	DirectionalLight* MyLight = m_renderingModule->AddDirectionalLight(glm::vec3(1.0, 1.0, 0.0)).get();
 	MyLight->m_Color = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -89,17 +96,21 @@ void Exp::EngineModule::RunEngine()
 			ImGui::End();
 		}
 
-		for (int i = 0; i < 3; ++i)
+		for (int i = 0; i < 5; ++i)
 		{
-			for (int j = 0; j < 3; ++j)
+			for (int j = 0; j < 5; ++j)
 			{
-				Nano->SetPosition(glm::vec3(i * 5.0f, 1.0f, j * 5.0f));
-				Nano->SetRotation(glm::vec4(0.0, 1.0, 0.0, sin(glfwGetTime() * 0.2f) * 360.0f));
-				m_renderingModule->PushMesh(Nano);
+				Bunny->SetPosition(glm::vec3(i * 5.0f, 1.0f, j * 5.0f));
+				Bunny->SetRotation(glm::vec4(0.0, 1.0, 0.0, sin(glfwGetTime() * 0.2f) * 360.0f));
+				m_renderingModule->PushMesh(Bunny);
 			}
 		}
 
 		m_renderingModule->PushMesh(Cube);
+		m_renderingModule->PushMesh(PlaneNode);
+		//m_renderingModule->PushMesh(Sponza);
+		//m_renderingModule->PushMesh(Nano);
+		
 
 		//Rendering
 		m_renderingModule->Render();

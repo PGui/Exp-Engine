@@ -4,6 +4,7 @@
 namespace Exp
 {
 	class Texture;
+	class TextureCube;
 
 	enum SHADER_TYPE
 	{
@@ -29,6 +30,7 @@ namespace Exp
 		union
 		{
 			Texture     *Texture;
+			TextureCube* TextureCube;
 		};
 
 		UniformValueSampler() {}

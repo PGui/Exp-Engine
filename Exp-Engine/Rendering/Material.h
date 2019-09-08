@@ -2,6 +2,7 @@
 #include <map>
 
 #include "Texture.h"
+#include "TextureCube.h"
 #include "Shader.h"
 #include "ShadingTypes.h"
 
@@ -30,6 +31,8 @@ namespace Exp
 		const std::map<std::string, UniformValue> & GetUniforms();
 
 		void SetTexture(std::string name, Texture* value, unsigned int unit = 0);
+
+		void SetTextureCube(std::string name, TextureCube* value, unsigned int unit);
 
 		void SetInt(std::string name, int value);
 		void SetFloat(std::string name, float value);
