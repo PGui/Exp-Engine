@@ -59,6 +59,7 @@ namespace Exp
 		//IModuleInterface
 		virtual void StartUp();
 		virtual void Shutdown();
+		virtual void DisplayUI();
 
 		// Methods
 		GLFWwindow * InitWindow(std::string title, bool fullScreen = false, GLFWwindow* shared = nullptr, bool visible = true);

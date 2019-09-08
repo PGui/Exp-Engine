@@ -1,5 +1,6 @@
 #include "InputModule.h"
 #include <Remotery/Remotery.h>
+#include "../Core/EngineModule.h"
 
 
 Exp::InputModule::InputModule()
@@ -99,18 +100,22 @@ void  Exp::InputModule::glfw_key(GLFWwindow* window, int key, int scancode, int 
 			Input->keysDown[key] = false;
 	}
 
-	/*if (key == GLFW_KEY_F1 && action == GLFW_RELEASE)
+	if (key == GLFW_KEY_F1 && action == GLFW_RELEASE)
 	{
-		EngineRenderer->m_Camera->_disableMouse = !EngineRenderer->m_Camera->_disableMouse;
-		if (EngineRenderer->m_Camera->_disableMouse)
+		if (EngineModule * Engine = ModuleManager::Get().GetModule<EngineModule>("Engine"))
 		{
-			glfwSetInputMode(g_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			Engine->m_Camera.m_disableMouse = !Engine->m_Camera.m_disableMouse;
+			if (Engine->m_Camera.m_disableMouse)
+			{
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			}
+			else
+			{
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			}
 		}
-		else
-		{
-			glfwSetInputMode(g_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		}
-	}*/
+		
+	}
 }
 
 //void Exp::ProcessInput()

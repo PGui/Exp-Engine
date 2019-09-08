@@ -51,6 +51,8 @@ namespace Exp
 		void InitializeModules();
 
 		void ShutdownModules();
+
+		void DisplayModulesUI();
 	};
 }
 

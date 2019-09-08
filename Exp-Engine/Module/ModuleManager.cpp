@@ -1,4 +1,5 @@
 #include "ModuleManager.h"
+#include "../Imgui/imgui.h"
 
 namespace Exp
 {
@@ -32,6 +33,18 @@ namespace Exp
 		{
 			delete m_modules[*it];
 		}
+	}
+
+	void ModuleManager::DisplayModulesUI()
+	{
+		ImGui::Begin("Exp Engine");
+
+		for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
+		{
+			(*it).second->DisplayUI();
+		}
+
+		ImGui::End();
 	}
 
 }

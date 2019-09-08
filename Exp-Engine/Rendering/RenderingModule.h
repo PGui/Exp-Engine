@@ -35,6 +35,7 @@ namespace Exp
 
 		virtual void StartUp();
 		virtual void Shutdown();
+		virtual void DisplayUI();
 	private:
 		void InitGL();
 
@@ -61,7 +62,7 @@ namespace Exp
 
 	public:
 		std::shared_ptr<RenderTarget> GetGBuffer();
-		std::shared_ptr<DirectionalLight> AddDirectionalLight(glm::vec3 Direction);
+		DirectionalLight * AddDirectionalLight(glm::vec3 Direction);
 
 		void SetCamera(Camera* Camera);
 

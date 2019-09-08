@@ -37,6 +37,45 @@ namespace Exp
 		std::cout << "RenderingModule Shutdown" << std::endl;
 	}
 
+	void RenderingModule::DisplayUI()
+	{
+		if (ImGui::CollapsingHeader("Rendering"))
+		{
+			ImGui::Checkbox("Wireframe", &m_Wireframe);
+			if (ImGui::CollapsingHeader("Lights"))
+			{
+				ImGui::AlignTextToFramePadding();
+				bool treeopen = ImGui::TreeNodeEx("Directional Lights", ImGuiTreeNodeFlags_AllowItemOverlap);
+				ImGui::SameLine();
+				if (ImGui::Button("+"))
+				{
+					AddDirectionalLight(glm::vec3(0.0f, 1.0f, 0.0f));
+				}
+				if (ImGui::IsItemHovered()) ImGui::SetTooltip("Add New Directional Light");
+
+
+				if (treeopen)
+				{
+					for (int i = 0; i < m_DirectionalLights.size(); ++i)
+					{
+						ImGui::Separator();
+
+						ImGui::Text(std::string("Directional Light " + std::to_string(i)).c_str());
+						//ImGui::Checkbox("Visible", &m_DirectionalLights[i]->m_Visible);
+						//ImGui::ColorEdit3("Color", &m_DirectionalLights[i]->m_Color[0]);
+						//ImGui::SliderFloat3("Direction", &m_DirectionalLights[i]->m_Direction[0], -1.0f, 1.0f);
+						//ImGui::SliderFloat("Intensity", &m_DirectionalLights[i]->m_Intensity, 0.0f, 5.0f);
+						//ImGui::Checkbox("Shadow", &m_DirectionalLights[i]->m_CastShadows);
+						//ImGui::Checkbox("Debug Mesh", &m_DirectionalLights[i]->m_RenderMesh);
+					}
+					
+					ImGui::TreePop();
+				}
+				
+			}
+		}
+	}
+
 	void RenderingModule::InitGL()
 	{
 		glEnable(GL_DEPTH_TEST);
@@ -132,12 +171,12 @@ namespace Exp
 		return m_GBuffer;
 	}
 
-	std::shared_ptr<DirectionalLight> RenderingModule::AddDirectionalLight(glm::vec3 Direction)
+	DirectionalLight * RenderingModule::AddDirectionalLight(glm::vec3 Direction)
 	{
 		std::shared_ptr<DirectionalLight> Light = std::make_shared<DirectionalLight>();
 		Light->m_Direction = Direction;
 		m_DirectionalLights.push_back(Light);
-		return Light;
+		return Light.get();
 	}
 
 	void RenderingModule::SetCamera(Camera* Camera)
@@ -287,11 +326,11 @@ namespace Exp
 		glBindVertexArray(mesh->VAO);
 		if (mesh->Indices.size() > 0)
 		{
-			glDrawElements(mesh->Topology == Mesh::TOPOLOGY::TRIANGLE_STRIP ? GL_TRIANGLE_STRIP : GL_TRIANGLES, mesh->Indices.size(), GL_UNSIGNED_INT, 0);
+			glDrawElements(mesh->Topology == Mesh::TOPOLOGY::TRIANGLE_STRIP ? GL_TRIANGLE_STRIP : GL_TRIANGLES, (GLsizei)mesh->Indices.size(), GL_UNSIGNED_INT, 0);
 		}
 		else
 		{
-			glDrawArrays(mesh->Topology == Mesh::TOPOLOGY::TRIANGLE_STRIP ? GL_TRIANGLE_STRIP : GL_TRIANGLES, 0, mesh->Positions.size());
+			glDrawArrays(mesh->Topology == Mesh::TOPOLOGY::TRIANGLE_STRIP ? GL_TRIANGLE_STRIP : GL_TRIANGLES, 0, (GLsizei)mesh->Positions.size());
 		}
 	}
 

@@ -68,13 +68,13 @@ void Exp::EngineModule::RunEngine()
 	PlaneNode->SetScale(glm::vec3(30, 1, 30));
 	PlaneNode->SetRotation(glm::vec4(1, 0, 0, 90.0f));
 
-	DirectionalLight* MyLight = m_renderingModule->AddDirectionalLight(glm::vec3(1.0, 1.0, 0.0)).get();
+	DirectionalLight* MyLight = m_renderingModule->AddDirectionalLight(glm::vec3(1.0, 1.0, 0.0));
 	MyLight->m_Color = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	/*DirectionalLight* MyLight2 = m_renderingModule->AddDirectionalLight(glm::vec3(0.0, 1.0, 1.0)).get();
-	MyLight2->m_Color = glm::vec3(1.0f, 1.0f, 0.0f);*/
+	DirectionalLight* MyLight2 = m_renderingModule->AddDirectionalLight(glm::vec3(0.0, 1.0, 1.0));
+	MyLight2->m_Color = glm::vec3(1.0f, 1.0f, 0.0f);
 
-	//DirectionalLight* MyLight3 = m_renderingModule->AddDirectionalLight(glm::vec3(0.0, 1.0, 0.0)).get();
+	//DirectionalLight* MyLight3 = m_renderingModule->AddDirectionalLight(glm::vec3(0.0, 1.0, 0.0));
 	//MyLight3->m_Color = glm::vec3(0.0f, 1.0f, 1.0f);
 
 	while (!glfwWindowShouldClose(m_mainWindow))
@@ -90,11 +90,7 @@ void Exp::EngineModule::RunEngine()
 
 		Update();
 
-		{
-			ImGui::Begin("FPS");
-			ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			ImGui::End();
-		}
+		ModuleManager::Get().DisplayModulesUI();
 
 		for (int i = 0; i < 5; ++i)
 		{
@@ -298,6 +294,15 @@ void Exp::EngineModule::Shutdown()
 	glfwDestroyWindow(m_mainWindow);
 
 	std::cout << "EngineModule Shutdown" << std::endl;
+}
+
+void Exp::EngineModule::DisplayUI()
+{
+	if (ImGui::CollapsingHeader("Core"))
+	{
+		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::Checkbox("Disable Mouse", &m_Camera.m_disableMouse);
+	}
 }
 
 
