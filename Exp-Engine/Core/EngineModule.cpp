@@ -59,7 +59,7 @@ void Exp::EngineModule::RunEngine()
 	//TEST
 	SceneNode * Bunny = Resources::LoadMesh(nullptr, "bunny", "../resources/models/bunny/bunny.obj");
 	//SceneNode * Nano = Resources::LoadMesh(nullptr, "nano", "../resources/models/nanosuit/nanosuit.obj");
-	//SceneNode * Sponza = Resources::LoadMesh(nullptr, "nano", "../resources/models/sponza/sponza.obj");
+	//SceneNode * Sponza = Resources::LoadMesh(nullptr, "sponza", "../resources/models/sponza/sponza.obj");
 	Cube myCube;
 	SceneNode* Cube = Scene::MakeSceneNode(&myCube, m_materialLibraryModule->GetMaterial("default"));
 
