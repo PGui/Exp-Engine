@@ -17,6 +17,7 @@
 #include "../Mesh/Cube.h"
 #include "../Mesh/Sphere.h"
 #include "../Mesh/Plane.h"
+
 #include "WindowParameters.h"
 
 #include <GLFW/glfw3.h>
@@ -72,14 +73,17 @@ void Exp::EngineModule::RunEngine()
 	PlaneNode->SetScale(glm::vec3(30, 1, 30));
 	PlaneNode->SetRotation(glm::vec4(1, 0, 0, 90.0f));
 
-	DirectionalLight* MyLight = m_renderingModule->AddDirectionalLight(glm::vec3(1.0, 1.0, 0.0));
+	/*DirectionalLight* MyLight = m_renderingModule->AddDirectionalLight(glm::vec3(1.0, 1.0, 0.0));
 	MyLight->m_Color = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	DirectionalLight* MyLight2 = m_renderingModule->AddDirectionalLight(glm::vec3(0.0, 1.0, 1.0));
-	MyLight2->m_Color = glm::vec3(1.0f, 1.0f, 0.0f);
+	MyLight2->m_Color = glm::vec3(1.0f, 1.0f, 0.0f);*/
 
 	//DirectionalLight* MyLight3 = m_renderingModule->AddDirectionalLight(glm::vec3(0.0, 1.0, 0.0));
 	//MyLight3->m_Color = glm::vec3(0.0f, 1.0f, 1.0f);
+
+	PointLight* MyPL1 = m_renderingModule->AddPointLight(glm::vec3(0.0, 1.0, 0.0), 2.f);
+	MyPL1->m_Color = glm::vec3(1.0f, 0.0f, 0.0f);
 
 	while (!glfwWindowShouldClose(m_mainWindow))
 	{

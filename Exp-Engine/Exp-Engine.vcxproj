@@ -142,6 +142,7 @@
     <ClCompile Include="Input\InputModule.cpp" />
     <ClCompile Include="Lighting\DirectionalLight.cpp" />
     <ClCompile Include="Lighting\Light.cpp" />
+    <ClCompile Include="Lighting\PointLight.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MaterialLibrary\MaterialLibraryModule.cpp" />
     <ClCompile Include="Mesh\Cube.cpp" />
@@ -439,6 +440,7 @@
     <ClInclude Include="Input\InputModule.h" />
     <ClInclude Include="Lighting\DirectionalLight.h" />
     <ClInclude Include="Lighting\Light.h" />
+    <ClInclude Include="Lighting\PointLight.h" />
     <ClInclude Include="MaterialLibrary\MaterialLibraryModule.h" />
     <ClInclude Include="Mesh\Cube.h" />
     <ClInclude Include="Mesh\Mesh.h" />

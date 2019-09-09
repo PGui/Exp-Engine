@@ -10,7 +10,7 @@ namespace Exp
 		Light();
 		virtual ~Light();
 
-		glm::vec3 m_Color = glm::vec3(1.0f, 0.0f ,0.0f);
+		glm::vec3 m_Color = glm::vec3(1.0f, 1.0f ,1.0f);
 		float m_Intensity = 1.0f;
 
 		bool			m_CastShadows = true;

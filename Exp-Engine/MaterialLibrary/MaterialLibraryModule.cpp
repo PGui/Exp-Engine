@@ -83,6 +83,13 @@ namespace Exp
 		DeferredDirectionalLightShader->setInt("gNormal", 1);
 		DeferredDirectionalLightShader->setInt("gAlbedoSpec", 2);
 		DefaultShaders[SID("deferredDirectional")] = DeferredDirectionalLightShader;
+
+		Shader* DeferredPointLightShader = Resources::LoadShader("deferredPoint", "../resources/shaders/point.vert", "../resources/shaders/point.frag");
+		DeferredPointLightShader->use();
+		DeferredPointLightShader->setInt("gPosition", 0);
+		DeferredPointLightShader->setInt("gNormal", 1);
+		DeferredPointLightShader->setInt("gAlbedoSpec", 2);
+		DefaultShaders[SID("deferredPoint")] = DeferredPointLightShader;
 	}
 
 	Material* MaterialLibraryModule::CreateMaterial(std::string base)

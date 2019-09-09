@@ -221,6 +221,9 @@
     <ClCompile Include="Mesh\Sphere.cpp">
       <Filter>Mesh</Filter>
     </ClCompile>
+    <ClCompile Include="Lighting\PointLight.cpp">
+      <Filter>Lighting</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Glm\common.hpp">
@@ -1116,6 +1119,9 @@
     </ClInclude>
     <ClInclude Include="Mesh\Sphere.h">
       <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Lighting\PointLight.h">
+      <Filter>Lighting</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

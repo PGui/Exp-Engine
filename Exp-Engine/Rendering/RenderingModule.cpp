@@ -60,13 +60,13 @@ namespace Exp
 					{
 						ImGui::Separator();
 
-						ImGui::Text(std::string("Directional Light " + std::to_string(i)).c_str());
-						ImGui::Checkbox(std::string("Visible###Dir" + std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Visible);
-						ImGui::ColorEdit3(std::string("Color###Dir" + std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Color[0]);
-						ImGui::SliderFloat3(std::string("Direction###Dir" + std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Direction[0], -1.0f, 1.0f);
-						ImGui::SliderFloat(std::string("Intensity###Dir" + std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Intensity, 0.0f, 5.0f);
-						ImGui::Checkbox(std::string("Shadow###Dir" + std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_CastShadows);
-						ImGui::Checkbox(std::string("Debug Mesh###Dir" + std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_RenderMesh);
+						ImGui::Text(		std::string("Directional Light "    + std::to_string(i)).c_str());
+						ImGui::Checkbox(	std::string("Visibility###VisDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Visible);
+						ImGui::ColorEdit3(	std::string("Color###ColDir"		+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Color[0]);
+						ImGui::SliderFloat3(std::string("Direction###DirDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Direction[0], -1.0f, 1.0f);
+						ImGui::SliderFloat(	std::string("Intensity###IntDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Intensity, 0.0f, 5.0f);
+						ImGui::Checkbox(	std::string("Shadow###ShaDir"		+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_CastShadows);
+						ImGui::Checkbox(	std::string("Debug Mesh###DebDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_RenderMesh);
 					}
 					
 					ImGui::TreePop();
@@ -90,6 +90,7 @@ namespace Exp
 		m_GBuffer = std::make_shared<RenderTarget>(Exp::WinParameters.screenWidth, Exp::WinParameters.screenHeight, GL_HALF_FLOAT, 3, true);
 		m_CustomTarget = std::make_shared<RenderTarget>(1, 1, GL_HALF_FLOAT, 1, true);
 		m_NDCPlane = std::make_shared<Quad>(1.0f, 1.0f);
+		m_PointLightSphere = std::make_shared<Sphere>(16, 16);
 	}
 
 	void RenderingModule::UpdateGlobalUBO()
@@ -176,6 +177,15 @@ namespace Exp
 		std::shared_ptr<DirectionalLight> Light = std::make_shared<DirectionalLight>();
 		Light->m_Direction = Direction;
 		m_DirectionalLights.push_back(Light);
+		return Light.get();
+	}
+
+	PointLight* RenderingModule::AddPointLight(glm::vec3 Position, float Radius)
+	{
+		std::shared_ptr<PointLight> Light = std::make_shared<PointLight>();
+		Light->m_Position = Position;
+		Light->m_Radius = Radius;
+		m_PointLights.push_back(Light);
 		return Light.get();
 	}
 
@@ -287,16 +297,20 @@ namespace Exp
 				RenderDeferredDirLight((*it).get());
 			}
 			// point lights
-			//m_GLCache.SetCullFace(GL_FRONT);
-			//for (auto it = m_PointLights.begin(); it != m_PointLights.end(); ++it)
-			//{
-			//	// only render point lights if within frustum
-			//	if (m_Camera->Frustum.Intersect((*it)->Position, (*it)->Radius))
-			//	{
-			//		renderDeferredPointLight(*it);
-			//	}
-			//}
-			//m_GLCache.SetCullFace(GL_BACK);
+			GLCache::getInstance().SetCullFace(GL_FRONT);
+			//GLCache::getInstance().SetDepthTest(true);
+			//GLCache::getInstance().SetDepthFunc(GL_GEQUAL);
+			for (auto it = m_PointLights.begin(); it != m_PointLights.end(); ++it)
+			{
+				// only render point lights if within frustum
+				if (true/*m_Camera->Frustum.Intersect((*it)->m_Position, (*it)->m_Radius)*/)
+				{
+					RenderDeferredPointLight((*it).get());
+				}
+			}
+			//GLCache::getInstance().SetDepthFunc(GL_LESS);
+			//GLCache::getInstance().SetDepthTest(false);
+			GLCache::getInstance().SetCullFace(GL_BACK);
 		}
 
 		GLCache::getInstance().SetDepthTest(true);
@@ -380,6 +394,8 @@ namespace Exp
 
 	void RenderingModule::RenderDeferredDirLight(DirectionalLight* light)
 	{
+		if (!light->m_Visible)
+			return;
 		Shader* dirShader = nullptr;
 		//TODO refacto this Post Module Initialize
 		if (MaterialLibraryModule * MatLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary"))
@@ -406,6 +422,37 @@ namespace Exp
 			RenderMesh(m_NDCPlane.get());
 		}
 		
+	}
+	void RenderingModule::RenderDeferredPointLight(PointLight* light)
+	{
+		if (!light->m_Visible)
+			return;
+
+		Shader* pointShader = nullptr;
+		if (MaterialLibraryModule * MatLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary"))
+		{
+			pointShader = MatLibraryModule->GetShader("deferredPoint");
+		}
+
+		if (pointShader)
+		{
+			pointShader->use();
+			//pointShader->setVec3("camPos", m_Camera->Position);
+			pointShader->setVec3("lightPos", light->m_Position);
+			pointShader->setVec3("lightColor", glm::normalize(light->m_Color) * light->m_Intensity);
+			pointShader->setFloat("lightRadius", light->m_Radius);
+
+			pointShader->setInt("gPosition", 0);
+			pointShader->setInt("gNormal", 1);
+			pointShader->setInt("gAlbedoSpec", 2);
+
+			glm::mat4 model = glm::mat4(1.0f);
+			glm::translate(model, light->m_Position);
+			glm::scale(model, glm::vec3(light->m_Radius));
+			pointShader->setMat4("model", model);
+
+			RenderMesh(m_PointLightSphere.get());
+		}
 	}
 }
 
