@@ -298,7 +298,7 @@ void Exp::EngineModule::Shutdown()
 
 void Exp::EngineModule::DisplayUI()
 {
-	if (ImGui::CollapsingHeader("Core"))
+	if (ImGui::CollapsingHeader("Core", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::Checkbox("Disable Mouse", &m_Camera.m_disableMouse);

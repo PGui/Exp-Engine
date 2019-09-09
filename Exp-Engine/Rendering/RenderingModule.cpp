@@ -39,10 +39,10 @@ namespace Exp
 
 	void RenderingModule::DisplayUI()
 	{
-		if (ImGui::CollapsingHeader("Rendering"))
+		if (ImGui::CollapsingHeader("Rendering", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImGui::Checkbox("Wireframe", &m_Wireframe);
-			if (ImGui::CollapsingHeader("Lights"))
+			if (ImGui::CollapsingHeader("Lights", ImGuiTreeNodeFlags_DefaultOpen))
 			{
 				ImGui::AlignTextToFramePadding();
 				bool treeopen = ImGui::TreeNodeEx("Directional Lights", ImGuiTreeNodeFlags_AllowItemOverlap);
@@ -61,12 +61,12 @@ namespace Exp
 						ImGui::Separator();
 
 						ImGui::Text(std::string("Directional Light " + std::to_string(i)).c_str());
-						//ImGui::Checkbox("Visible", &m_DirectionalLights[i]->m_Visible);
-						//ImGui::ColorEdit3("Color", &m_DirectionalLights[i]->m_Color[0]);
-						//ImGui::SliderFloat3("Direction", &m_DirectionalLights[i]->m_Direction[0], -1.0f, 1.0f);
-						//ImGui::SliderFloat("Intensity", &m_DirectionalLights[i]->m_Intensity, 0.0f, 5.0f);
-						//ImGui::Checkbox("Shadow", &m_DirectionalLights[i]->m_CastShadows);
-						//ImGui::Checkbox("Debug Mesh", &m_DirectionalLights[i]->m_RenderMesh);
+						ImGui::Checkbox(std::string("Visible###Dir" + std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Visible);
+						ImGui::ColorEdit3(std::string("Color###Dir" + std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Color[0]);
+						ImGui::SliderFloat3(std::string("Direction###Dir" + std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Direction[0], -1.0f, 1.0f);
+						ImGui::SliderFloat(std::string("Intensity###Dir" + std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Intensity, 0.0f, 5.0f);
+						ImGui::Checkbox(std::string("Shadow###Dir" + std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_CastShadows);
+						ImGui::Checkbox(std::string("Debug Mesh###Dir" + std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_RenderMesh);
 					}
 					
 					ImGui::TreePop();
