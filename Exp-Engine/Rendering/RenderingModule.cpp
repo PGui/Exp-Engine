@@ -247,6 +247,9 @@ namespace Exp
 
 		UpdateGlobalUBO();
 
+		// set default GL state
+		GLCache::getInstance().Reset();
+
 		m_CommandBuffer.Sort();
 
 		glBindFramebuffer(GL_FRAMEBUFFER, m_GBuffer->ID);

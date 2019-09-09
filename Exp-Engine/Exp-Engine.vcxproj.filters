@@ -218,6 +218,9 @@
     <ClCompile Include="Scene\Skybox.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh\Sphere.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Glm\common.hpp">
@@ -1110,6 +1113,9 @@
     </ClInclude>
     <ClInclude Include="Scene\Skybox.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh\Sphere.h">
+      <Filter>Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

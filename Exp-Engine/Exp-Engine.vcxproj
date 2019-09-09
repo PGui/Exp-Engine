@@ -148,6 +148,7 @@
     <ClCompile Include="Mesh\Mesh.cpp" />
     <ClCompile Include="Mesh\Plane.cpp" />
     <ClCompile Include="Mesh\Quad.cpp" />
+    <ClCompile Include="Mesh\Sphere.cpp" />
     <ClCompile Include="Module\ModuleInterface.cpp" />
     <ClCompile Include="Module\ModuleManager.cpp" />
     <ClCompile Include="Profiling\RemoteryModule.cpp" />
@@ -443,6 +444,7 @@
     <ClInclude Include="Mesh\Mesh.h" />
     <ClInclude Include="Mesh\Plane.h" />
     <ClInclude Include="Mesh\Quad.h" />
+    <ClInclude Include="Mesh\Sphere.h" />
     <ClInclude Include="Module\ModuleInterface.h" />
     <ClInclude Include="Module\ModuleManager.h" />
     <ClInclude Include="Profiling\RemoteryModule.h" />

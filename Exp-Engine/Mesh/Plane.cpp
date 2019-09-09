@@ -17,7 +17,7 @@ namespace Exp
 			{
 				Positions.push_back(glm::vec3(dX * x * 2.0f - 1.0f, dY * y * 2.0f - 1.0f, 0.0f));
 				UV.push_back(glm::vec2(dX * x, 1.0f - y * dY));
-				Normals.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+				Normals.push_back(glm::vec3(0.0f, 0.0f, -1.0f));
 			}
 		}
 

@@ -15,6 +15,7 @@
 #include "../Scene/Scene.h"
 
 #include "../Mesh/Cube.h"
+#include "../Mesh/Sphere.h"
 #include "../Mesh/Plane.h"
 #include "WindowParameters.h"
 
@@ -63,6 +64,9 @@ void Exp::EngineModule::RunEngine()
 	Cube myCube;
 	SceneNode* Cube = Scene::MakeSceneNode(&myCube, m_materialLibraryModule->GetMaterial("default"));
 
+	Sphere mySphere(16, 16);
+	SceneNode* SphereNode = Scene::MakeSceneNode(&mySphere, m_materialLibraryModule->GetMaterial("default"));
+
 	Plane myPlane(10,10);
 	SceneNode* PlaneNode = Scene::MakeSceneNode(&myPlane, m_materialLibraryModule->GetMaterial("default"));
 	PlaneNode->SetScale(glm::vec3(30, 1, 30));
@@ -101,6 +105,10 @@ void Exp::EngineModule::RunEngine()
 				m_renderingModule->PushMesh(Bunny);
 			}
 		}
+
+		SphereNode->SetPosition(glm::vec3(10.0f, 10.0f, 10.0f));
+		SphereNode->SetScale(glm::vec3(3.0f));
+		m_renderingModule->PushMesh(SphereNode);
 
 		m_renderingModule->PushMesh(Cube);
 		m_renderingModule->PushMesh(PlaneNode);
@@ -304,8 +312,6 @@ void Exp::EngineModule::DisplayUI()
 		ImGui::Checkbox("Disable Mouse", &m_Camera.m_disableMouse);
 	}
 }
-
-
 
 //void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
 //{
