@@ -82,8 +82,8 @@ void Exp::EngineModule::RunEngine()
 	//DirectionalLight* MyLight3 = m_renderingModule->AddDirectionalLight(glm::vec3(0.0, 1.0, 0.0));
 	//MyLight3->m_Color = glm::vec3(0.0f, 1.0f, 1.0f);
 
-	PointLight* MyPL1 = m_renderingModule->AddPointLight(glm::vec3(0.0, 1.0, 0.0), 2.f);
-	MyPL1->m_Color = glm::vec3(1.0f, 0.0f, 0.0f);
+	PointLight* MyPL1 = m_renderingModule->AddPointLight(glm::vec3(3.0, 3.0, 4.0), 26.f);
+	//MyPL1->m_Color = glm::vec3(1.0f, 0.0f, 0.0f);
 
 	while (!glfwWindowShouldClose(m_mainWindow))
 	{

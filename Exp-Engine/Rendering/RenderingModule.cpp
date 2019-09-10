@@ -45,7 +45,7 @@ namespace Exp
 			if (ImGui::CollapsingHeader("Lights", ImGuiTreeNodeFlags_DefaultOpen))
 			{
 				ImGui::AlignTextToFramePadding();
-				bool treeopen = ImGui::TreeNodeEx("Directional Lights", ImGuiTreeNodeFlags_AllowItemOverlap);
+				bool dirtreeopen = ImGui::TreeNodeEx("Directional Lights", ImGuiTreeNodeFlags_AllowItemOverlap);
 				ImGui::SameLine();
 				if (ImGui::Button("+"))
 				{
@@ -54,7 +54,7 @@ namespace Exp
 				if (ImGui::IsItemHovered()) ImGui::SetTooltip("Add New Directional Light");
 
 
-				if (treeopen)
+				if (dirtreeopen)
 				{
 					for (int i = 0; i < m_DirectionalLights.size(); ++i)
 					{
@@ -69,6 +69,37 @@ namespace Exp
 						ImGui::Checkbox(	std::string("Debug Mesh###DebDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_RenderMesh);
 					}
 					
+					ImGui::TreePop();
+				}
+
+				//Points lights
+				ImGui::AlignTextToFramePadding();
+				bool pointtreeopen = ImGui::TreeNodeEx("Point Lights", ImGuiTreeNodeFlags_AllowItemOverlap);
+				ImGui::SameLine();
+				if (ImGui::Button("+"))
+				{
+					AddPointLight();
+				}
+				if (ImGui::IsItemHovered()) ImGui::SetTooltip("Add New Point Light");
+
+
+				if (pointtreeopen)
+				{
+					int index = 0;
+					for (int i = 0; i < m_PointLights.size(); ++i)
+					{
+						ImGui::Separator();
+
+						ImGui::Text(std::string("Point Light " + std::to_string(i)).c_str());
+						ImGui::Checkbox(std::string("Visibility##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_Visible);
+						ImGui::ColorEdit3(std::string("Color##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_Color[0]);
+						ImGui::SliderFloat3(std::string("Position##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_Position[0],-50.0f, 50.0f);
+						ImGui::SliderFloat(std::string("Radius##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_Radius, 0.0f, 50.0f);
+						ImGui::SliderFloat(std::string("Intensity##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_Intensity, 0.0f, 5.0f);
+						ImGui::Checkbox(std::string("Shadow##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_CastShadows);
+						ImGui::Checkbox(std::string("Debug Mesh##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_RenderMesh);
+					}
+
 					ImGui::TreePop();
 				}
 				
@@ -437,7 +468,6 @@ namespace Exp
 		if (pointShader)
 		{
 			pointShader->use();
-			//pointShader->setVec3("camPos", m_Camera->Position);
 			pointShader->setVec3("lightPos", light->m_Position);
 			pointShader->setVec3("lightColor", glm::normalize(light->m_Color) * light->m_Intensity);
 			pointShader->setFloat("lightRadius", light->m_Radius);
@@ -447,12 +477,13 @@ namespace Exp
 			pointShader->setInt("gAlbedoSpec", 2);
 
 			glm::mat4 model = glm::mat4(1.0f);
-			glm::translate(model, light->m_Position);
-			glm::scale(model, glm::vec3(light->m_Radius));
+			model = glm::translate(model, light->m_Position);
+			model = glm::scale(model, glm::vec3(light->m_Radius));
 			pointShader->setMat4("model", model);
 
+			//GLCache::getInstance().SetPolygonMode(m_Wireframe ? GL_LINE : GL_FILL);
 			RenderMesh(m_PointLightSphere.get());
+			//GLCache::getInstance().SetPolygonMode(GL_FILL);
 		}
 	}
 }
-

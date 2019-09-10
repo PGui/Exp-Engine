@@ -1,11 +1,8 @@
 #version 450 core
 layout (location = 0) in vec3 aPos;
 
-// out vec3 FragPos;
 out vec4 ScreenPos;
 out vec3 FragPos;
-out vec2 TexCoords;
-out vec3 Normal;
 
 layout (std140, binding = 0) uniform Global
 {
