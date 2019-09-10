@@ -65,6 +65,8 @@ namespace Exp
 	private:
 		//Debug
 		bool m_Wireframe = false;
+		bool m_DisplayLights = true;
+		bool m_DisplaySkybox = true;
 
 	public:
 		std::shared_ptr<RenderTarget> GetGBuffer();
@@ -78,6 +80,8 @@ namespace Exp
 
 		void PushMesh(SceneNode * Node);
 		void Render();
+
+		void ResizeRenderer(int Width, int Height);
 	protected:
 		void PushMeshRenderCommand(Mesh * mesh, Material * material, const glm::mat4 & transform);
 

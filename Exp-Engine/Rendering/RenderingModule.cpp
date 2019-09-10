@@ -42,6 +42,8 @@ namespace Exp
 		if (ImGui::CollapsingHeader("Rendering", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImGui::Checkbox("Wireframe", &m_Wireframe);
+			ImGui::Checkbox("Lights", &m_DisplayLights);
+			ImGui::Checkbox("Skybox", &m_DisplaySkybox);
 			if (ImGui::CollapsingHeader("Lights", ImGuiTreeNodeFlags_DefaultOpen))
 			{
 				ImGui::AlignTextToFramePadding();
@@ -331,7 +333,7 @@ namespace Exp
 		m_GBuffer->GetColorTexture(1)->Bind(1);
 		m_GBuffer->GetColorTexture(2)->Bind(2);
 
-		if (true/*Lights*/)
+		if (m_DisplayLights)
 		{
 			// directional lights
 			for (auto it = m_DirectionalLights.begin(); it != m_DirectionalLights.end(); ++it)
@@ -364,15 +366,25 @@ namespace Exp
 		glBlitFramebuffer(0, 0, m_GBuffer->Width, m_GBuffer->Height, 0, 0, Exp::WinParameters.screenWidth, Exp::WinParameters.screenHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		RenderSkybox();
+		if (m_DisplaySkybox)
+			RenderSkybox();
 		
 		// Debug GBuffer
 		//GLCache::getInstance().SetPolygonMode(GL_LINE);
-		/*glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClear(GL_COLOR_BUFFER_BIT);
-		Blit(m_GBuffer->GetColorTexture(1));*/
+		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		//glClear(GL_COLOR_BUFFER_BIT);
+		//Blit(m_GBuffer->GetColorTexture(1));
 
 		m_CommandBuffer.Clear();
+	}
+
+	void RenderingModule::ResizeRenderer(int Width, int Height)
+	{
+		m_GBuffer->Resize(Width, Height);
+		if (CurrentSkybox.get())
+		{
+			CurrentSkybox->GetCubemap()->Resize(Width, Height);
+		}
 	}
 
 	void RenderingModule::PushMeshRenderCommand(Mesh * mesh, Material * material, const glm::mat4 & transform)

@@ -28,6 +28,9 @@ namespace Exp
 
 	Skybox::~Skybox()
 	{
+		//TODO Refacto
+		delete Mesh;
+		delete Material;
 	}
 
 	void Skybox::SetCubemap(TextureCube* cubemap)
@@ -35,5 +38,9 @@ namespace Exp
 		m_CubeMap = cubemap;
 		Material->SetTextureCube("background", m_CubeMap, 0);
 		Material->SetFloat("lodLevel", 1.5f);
+	}
+	TextureCube* Skybox::GetCubemap()
+	{
+		return m_CubeMap;
 	}
 }

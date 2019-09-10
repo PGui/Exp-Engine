@@ -3,8 +3,9 @@
 
 namespace Exp
 {
-	struct WindowParameters
+	class WindowParameters
 	{
+	public:
 		unsigned int screenWidth = 1280;
 		unsigned int screenHeight = 768;
 

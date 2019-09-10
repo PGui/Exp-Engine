@@ -21,6 +21,7 @@ namespace Exp
 		~Skybox();
 
 		void SetCubemap(TextureCube* cubemap);
+		TextureCube* GetCubemap();
 	};
 
 

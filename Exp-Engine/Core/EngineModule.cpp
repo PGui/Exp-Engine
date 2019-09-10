@@ -239,7 +239,7 @@ void Exp::EngineModule::framebuffer_size_callback(GLFWwindow * window, int width
 
 	if (RenderingModule * Renderer = ModuleManager::Get().GetModule<Exp::RenderingModule>("Rendering"))
 	{
-		Renderer->GetGBuffer()->Resize(width, height);
+		Renderer->ResizeRenderer(width, height);
 	}
 }
 void Exp::EngineModule::glfw_error_callback(int error, const char * description)
