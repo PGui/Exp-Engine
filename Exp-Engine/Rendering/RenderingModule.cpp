@@ -61,6 +61,11 @@ namespace Exp
 						ImGui::Separator();
 
 						ImGui::Text(		std::string("Directional Light "    + std::to_string(i)).c_str());
+						ImGui::SameLine();
+						if (ImGui::Button("-"))
+						{
+							//Remove DL
+						}
 						ImGui::Checkbox(	std::string("Visibility###VisDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Visible);
 						ImGui::ColorEdit3(	std::string("Color###ColDir"		+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Color[0]);
 						ImGui::SliderFloat3(std::string("Direction###DirDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Direction[0], -1.0f, 1.0f);
@@ -89,8 +94,14 @@ namespace Exp
 					for (int i = 0; i < m_PointLights.size(); ++i)
 					{
 						ImGui::Separator();
+						
 
 						ImGui::Text(std::string("Point Light " + std::to_string(i)).c_str());
+						ImGui::SameLine();
+						if (ImGui::Button("-"))
+						{
+							//Remove PL
+						}
 						ImGui::Checkbox(std::string("Visibility##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_Visible);
 						ImGui::ColorEdit3(std::string("Color##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_Color[0]);
 						ImGui::SliderFloat3(std::string("Position##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_Position[0],-50.0f, 50.0f);
