@@ -51,9 +51,9 @@ void main()
 
     vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * lightColor;
 
-    // attenuation
-    float distance = length(FragPos - lightPos);
-    float attenuation = 1.0f / (1.0 + linear * distance + quadratic * distance * distance);
+    float distance = length(FragPos - lightPos) * (1.0 / lightRadius);
+    float attenuation = clamp(1 - dot(distance, distance), 0, 1);
+    attenuation = attenuation * attenuation;
 
     vec3 ambient = 0.05 * Diffuse;
 
