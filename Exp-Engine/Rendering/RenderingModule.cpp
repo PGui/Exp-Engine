@@ -363,7 +363,7 @@ namespace Exp
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_GBuffer->ID);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
-		glBlitFramebuffer(0, 0, m_GBuffer->Width, m_GBuffer->Height, 0, 0, Exp::WinParameters.screenWidth, Exp::WinParameters.screenHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+		glBlitFramebuffer(0, 0, m_GBuffer->Width, m_GBuffer->Height, 0, 0, m_GBuffer->Width, m_GBuffer->Height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		if (m_DisplaySkybox)
@@ -412,16 +412,16 @@ namespace Exp
 		{
 			glViewport(0, 0, dst->Width, dst->Height);
 			glBindFramebuffer(GL_FRAMEBUFFER, dst->ID);
-			/*if (dst->HasDepthAndStencil)
+			if (dst->bHasDepthAndStencil)
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-			else*/
+			else
 				glClear(GL_COLOR_BUFFER_BIT);
 		}
 		// else we bind to the default framebuffer
 		else
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			//glViewport(0, 0, m_RenderSize.x, m_RenderSize.y);
+			glViewport(0, 0, Exp::WinParameters.screenWidth, Exp::WinParameters.screenHeight);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		}
 		// if no material is given, use default blit material
@@ -474,6 +474,7 @@ namespace Exp
 			}
 
 			RenderMesh(m_NDCPlane.get());
+
 		}
 		
 	}
