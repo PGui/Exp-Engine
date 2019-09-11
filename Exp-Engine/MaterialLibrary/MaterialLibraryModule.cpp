@@ -90,6 +90,10 @@ namespace Exp
 		DeferredPointLightShader->setInt("gNormal", 1);
 		DeferredPointLightShader->setInt("gAlbedoSpec", 2);
 		DefaultShaders[SID("deferredPoint")] = DeferredPointLightShader;
+
+		Shader* StencilLightShader = Resources::LoadShader("stencilLightShader", "../resources/shaders/stencil_light.vert", "../resources/shaders/stencil_light.frag");
+		StencilLightShader->use();
+		DefaultShaders[SID("stencilLightShader")] = StencilLightShader;
 	}
 
 	Material* MaterialLibraryModule::CreateMaterial(std::string base)

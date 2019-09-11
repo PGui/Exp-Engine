@@ -30,15 +30,15 @@ namespace Exp
 		
 
 		// update GL state if requested state is different from current GL state.
-		void SetDepthTest(bool enable);
-		void SetDepthFunc(GLenum depthFunc);
-		void SetBlend(bool enable);
-		void SetBlendFunc(GLenum src, GLenum dst);
-		void SetCull(bool enable);
-		void SetCullFace(GLenum face);
-		void SetPolygonMode(GLenum mode);
+		void SetDepthTest(bool enable, bool force = false);
+		void SetDepthFunc(GLenum depthFunc, bool force = false);
+		void SetBlend(bool enable, bool force = false);
+		void SetBlendFunc(GLenum src, GLenum dst, bool force = false);
+		void SetCull(bool enable, bool force = false);
+		void SetCullFace(GLenum face, bool force = false);
+		void SetPolygonMode(GLenum mode, bool force = false);
 
-		void Reset(); // Reset cache for rendering.
+		void Reset(bool force = false); // Reset cache for rendering.
 
 		// switch shader only if a different ID is requested.
 		// note that we won't use this too often, as we already sort render state on shader ID.

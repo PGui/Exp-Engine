@@ -3,9 +3,9 @@
 namespace Exp
 {
 	// --------------------------------------------------------------------------------------------
-	void GLCache::SetDepthTest(bool enable)
+	void GLCache::SetDepthTest(bool enable, bool force)
 	{
-		if (m_DepthTest != enable)
+		if (m_DepthTest != enable || force)
 		{
 			m_DepthTest = enable;
 			if (enable)
@@ -16,18 +16,18 @@ namespace Exp
 
 	}
 	// --------------------------------------------------------------------------------------------
-	void GLCache::SetDepthFunc(GLenum depthFunc)
+	void GLCache::SetDepthFunc(GLenum depthFunc, bool force)
 	{
-		if (m_DepthFunc != depthFunc)
+		if (m_DepthFunc != depthFunc || force)
 		{
 			m_DepthFunc = depthFunc;
 			glDepthFunc(depthFunc);
 		}
 	}
 	// --------------------------------------------------------------------------------------------
-	void GLCache::SetBlend(bool enable)
+	void GLCache::SetBlend(bool enable, bool force)
 	{
-		if (m_Blend != enable)
+		if (m_Blend != enable || force)
 		{
 			m_Blend = enable;
 			if (enable)
@@ -37,9 +37,9 @@ namespace Exp
 		}
 	}
 	// --------------------------------------------------------------------------------------------
-	void GLCache::SetBlendFunc(GLenum src, GLenum dst)
+	void GLCache::SetBlendFunc(GLenum src, GLenum dst, bool force)
 	{
-		if (m_BlendSrc != src || m_BlendDst != dst)
+		if (m_BlendSrc != src || m_BlendDst != dst || force)
 		{
 			m_BlendSrc = src;
 			m_BlendDst = dst;
@@ -47,9 +47,9 @@ namespace Exp
 		}
 	}
 	// --------------------------------------------------------------------------------------------
-	void GLCache::SetCull(bool enable)
+	void GLCache::SetCull(bool enable, bool force)
 	{
-		if (m_CullFace != enable)
+		if (m_CullFace != enable || force)
 		{
 			m_CullFace = enable;
 			if (enable)
@@ -59,30 +59,30 @@ namespace Exp
 		}
 	}
 	// --------------------------------------------------------------------------------------------
-	void GLCache::SetCullFace(GLenum face)
+	void GLCache::SetCullFace(GLenum face, bool force)
 	{
-		if (m_FrontFace != face)
+		if (m_FrontFace != face || force)
 		{
 			m_FrontFace = face;
 			glCullFace(face);
 		}
 	}
 	// --------------------------------------------------------------------------------------------
-	void GLCache::SetPolygonMode(GLenum mode)
+	void GLCache::SetPolygonMode(GLenum mode, bool force)
 	{
-		if (m_PolygonMode != mode)
+		if (m_PolygonMode != mode || force)
 		{
 			m_PolygonMode = mode;
 			glPolygonMode(GL_FRONT_AND_BACK, mode);
 		}
 	}
-	void GLCache::Reset()
+	void GLCache::Reset(bool force)
 	{
-		SetBlend(false);
-		SetCull(true);
-		SetCullFace(GL_BACK);
-		SetDepthTest(true);
-		SetDepthFunc(GL_LESS);
+		SetBlend(false, force);
+		SetCull(true, force);
+		SetCullFace(GL_BACK, force);
+		SetDepthTest(true, force);
+		SetDepthFunc(GL_LESS, force);
 	}
 	// --------------------------------------------------------------------------------------------
 	void GLCache::SwitchShader(unsigned int ID)

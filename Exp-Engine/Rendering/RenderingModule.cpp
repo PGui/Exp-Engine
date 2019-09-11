@@ -131,10 +131,12 @@ namespace Exp
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		// Initialize Deferred Rendering
-		m_GBuffer = std::make_shared<RenderTarget>(Exp::WinParameters.screenWidth, Exp::WinParameters.screenHeight, GL_HALF_FLOAT, 3, true);
+		m_GBuffer = std::make_shared<RenderTarget>(m_RenderSize.x, m_RenderSize.y, GL_HALF_FLOAT, 3, true);
 		m_CustomTarget = std::make_shared<RenderTarget>(1, 1, GL_HALF_FLOAT, 1, true);
 		m_NDCPlane = std::make_shared<Quad>(1.0f, 1.0f);
 		m_PointLightSphere = std::make_shared<Sphere>(16, 16);
+
+		GLCache::getInstance().Reset(true);
 	}
 
 	void RenderingModule::UpdateGlobalUBO()
@@ -296,13 +298,14 @@ namespace Exp
 	{
 		rmt_ScopedCPUSample(Rendering, 0)
 
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // we're not using the stencil buffer now
 
 		UpdateGlobalUBO();
 
 		// set default GL state
 		GLCache::getInstance().Reset();
+		
 
 		m_CommandBuffer.Sort();
 
@@ -317,6 +320,8 @@ namespace Exp
 		{
 			Render(&CurrentRenderCommand, true);
 		}
+
+		
 
 		GLCache::getInstance().SetPolygonMode(GL_FILL);
 
@@ -335,15 +340,32 @@ namespace Exp
 
 		if (m_DisplayLights)
 		{
+			//GLCache::getInstance().SetCull(false);//TODO Remove - DEBUG
 			// directional lights
 			for (auto it = m_DirectionalLights.begin(); it != m_DirectionalLights.end(); ++it)
 			{
 				RenderDeferredDirLight((*it).get());
 			}
 			// point lights
+
+////////////////////////////////////////////////////////////////
+			// Pre point light
+			/*for (auto it = m_PointLights.begin(); it != m_PointLights.end(); ++it)
+			{
+				PreRenderDeferredPointLight((*it).get());
+			}
+
+
 			GLCache::getInstance().SetCullFace(GL_FRONT);
-			//GLCache::getInstance().SetDepthTest(true);
-			//GLCache::getInstance().SetDepthFunc(GL_GEQUAL);
+			for (auto it = m_PointLights.begin(); it != m_PointLights.end(); ++it)
+			{
+				RenderDeferredPointLight((*it).get());
+			}
+			GLCache::getInstance().SetCullFace(GL_BACK);*/
+////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////
+			GLCache::getInstance().SetCullFace(GL_FRONT);
 			for (auto it = m_PointLights.begin(); it != m_PointLights.end(); ++it)
 			{
 				// only render point lights if within frustum
@@ -352,9 +374,8 @@ namespace Exp
 					RenderDeferredPointLight((*it).get());
 				}
 			}
-			//GLCache::getInstance().SetDepthFunc(GL_LESS);
-			//GLCache::getInstance().SetDepthTest(false);
 			GLCache::getInstance().SetCullFace(GL_BACK);
+////////////////////////////////////////////////////////////////
 		}
 
 		GLCache::getInstance().SetDepthTest(true);
@@ -363,7 +384,7 @@ namespace Exp
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_GBuffer->ID);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
-		glBlitFramebuffer(0, 0, m_GBuffer->Width, m_GBuffer->Height, 0, 0, m_GBuffer->Width, m_GBuffer->Height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+		glBlitFramebuffer(0, 0, m_GBuffer->Width, m_GBuffer->Height, 0, 0, m_RenderSize.x, m_RenderSize.y, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		if (m_DisplaySkybox)
@@ -371,15 +392,16 @@ namespace Exp
 		
 		// Debug GBuffer
 		//GLCache::getInstance().SetPolygonMode(GL_LINE);
-		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		//glClear(GL_COLOR_BUFFER_BIT);
-		//Blit(m_GBuffer->GetColorTexture(1));
+		/*glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClear(GL_COLOR_BUFFER_BIT);
+		Blit(m_GBuffer->GetDepthStencilTexture());*/
 
 		m_CommandBuffer.Clear();
 	}
 
 	void RenderingModule::ResizeRenderer(int Width, int Height)
 	{
+		m_RenderSize = glm::vec2(Width, Height);
 		m_GBuffer->Resize(Width, Height);
 		if (CurrentSkybox.get())
 		{
@@ -421,7 +443,7 @@ namespace Exp
 		else
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glViewport(0, 0, Exp::WinParameters.screenWidth, Exp::WinParameters.screenHeight);
+			glViewport(0, 0, m_RenderSize.x, m_RenderSize.y);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		}
 		// if no material is given, use default blit material
@@ -478,6 +500,56 @@ namespace Exp
 		}
 		
 	}
+
+	void RenderingModule::PreRenderDeferredPointLight(PointLight* light)
+	{
+		Shader* stencilShader = nullptr;
+		if (MaterialLibraryModule * MatLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary"))
+		{
+			stencilShader = MatLibraryModule->GetShader("stencilLightShader");
+
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, light->m_Position);
+			model = glm::scale(model, glm::vec3(light->m_Radius));
+
+			//glBindTexture(GL_TEXTURE_2D, m_GBuffer->GetDepthStencilTexture()->ID);
+			//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderSize.x, m_RenderSize.y, 0, GL_RGB, GL_FLOAT, NULL);
+			//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, m_GBuffer->GetDepthStencilTexture()->ID, 0);
+
+			//glEnable(GL_STENCIL_TEST);
+			
+			glEnable(GL_BLEND);
+			glBlendEquation(GL_FUNC_ADD);
+			glBlendFunc(GL_ONE, GL_ONE);
+
+			glEnable(GL_STENCIL_TEST);
+			glDisable(GL_CULL_FACE);
+
+			glStencilMask(0xFF);
+			glClearStencil(0);
+
+			// we'll render the light volume faces once per light
+			glStencilFunc(GL_EQUAL, 0, 0xFF);
+			glStencilOp(GL_KEEP, GL_INCR, GL_INCR);
+			stencilShader->use();
+			RenderMesh(m_PointLightSphere.get());
+
+		/*	stencilShader->use();
+			glDrawBuffer(GL_NONE);
+			glClear(GL_STENCIL_BUFFER_BIT);
+			glEnable(GL_DEPTH_TEST);
+			glDisable(GL_CULL_FACE);
+			glStencilFunc(GL_ALWAYS, 0, 0);
+			glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
+			glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
+			stencilShader->setMat4("model", model);
+			RenderMesh(m_PointLightSphere.get());
+*/
+		}
+
+
+	}
+
 	void RenderingModule::RenderDeferredPointLight(PointLight* light)
 	{
 		if (!light->m_Visible)
@@ -491,21 +563,20 @@ namespace Exp
 
 		if (pointShader)
 		{
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, light->m_Position);
+			model = glm::scale(model, glm::vec3(light->m_Radius));
+
 			pointShader->use();
 			pointShader->setVec3("lightPos", light->m_Position);
 			pointShader->setVec3("lightColor", glm::normalize(light->m_Color) * light->m_Intensity);
 			pointShader->setFloat("lightRadius", light->m_Radius);
-
 			pointShader->setInt("gPosition", 0);
 			pointShader->setInt("gNormal", 1);
 			pointShader->setInt("gAlbedoSpec", 2);
-
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, light->m_Position);
-			model = glm::scale(model, glm::vec3(light->m_Radius));
 			pointShader->setMat4("model", model);
 
-			//GLCache::getInstance().SetPolygonMode(m_Wireframe ? GL_LINE : GL_FILL);
+			//GLCache::getInstance().SetPolygonMode(GL_LINE);
 			RenderMesh(m_PointLightSphere.get());
 			//GLCache::getInstance().SetPolygonMode(GL_FILL);
 		}

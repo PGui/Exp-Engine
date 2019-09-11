@@ -223,16 +223,13 @@ void Exp::EngineModule::ComputeDeltatime()
 
 void Exp::EngineModule::framebuffer_size_callback(GLFWwindow * window, int width, int height)
 {
+	glViewport(0, 0, width, height);
 	//TODO put this callback somewhere more global
 	if (EngineModule * Core = ModuleManager::Get().GetModule<Exp::EngineModule>("Engine"))
 	{
-		Exp::WinParameters.screenWidth = width;
-		Exp::WinParameters.screenHeight = height;
-		glViewport(0, 0, Exp::WinParameters.screenWidth, Exp::WinParameters.screenHeight);
-
 		Core->m_Camera.SetPerspective(
 			Core->m_Camera.m_fovY, 
-			(float)Exp::WinParameters.screenWidth / (float)Exp::WinParameters.screenHeight,
+			(float)width / (float)height,
 			Core->m_Camera.m_nearPlane, 
 			Core->m_Camera.m_farPlane);
 	}

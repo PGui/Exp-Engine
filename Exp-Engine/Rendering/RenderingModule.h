@@ -66,7 +66,10 @@ namespace Exp
 		//Debug
 		bool m_Wireframe = false;
 		bool m_DisplayLights = true;
-		bool m_DisplaySkybox = true;
+		bool m_DisplaySkybox = false;
+
+		// 
+		glm::vec2 m_RenderSize = glm::vec2(1280, 768);
 
 	public:
 		std::shared_ptr<RenderTarget> GetGBuffer();
@@ -90,6 +93,7 @@ namespace Exp
 		void Blit(Texture* src, RenderTarget* dst = nullptr, Material* material=nullptr, std::string textureUniformName = "screenTexture");
 
 		void RenderDeferredDirLight(DirectionalLight* light);
+		void PreRenderDeferredPointLight(PointLight* light);
 		void RenderDeferredPointLight(PointLight* light);
 
 	public:
