@@ -51,13 +51,6 @@ GLFWwindow * Exp::EngineModule::InitWindow(std::string title, bool fullScreen, G
 }
 void Exp::EngineModule::RunEngine()
 {
-	m_inputModule = ModuleManager::Get().GetModule<InputModule>("Input");
-	m_renderingModule = ModuleManager::Get().GetModule<RenderingModule>("Rendering");
-	m_materialLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary");
-
-	m_renderingModule->SetCamera(&m_Camera);
-	m_renderingModule->SetSkybox("../resources/Skyboxes/Fjaderholmarna/");
-
 	//TEST
 	SceneNode * Bunny = Resources::LoadMesh(nullptr, "bunny", "../resources/models/bunny/bunny.obj");
 	//SceneNode * Nano = Resources::LoadMesh(nullptr, "nano", "../resources/models/nanosuit/nanosuit.obj");
@@ -315,88 +308,12 @@ void Exp::EngineModule::DisplayUI()
 	}
 }
 
-//void Exp::Engine::MainJob(ftl::TaskScheduler * taskScheduler, void * arg)
-//{
-	////Init Cam
-	//Exp::Engine::m_Camera(glm::vec3(0.0f));
+void Exp::EngineModule::PostInitialize()
+{
+	m_inputModule = ModuleManager::Get().GetModule<InputModule>("Input");
+	m_renderingModule = ModuleManager::Get().GetModule<RenderingModule>("Rendering");
+	m_materialLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary");
 
-	//uint64 sceneNumber = 1;
-
-	//glfwMakeContextCurrent(nullptr);
-
-	//size_t numTasks = 6;
-	//ftl::Task *tasks = new ftl::Task[numTasks];
-	//int *numbers = new int[numTasks];
-	//for (uint64 i = 0ull; i < numTasks; ++i) 
-	//{
-	//	numbers[i] = (int)i;
-	//	tasks[i] = { Exp::Engine::ParallelJob , &numbers[i] };
-	//}
-
-	//m_lastTime = glfwGetTime();
-
-	//syncState->syncMTSempahore.Signal(); //Don't make the MT Wait first frame.
-
-	//bool firstFrame = true;
-
-	//// Loop until there is a quit message from the window or the user.
-	//while (!glfwWindowShouldClose(Exp::Engine::m_mainWindow))
-	//{
-	//	rmt_ScopedCPUSample(LogicLoop, 0);
-
-	//	rmt_BeginCPUSample(PollEvents, 0);
-	//	// Check for events
-	//	glfwPollEvents();
-	//	rmt_EndCPUSample();
-
-	//	// Logic
-	//	double currentTime = glfwGetTime();
-	//	m_deltaTime = (currentTime - m_lastTime);/* / m_updatePeriod;*/
-	//	m_lastTime = currentTime;
-
-	//	if (abs(m_deltaTime - 1.0 / 120.0) < .0002) {
-	//		m_deltaTime = 1.0 / 120.0;
-	//	}
-	//	if (abs(m_deltaTime - 1.0 / 60.0) < .0002) {
-	//		m_deltaTime = 1.0 / 60.0;
-	//	}
-	//	if (abs(m_deltaTime - 1.0 / 30.0) < .0002) {
-	//		m_deltaTime = 1.0 / 30.0;
-	//	}
-
-	//	m_accumulatedTime += m_deltaTime;
-
-	//	// Avoid spiral of death
-	//	// Drop world time from the update in order to keep up
-	//	if (m_accumulatedTime >= m_updatePeriod * m_maxUpdatesPerLoop) {
-	//		m_accumulatedTime = m_updatePeriod * m_maxUpdatesPerLoop;
-	//	}
-
-	//	while (m_accumulatedTime >= m_updatePeriod)
-	//	{
-	//		m_accumulatedTime -= m_updatePeriod;
-	//		if (m_accumulatedTime < (1.0 / 59.0) - m_updatePeriod) 
-	//			m_accumulatedTime = 0;
-	//		{
-	//			rmt_ScopedCPUSample(MainThreadJobs, 0);
-	//			//// Schedule the tasks
-	//			ftl::AtomicCounter counter(taskScheduler);
-	//			taskScheduler->AddTasks((uint)numTasks, tasks, &counter);
-
-	//			// Wait for the tasks to complete
-	//			taskScheduler->WaitForCounter(&counter, 0, true);
-	//		}
-	//	}
-
-	//	rmt_BeginCPUSample(WaitForRenderer, 0);
-	//	syncState->syncMTSempahore.Wait();
-	//	syncState->syncRTSempahore.Signal();
-	//	firstFrame = false;
-	//	rmt_EndCPUSample();
-	//}
-
-	//delete[] tasks;
-
-	////Destroy
-	//delete Exp::Engine::m_Camera;
-//}
+	m_renderingModule->SetCamera(&m_Camera);
+	m_renderingModule->SetSkybox("../resources/Skyboxes/Fjaderholmarna/");
+}

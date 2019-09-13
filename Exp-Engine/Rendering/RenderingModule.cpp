@@ -120,6 +120,11 @@ namespace Exp
 		}
 	}
 
+	void RenderingModule::PostInitialize()
+	{
+		m_MaterialLibrary= ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary");
+	}
+
 	void RenderingModule::InitGL()
 	{
 		glEnable(GL_DEPTH_TEST);
@@ -455,10 +460,9 @@ namespace Exp
 		// if no material is given, use default blit material
 		if (!material)
 		{
-			MaterialLibraryModule* MatLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary");
-			if (MatLibraryModule)
+			if (m_MaterialLibrary)
 			{
-				material = MatLibraryModule->GetMaterial("blit");
+				material = m_MaterialLibrary->GetMaterial("blit");
 			}
 			
 		}
@@ -479,40 +483,37 @@ namespace Exp
 		if (!light->m_Visible)
 			return;
 		Shader* dirShader = nullptr;
-		//TODO refacto this Post Module Initialize
-		if (MaterialLibraryModule * MatLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary"))
+		if (m_MaterialLibrary)
 		{
-			dirShader = MatLibraryModule->GetShader("deferredDirectional");
-		}
-
-		if (dirShader)
-		{
-			dirShader->use();
-			dirShader->setVec3("lightDir", light->m_Direction);
-			dirShader->setVec3("lightColor", /*glm::normalize*/(light->m_Color) * light->m_Intensity);
-
-			dirShader->setInt("gPosition", 0);
-			dirShader->setInt("gNormal", 1);
-			dirShader->setInt("gAlbedoSpec", 2);
-
-			if (light->m_ShadowMapRT)
+			dirShader = m_MaterialLibrary->GetShader("deferredDirectional");
+			if (dirShader)//TODO put as member
 			{
-				/*dirShader->SetMatrix("lightShadowViewProjection", light->LightSpaceViewProjection);
-				light->ShadowMapRT->GetDepthStencilTexture()->Bind(3);*/
+				dirShader->use();
+				dirShader->setVec3("lightDir", light->m_Direction);
+				dirShader->setVec3("lightColor", /*glm::normalize*/(light->m_Color) * light->m_Intensity);
+
+				dirShader->setInt("gPosition", 0);
+				dirShader->setInt("gNormal", 1);
+				dirShader->setInt("gAlbedoSpec", 2);
+
+				if (light->m_ShadowMapRT)
+				{
+					/*dirShader->SetMatrix("lightShadowViewProjection", light->LightSpaceViewProjection);
+					light->ShadowMapRT->GetDepthStencilTexture()->Bind(3);*/
+				}
+
+				RenderMesh(m_NDCPlane.get());
+
 			}
-
-			RenderMesh(m_NDCPlane.get());
-
 		}
-		
 	}
 
 	void RenderingModule::PreRenderDeferredPointLight(PointLight* light)
 	{
 		Shader* stencilShader = nullptr;
-		if (MaterialLibraryModule * MatLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary"))
+		if (m_MaterialLibrary)
 		{
-			stencilShader = MatLibraryModule->GetShader("stencilLightShader");
+			stencilShader = m_MaterialLibrary->GetShader("stencilLightShader");
 
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, light->m_Position);
@@ -562,51 +563,47 @@ namespace Exp
 			return;
 
 		Shader* pointShader = nullptr;
-		if (MaterialLibraryModule * MatLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary"))
+		if (m_MaterialLibrary)
 		{
-			pointShader = MatLibraryModule->GetShader("deferredPoint");
-		}
+			pointShader = m_MaterialLibrary->GetShader("deferredPoint");
+			if (pointShader)
+			{
+				glm::mat4 model = glm::mat4(1.0f);
+				model = glm::translate(model, light->m_Position);
+				model = glm::scale(model, glm::vec3(light->m_Radius));
 
-		if (pointShader)
-		{
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, light->m_Position);
-			model = glm::scale(model, glm::vec3(light->m_Radius));
+				pointShader->use();
+				pointShader->setVec3("lightPos", light->m_Position);
+				pointShader->setVec3("lightColor",/* glm::normalize*/(light->m_Color) * light->m_Intensity);
+				pointShader->setFloat("lightRadius", light->m_Radius);
+				pointShader->setInt("gPosition", 0);
+				pointShader->setInt("gNormal", 1);
+				pointShader->setInt("gAlbedoSpec", 2);
+				pointShader->setMat4("model", model);
 
-			pointShader->use();
-			pointShader->setVec3("lightPos", light->m_Position);
-			pointShader->setVec3("lightColor",/* glm::normalize*/(light->m_Color) * light->m_Intensity);
-			pointShader->setFloat("lightRadius", light->m_Radius);
-			pointShader->setInt("gPosition", 0);
-			pointShader->setInt("gNormal", 1);
-			pointShader->setInt("gAlbedoSpec", 2);
-			pointShader->setMat4("model", model);
-
-			//GLCache::getInstance().SetPolygonMode(GL_LINE);
-			RenderMesh(m_PointLightSphere.get());
-			//GLCache::getInstance().SetPolygonMode(GL_FILL);
+				//GLCache::getInstance().SetPolygonMode(GL_LINE);
+				RenderMesh(m_PointLightSphere.get());
+				//GLCache::getInstance().SetPolygonMode(GL_FILL);
+			}
 		}
 	}
 
 	void RenderingModule::RenderDebugLights()
 	{
-		if (MaterialLibraryModule * MatLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary"))
+		if (m_MaterialLibrary)
 		{
-			// render light mesh (as visual cue), if requested
 			for (auto it = m_PointLights.begin(); it != m_PointLights.end(); ++it)
 			{
 				if ((*it)->m_RenderMesh)
 				{
-
 					RenderCommand command;
-					command.Material = MatLibraryModule->GetMaterial("debugLight");
+					command.Material = m_MaterialLibrary->GetMaterial("debugLight");
 					command.Material->SetVector("lightColor", (*it)->m_Color * (*it)->m_Intensity);
 					command.Mesh = m_DebugLightMesh.get();
 					glm::mat4 model = glm::mat4(1.0f);
 					model = glm::translate(model, (*it)->m_Position);
 					model = glm::scale(model, glm::vec3(0.25f));
 					command.Transform = model;
-
 					Render(&command, false);
 				}
 			}

@@ -60,6 +60,7 @@ namespace Exp
 		virtual void StartUp();
 		virtual void Shutdown();
 		virtual void DisplayUI();
+		virtual void PostInitialize();
 
 		// Methods
 		GLFWwindow * InitWindow(std::string title, bool fullScreen = false, GLFWwindow* shared = nullptr, bool visible = true);

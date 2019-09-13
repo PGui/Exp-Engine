@@ -40,6 +40,10 @@ namespace Exp
 		virtual void StartUp();
 		virtual void Shutdown();
 		virtual void DisplayUI();
+		virtual void PostInitialize();
+	private:
+		//Modules
+		MaterialLibraryModule* m_MaterialLibrary = nullptr;
 	private:
 		void InitGL();
 

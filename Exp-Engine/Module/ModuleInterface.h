@@ -15,5 +15,8 @@ namespace Exp
 		virtual void Shutdown() = 0;
 
 		virtual void DisplayUI();
+
+		// Called after all modules StartUp were called.
+		virtual void PostInitialize();
 	};
 }

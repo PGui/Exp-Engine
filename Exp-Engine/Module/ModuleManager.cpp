@@ -18,6 +18,11 @@ namespace Exp
 		{
 			m_modules[*it]->StartUp();
 		}
+
+		for (auto it = m_insertOrder.begin(); it != m_insertOrder.end(); ++it)
+		{
+			m_modules[*it]->PostInitialize();
+		}
 	}
 
 	void ModuleManager::ShutdownModules()
