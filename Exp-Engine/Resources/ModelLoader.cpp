@@ -190,7 +190,7 @@ namespace Exp
 			std::string fileName = ModelLoader::processPath(&file, directory);
 			// we name the texture the same as the filename as to reduce naming conflicts while 
 			// still only loading unique textures.
-			Texture* texture = Resources::LoadTexture(fileName, fileName, GL_TEXTURE_2D, alpha ? GL_RGBA : GL_RGB, false);
+			Texture* texture = Resources::LoadTexture(fileName, fileName, GL_TEXTURE_2D, alpha ? GL_RGBA : GL_RGB, false /*TODO put this on*/);
 			if (texture)
 			{
 				material->SetTexture("material.diffuse", texture, 0);

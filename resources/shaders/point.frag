@@ -40,7 +40,6 @@ void main()
     float Specular = texture(gAlbedoSpec, TexCoords).a;
 
     // then calculate lighting as usual
-    vec3 lighting  = Diffuse * 0.0; // hard-coded ambient component
     vec3 viewDir  = normalize(viewPos - FragPos);
     vec3 lightDir  = normalize(lightPos - FragPos);
     vec3 halfwayDir = normalize(lightDir + viewDir);
@@ -55,13 +54,12 @@ void main()
     float attenuation = clamp(1 - dot(distance, distance), 0, 1);
     attenuation = attenuation * attenuation;
 
-    vec3 ambient = 0.05 * Diffuse;
-
+    vec3 ambient = 0.00 * Diffuse;
     ambient *= attenuation;
     diffuse *= attenuation;
     specular *= attenuation;
-    lighting += ambient + diffuse + specular;
+    vec3 lighting = ambient + diffuse + specular;
       
+    // FragColor = vec4(pow(lighting, vec3(1.0/2.2)), 1.0);
     FragColor = vec4(lighting, 1.0);
-    // FragColor = vec4(Diffuse, 1.0);
 }

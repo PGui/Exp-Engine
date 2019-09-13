@@ -66,9 +66,14 @@ namespace Exp
 		DefaultBlitMaterial->SetTexture("screenTexture", Resources::LoadTexture("default_diffuse", "../resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 0);
 		DefaultMaterials[SID("blit")] = DefaultBlitMaterial;
 
+		// Unlit
 		Material * UnlitMaterial = new Material(Resources::LoadShader("unlit", "../resources/shaders/unlit.vert", "../resources/shaders/unlit.frag"));
 		UnlitMaterial->SetTexture("material.diffuse", Resources::LoadTexture("default_diffuse", "../resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 0);
 		DefaultMaterials[SID("unlit")] = UnlitMaterial;
+
+		// DebugLight
+		Material* DebugLightMaterial = new Material(Resources::LoadShader("debugLight", "../resources/shaders/debug_light.vert", "../resources/shaders/debug_light.frag"));
+		DefaultMaterials[SID("debugLight")] = DebugLightMaterial;
 
 		/*Material * DepthMaterial = new Material(Resources::LoadShader("depth", "../resources/shaders/depth.vert", "../resources/shaders/depth.frag"));
 		DefaultMaterials[SID("depth")] = DepthMaterial;*/

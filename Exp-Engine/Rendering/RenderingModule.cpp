@@ -136,6 +136,9 @@ namespace Exp
 		m_NDCPlane = std::make_shared<Quad>(1.0f, 1.0f);
 		m_PointLightSphere = std::make_shared<Sphere>(16, 16);
 
+		// Debug Lighting
+		m_DebugLightMesh = std::make_shared<Cube>();
+
 		GLCache::getInstance().Reset(true);
 	}
 
@@ -389,6 +392,9 @@ namespace Exp
 
 		if (m_DisplaySkybox)
 			RenderSkybox();
+
+
+		RenderDebugLights();
 		
 		// Debug GBuffer
 		//GLCache::getInstance().SetPolygonMode(GL_LINE);
@@ -483,7 +489,7 @@ namespace Exp
 		{
 			dirShader->use();
 			dirShader->setVec3("lightDir", light->m_Direction);
-			dirShader->setVec3("lightColor", glm::normalize(light->m_Color) * light->m_Intensity);
+			dirShader->setVec3("lightColor", /*glm::normalize*/(light->m_Color) * light->m_Intensity);
 
 			dirShader->setInt("gPosition", 0);
 			dirShader->setInt("gNormal", 1);
@@ -569,7 +575,7 @@ namespace Exp
 
 			pointShader->use();
 			pointShader->setVec3("lightPos", light->m_Position);
-			pointShader->setVec3("lightColor", glm::normalize(light->m_Color) * light->m_Intensity);
+			pointShader->setVec3("lightColor",/* glm::normalize*/(light->m_Color) * light->m_Intensity);
 			pointShader->setFloat("lightRadius", light->m_Radius);
 			pointShader->setInt("gPosition", 0);
 			pointShader->setInt("gNormal", 1);
@@ -579,6 +585,32 @@ namespace Exp
 			//GLCache::getInstance().SetPolygonMode(GL_LINE);
 			RenderMesh(m_PointLightSphere.get());
 			//GLCache::getInstance().SetPolygonMode(GL_FILL);
+		}
+	}
+
+	void RenderingModule::RenderDebugLights()
+	{
+		if (MaterialLibraryModule * MatLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary"))
+		{
+			// render light mesh (as visual cue), if requested
+			for (auto it = m_PointLights.begin(); it != m_PointLights.end(); ++it)
+			{
+				if ((*it)->m_RenderMesh)
+				{
+
+					RenderCommand command;
+					command.Material = MatLibraryModule->GetMaterial("debugLight");
+					command.Material->SetVector("lightColor", (*it)->m_Color * (*it)->m_Intensity);
+					command.Mesh = m_DebugLightMesh.get();
+					glm::mat4 model = glm::mat4(1.0f);
+					model = glm::translate(model, (*it)->m_Position);
+					model = glm::scale(model, glm::vec3(0.25f));
+					command.Transform = model;
+
+					Render(&command, false);
+				}
+			}
+			
 		}
 	}
 }

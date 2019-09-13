@@ -60,6 +60,9 @@ namespace Exp
 		std::shared_ptr<Quad> m_NDCPlane;
 		std::shared_ptr<Mesh> m_PointLightSphere;
 
+		// Debug Lighting
+		std::shared_ptr<Cube> m_DebugLightMesh;
+
 		// Skybox
 		std::shared_ptr<Skybox> CurrentSkybox;
 	private:
@@ -95,6 +98,8 @@ namespace Exp
 		void RenderDeferredDirLight(DirectionalLight* light);
 		void PreRenderDeferredPointLight(PointLight* light);
 		void RenderDeferredPointLight(PointLight* light);
+
+		void RenderDebugLights();
 
 	public:
 		Camera* RenderCamera;

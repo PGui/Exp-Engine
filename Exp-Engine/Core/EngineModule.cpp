@@ -69,9 +69,10 @@ void Exp::EngineModule::RunEngine()
 	SceneNode* SphereNode = Scene::MakeSceneNode(&mySphere, m_materialLibraryModule->GetMaterial("default"));
 
 	Plane myPlane(10,10);
-	SceneNode* PlaneNode = Scene::MakeSceneNode(&myPlane, m_materialLibraryModule->GetMaterial("default"));
+	SceneNode* PlaneNode = Scene::MakeSceneNode(&myPlane, m_materialLibraryModule->CreateMaterial("default"));
 	PlaneNode->SetScale(glm::vec3(30, 1, 30));
 	PlaneNode->SetRotation(glm::vec4(1, 0, 0, 90.0f));
+	PlaneNode->Material->SetTexture("material.diffuse", Resources::LoadTexture("wood", "../resources/texture/wood.png", GL_TEXTURE_2D, GL_RGB, false), 0);
 
 	/*DirectionalLight* MyLight = m_renderingModule->AddDirectionalLight(glm::vec3(1.0, 1.0, 0.0));
 	MyLight->m_Color = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -310,7 +311,7 @@ void Exp::EngineModule::DisplayUI()
 	if (ImGui::CollapsingHeader("Core", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::Checkbox("Disable Mouse", &m_Camera.m_disableMouse);
+		ImGui::Checkbox("Disable Mouse (F1)", &m_Camera.m_disableMouse);
 	}
 }
 
