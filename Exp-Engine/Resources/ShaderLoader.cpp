@@ -36,6 +36,6 @@ namespace Exp
 			spdlog::error("SHADER::FILE_NOT_SUCCESFULLY_READ. {}/{}", vsFile, fsFile);
 		}
 
-		return Shader(name, vertexCode, fragmentCode);
+		return Shader(name, vertexCode, fragmentCode, vsFile, fsFile);
 	}
 }

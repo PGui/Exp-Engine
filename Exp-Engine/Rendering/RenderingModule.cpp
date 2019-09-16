@@ -118,6 +118,20 @@ namespace Exp
 				
 			}
 		}
+
+		if (ImGui::CollapsingHeader("Shaders"/*, ImGuiTreeNodeFlags_DefaultOpen*/))
+		{
+			for (auto it = Resources::DebugGetShaders().begin(); it != Resources::DebugGetShaders().end(); ++it)
+			{
+				ImGui::Text(it->second.Name.c_str());
+				ImGui::SameLine();
+				if (ImGui::Button(std::string("Reload###"+ it->second.Name).c_str()))
+				{
+					spdlog::info("Reloading {}...", it->second.Name);
+					Resources::ReloadShader(it->second.Name);
+				}
+			}
+		}
 	}
 
 	void RenderingModule::PostInitialize()

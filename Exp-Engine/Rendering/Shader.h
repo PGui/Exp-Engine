@@ -19,16 +19,17 @@ namespace Exp
 {
 	class Shader
 	{
+
 	public:
 		unsigned int ID;
 		std::string Name;
-		Shader();
-		Shader(std::string name, std::string vsCode, std::string fsCode);
+		Shader() {};
+		Shader(std::string name, std::string vsCode, std::string fsCode, std::string vsfile, std::string fsfile);
 
 		~Shader();
 
 		void use();
-		void reload();
+		void deleteProgram();
 
 		void setBool(const std::string & name, bool value) const;
 		void setInt(const std::string & name, int value) const;
@@ -42,13 +43,13 @@ namespace Exp
 		void setMat3(const std::string & name, const glm::mat3 & value) const;
 		void setMat4(const std::string & name, const glm::mat4 & value) const;
 
+		std::string VertexFilePath;
+		std::string FragmentFilePath;
+
 	private:
 
 		std::vector<Uniform> Uniforms;
 		std::vector<VertexAttribute> Attributes;
-
-		GLchar * vertexPathCached;
-		GLchar * fragmentPathCached;
 
 		void compile(std::string vsCode, std::string fsCode);
 

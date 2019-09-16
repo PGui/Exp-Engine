@@ -285,6 +285,8 @@ void Exp::EngineModule::StartUp()
 	ImGui_ImplGlfw_InitForOpenGL(m_mainWindow, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
+	Resources::Init(); // TODO Make a module
+
 	spdlog::info("EngineModule StartUp");
 }
 
@@ -295,6 +297,8 @@ void Exp::EngineModule::Shutdown()
 	ImGui::DestroyContext();
 
 	glfwDestroyWindow(m_mainWindow);
+
+	Resources::Clean(); //TODO Make a module
 
 	spdlog::info("EngineModule Shutdown");
 }

@@ -3,13 +3,12 @@
 namespace Exp
 {
 
-	Shader::Shader()
-	{
-	}
-
-	Shader::Shader(std::string name, std::string vsCode, std::string fsCode) :
+	Shader::Shader(std::string name, std::string vsCode, std::string fsCode, std::string vsfile, std::string fsfile) :
 		Name(name)
 	{
+		VertexFilePath = vsfile;
+		FragmentFilePath = fsfile;
+
 		compile(vsCode, fsCode);
 	}
 
@@ -22,9 +21,9 @@ namespace Exp
 		glUseProgram(ID);
 	}
 
-	void Shader::reload()
+	void Shader::deleteProgram()
 	{
-		//glDeleteProgram(ID);
+		glDeleteProgram(ID);
 	}
 
 	void Shader::setBool(const std::string & name, bool value) const

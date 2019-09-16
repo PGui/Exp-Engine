@@ -26,10 +26,17 @@ namespace Exp
 	std::map<unsigned, Texture>     Resources::m_Textures		= std::map<unsigned, Texture>();
 	std::map<unsigned, TextureCube> Resources::m_TexturesCube	= std::map<unsigned, TextureCube>();
 	std::map<unsigned, SceneNode*>  Resources::m_Meshes			= std::map<unsigned, SceneNode*>();
+
+	std::map<unsigned, Shader>& Resources::DebugGetShaders()
+	{
+		return Resources::m_Shaders;
+	}
 	// --------------------------------------------------------------------------------------------
 	void Resources::Init()
 	{
+
 	}
+
 	void Resources::Clean()
 	{
 		// traverse all stored mesh scene nodes and delete accordingly.
@@ -53,6 +60,22 @@ namespace Exp
 		Shader shader = ShaderLoader::LoadShader(name, vsPath, fsPath);
 		Resources::m_Shaders[id] = shader;
 		return &Resources::m_Shaders[id];
+	}
+
+	Shader* Resources::ReloadShader(std::string name)
+	{
+		unsigned int id = SID(name);
+
+		if (Resources::m_Shaders.find(id) == Resources::m_Shaders.end())
+		{
+			return nullptr;
+			
+		}
+
+		Resources::m_Shaders[id].deleteProgram();
+		Resources::m_Shaders[id] = ShaderLoader::LoadShader(name, Resources::m_Shaders[id].VertexFilePath, Resources::m_Shaders[id].FragmentFilePath);
+		return &Resources::m_Shaders[id];
+			
 	}
 	// --------------------------------------------------------------------------------------------
 	Shader* Resources::GetShader(std::string name)

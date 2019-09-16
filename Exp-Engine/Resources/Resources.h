@@ -36,10 +36,14 @@ namespace Exp
 		// disallow creation of any Resources object; it's defined as a static object
 		Resources();
 	public:
+		// Debug
+		static std::map<unsigned, Shader>& DebugGetShaders();
+	public:
 		static void Init();
 		static void Clean();
 
 		static Shader*      LoadShader(std::string name, std::string vsPath, std::string fsPath, std::vector<std::string> defines = std::vector<std::string>());
+		static Shader*		ReloadShader(std::string name);
 		static Shader*      GetShader(std::string name);
 
 		static Texture*     LoadTexture(std::string name, std::string path, GLenum target = GL_TEXTURE_2D, GLenum format = GL_RGBA, bool srgb = false);
