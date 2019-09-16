@@ -2,6 +2,8 @@
 
 #include <vector>
 #include <iostream>
+#include <spdlog/spdlog.h>
+
 #include "Texture.h"
 
 namespace Exp

@@ -7,6 +7,7 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <spdlog/spdlog.h>
 
 
 #include "ShadingTypes.h"

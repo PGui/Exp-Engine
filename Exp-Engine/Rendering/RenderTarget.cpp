@@ -11,7 +11,7 @@ namespace Exp
 		glGenFramebuffers(1, &ID);
 		glBindFramebuffer(GL_FRAMEBUFFER, ID);
 
-		for (int i = 0; i < nrColorAttachments; ++i)
+		for (unsigned int i = 0; i < nrColorAttachments; ++i)
 		{
 			Texture texture;
 			texture.FilterMin = GL_LINEAR;
@@ -55,7 +55,7 @@ namespace Exp
 		}
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
-			std::cout << "Framebuffer not complete!" << std::endl;
+			spdlog::error("Framebuffer is not complete !");
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
@@ -76,7 +76,7 @@ namespace Exp
 			return &ColorAttachments[index];
 		else
 		{
-			std::cout << "RenderTarget color texture requested, but not available: " << index << std::endl;
+			spdlog::error("RenderTarget color texture requested, but not available : {}", index);
 			return nullptr;
 		}
 	}

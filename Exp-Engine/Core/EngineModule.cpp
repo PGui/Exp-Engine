@@ -244,7 +244,7 @@ void Exp::EngineModule::StartUp()
 
 	if (!glfwInit())
 	{
-		std::cout << "Failed to initialize glfw" << std::endl;
+		spdlog::critical("Failed to initialize glfw");
 		return;
 	}
 
@@ -254,7 +254,7 @@ void Exp::EngineModule::StartUp()
 	if (!Exp::EngineModule::m_mainWindow )
 	{
 		glfwTerminate();
-		std::cout << "Failed to create glfw windows." << std::endl;
+		spdlog::critical("Failed to create glfw window");
 		return;
 	}
 
@@ -262,7 +262,7 @@ void Exp::EngineModule::StartUp()
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
-		std::cout << "Failed to initialize glad." << std::endl;
+		spdlog::critical("Failed to initialize glad");
 		glfwTerminate();
 		return;
 	}
@@ -285,7 +285,7 @@ void Exp::EngineModule::StartUp()
 	ImGui_ImplGlfw_InitForOpenGL(m_mainWindow, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 
-	std::cout << "EngineModule StartUp" << std::endl;
+	spdlog::info("EngineModule StartUp");
 }
 
 void Exp::EngineModule::Shutdown()
@@ -296,7 +296,7 @@ void Exp::EngineModule::Shutdown()
 
 	glfwDestroyWindow(m_mainWindow);
 
-	std::cout << "EngineModule Shutdown" << std::endl;
+	spdlog::info("EngineModule Shutdown");
 }
 
 void Exp::EngineModule::DisplayUI()

@@ -150,7 +150,7 @@ namespace Exp
 			if (!success)
 			{
 				glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-				std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+				spdlog::error("SHADER_COMPILATION_ERROR of type {}\n{}", type, infoLog);
 			}
 		}
 		else
@@ -159,7 +159,7 @@ namespace Exp
 			if (!success)
 			{
 				glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-				std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+				spdlog::error("PROGRAM_LINKING_ERROR of type {}\n{}", type, infoLog);			
 			}
 		}
 	}

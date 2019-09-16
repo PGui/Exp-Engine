@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <assert.h>
+#include <spdlog/spdlog.h>
 
 
 namespace Exp

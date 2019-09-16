@@ -1,21 +1,21 @@
 #include "RemoteryModule.h"
 #include <iostream>
+#include <spdlog/spdlog.h>
 
 
 namespace Exp
 {
 	void RemoteryModule::StartUp()
 	{
-		std::cout << "RemoteryModule StartUp" << std::endl;
 		rmt_CreateGlobalInstance(&rmt);
+
+		spdlog::info("RemoteryModule StartUp");
 	}
 	void RemoteryModule::Shutdown()
 	{
-		std::cout << "RemoteryModule Shutdown" << std::endl;
 		rmt_DestroyGlobalInstance(rmt);
-	}
-	void RemoteryModule::Print()
-	{
-		std::cout << "Here is the remotery module." << std::endl;
+
+		spdlog::info("RemoteryModule Shutdown");
+		
 	}
 }

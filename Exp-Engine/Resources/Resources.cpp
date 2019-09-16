@@ -66,7 +66,7 @@ namespace Exp
 		}
 		else
 		{
-			std::cout << "Shader " << name << " not found." << std::endl;
+			spdlog::error("Shader {} not found", name);
 			return nullptr;
 		}
 	}
@@ -79,11 +79,11 @@ namespace Exp
 		if (Resources::m_Textures.find(id) != Resources::m_Textures.end())
 			return &Resources::m_Textures[id];
 
-		std::cout << "Loading texture file at: " + path + "." << std::endl;
+		spdlog::info("Loading texture file at {}", path);
 
 		Texture texture = TextureLoader::loadTexture(path, target, format, srgb);
 
-		std::cout << "Successfully loaded: " + path + "." << std::endl;
+		spdlog::info("Successfully loaded {}", path);
 
 		// make sure texture got properly loaded
 		if (texture.Width > 0)
@@ -109,7 +109,7 @@ namespace Exp
 		}
 		else
 		{
-			std::cout << "Requested texture: " + name + " not found!" << std::endl;
+			spdlog::error("Requested texture {} not found", name);
 			return nullptr;
 		}
 	}
@@ -138,7 +138,7 @@ namespace Exp
 		}
 		else
 		{
-			std::cout << "Requested texture cube: " << name << " not found!" << std::endl;
+			spdlog::error("Requested texture cube {} not found", name);
 			return nullptr;
 		}
 	}
@@ -182,7 +182,7 @@ namespace Exp
 		}
 		else
 		{
-			std::cout << "Requested mesh: " + name + " not found!" << std::endl;
+			spdlog::error("Requested mesh {} not found", name);
 			return nullptr;
 		}
 	}

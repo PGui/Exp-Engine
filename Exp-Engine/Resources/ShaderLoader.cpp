@@ -33,7 +33,7 @@ namespace Exp
 		}
 		catch (std::ifstream::failure e)
 		{
-			std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+			spdlog::error("SHADER::FILE_NOT_SUCCESFULLY_READ. {}/{}", vsFile, fsFile);
 		}
 
 		return Shader(name, vertexCode, fragmentCode);

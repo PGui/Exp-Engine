@@ -3,6 +3,7 @@
 #include "../Module/ModuleInterface.h"
 #include "../Core/EngineModule.h"
 #include <iostream>
+#include <spdlog/spdlog.h>
 
 #include "../Glm/glm.hpp"
 
@@ -20,14 +21,15 @@ namespace Exp
 		bool keysDown[512];
 
 		GLFWwindow * window = nullptr;
+		EngineModule* m_EngineModule = nullptr;
 
 	public:
 		InputModule();
 		virtual ~InputModule();
 
 		virtual void StartUp();
-
 		virtual void Shutdown();
+		virtual void PostInitialize();
 
 		//Static cb
 		static void glfw_mouse(GLFWwindow* window, double xpos, double ypos);

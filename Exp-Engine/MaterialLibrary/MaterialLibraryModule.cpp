@@ -15,7 +15,7 @@ namespace Exp
 		GenerateDefaultMaterials();
 		GenerateDefaultShaders();
 
-		std::cout << "MaterialLibraryModule StartUp" << std::endl;
+		spdlog::info("MaterialLibraryModule StartUp");
 	}
 
 	void Exp::MaterialLibraryModule::Shutdown()
@@ -31,7 +31,11 @@ namespace Exp
 			delete Materials[i];
 		}
 
-		std::cout << "MaterialLibraryModule Shutdown" << std::endl;
+		spdlog::info("MaterialLibraryModule Shutdown");
+	}
+
+	void MaterialLibraryModule::PostInitialize()
+	{
 	}
 
 	MaterialLibraryModule::MaterialLibraryModule()
@@ -113,7 +117,7 @@ namespace Exp
 		}
 		else
 		{
-			std::cout << "Material of template: " + base + " requested, but template did not exist." << std::endl;
+			spdlog::error("Material template '{}' requested, but it did not exist", base);
 			return nullptr;
 		}
 	}

@@ -29,12 +29,12 @@ namespace Exp
 		
 		InitGL();
 
-		std::cout << "RenderingModule StartUp" << std::endl;
+		spdlog::info("RenderingModule StartUp");
 	}
 
 	void RenderingModule::Shutdown()
 	{
-		std::cout << "RenderingModule Shutdown" << std::endl;
+		spdlog::info("RenderingModule Shutdown");
 	}
 
 	void RenderingModule::DisplayUI()

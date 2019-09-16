@@ -1,10 +1,8 @@
 #pragma once
-//#include "../shading/Material.h"
-//#include "../shading/Shader.h"
-//#include "../shading/Texture.h"
-#include "../resources/Resources.h"
+
 #include <vector>
 #include <map>
+#include "../Resources/Resources.h"
 #include "../Module/ModuleInterface.h"
 
 namespace Exp
@@ -14,8 +12,8 @@ namespace Exp
 	{
 	public:
 		virtual void StartUp();
-
 		virtual void Shutdown();
+		virtual void PostInitialize();
 	private:
 		//Internal Default Materials that will be copied to create instances.
 		std::map<unsigned, Material*> DefaultMaterials;

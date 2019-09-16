@@ -32,12 +32,6 @@
     <Filter Include="StbImage">
       <UniqueIdentifier>{719c83ec-7078-4f89-8940-d515bab2b823}</UniqueIdentifier>
     </Filter>
-    <Filter Include="CommandBuffer">
-      <UniqueIdentifier>{86758344-d0d4-4c15-9fff-8f4c470d4da5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="CommandBuffer\cmds">
-      <UniqueIdentifier>{5481859e-f1e3-4988-8070-e0dbf3a607a3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Hash">
       <UniqueIdentifier>{8221c71e-da31-40a0-9a88-025bf7d6500b}</UniqueIdentifier>
     </Filter>
@@ -112,9 +106,6 @@
     </ClCompile>
     <ClCompile Include="StbImage\stb_image.cpp">
       <Filter>StbImage</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandBuffer\cmds\GLCommands.cpp">
-      <Filter>CommandBuffer\cmds</Filter>
     </ClCompile>
     <ClCompile Include="Camera\Camera.cpp">
       <Filter>Camera</Filter>
@@ -192,9 +183,6 @@
       <Filter>MaterialLibrary</Filter>
     </ClCompile>
     <ClCompile Include="Rendering\GLCache.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\CustomCommands.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Rendering\CommandBuffer.cpp">
@@ -973,36 +961,6 @@
     <ClInclude Include="StbImage\stb_image.h">
       <Filter>StbImage</Filter>
     </ClInclude>
-    <ClInclude Include="CommandBuffer\command_debug.h">
-      <Filter>CommandBuffer</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandBuffer\command_internal.h">
-      <Filter>CommandBuffer</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandBuffer\CommandBuffer.h">
-      <Filter>CommandBuffer</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandBuffer\CommandKeys.h">
-      <Filter>CommandBuffer</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandBuffer\CommandPacket.h">
-      <Filter>CommandBuffer</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandBuffer\config.h">
-      <Filter>CommandBuffer</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandBuffer\LinearAllocator.h">
-      <Filter>CommandBuffer</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandBuffer\MemoryUtil.h">
-      <Filter>CommandBuffer</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandBuffer\RenderContext.h">
-      <Filter>CommandBuffer</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandBuffer\cmds\GLCommands.h">
-      <Filter>CommandBuffer\cmds</Filter>
-    </ClInclude>
     <ClInclude Include="Hash\Hash.h">
       <Filter>Hash</Filter>
     </ClInclude>
@@ -1084,13 +1042,7 @@
     <ClInclude Include="MaterialLibrary\MaterialLibraryModule.h">
       <Filter>MaterialLibrary</Filter>
     </ClInclude>
-    <ClInclude Include="Rendering\Buffers.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="Rendering\GLCache.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Rendering\CustomCommands.h">
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Rendering\CommandBuffer.h">

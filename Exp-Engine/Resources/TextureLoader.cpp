@@ -49,7 +49,7 @@ namespace Exp
 		}
 		else
 		{
-			std::cout << "Texture failed to load at path: " << path << std::endl;
+			spdlog::error("Texture failed to load at path {}", path);
 			stbi_image_free(data);
 		}
 
@@ -82,7 +82,7 @@ namespace Exp
 			}
 			else
 			{
-				std::cout << "Cube texture at path: " << faces[i] << " failed to load." << std::endl;
+				spdlog::error("Cube texture at path {} failed to load", faces[i]);
 				stbi_image_free(data);
 				return texture;
 			}

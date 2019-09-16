@@ -16,23 +16,27 @@ void Exp::InputModule::StartUp()
 {
 	rmt_ScopedCPUSample(InputModuleStartUp, 0);
 
-	if (EngineModule * Core = Exp::ModuleManager::Get().GetModule<EngineModule>("Engine"))
-	{
-		window = Core->m_mainWindow;
-		glfwSetCursorPosCallback(Core->m_mainWindow, Exp::InputModule::glfw_mouse);
-		glfwSetKeyCallback(Core->m_mainWindow, Exp::InputModule::glfw_key);
-	}
-	else
-	{
-		std::cout << "Error 'Core' Module not initialized." << std::endl;
-	}
-
-	std::cout << "InputModule StartUp" << std::endl;
+	spdlog::info("InputModule StartUp");
 }
 
 void Exp::InputModule::Shutdown()
 {
-	std::cout << "InputModule Shutdown" << std::endl;
+	spdlog::info("InputModule Shutdown");
+}
+
+void Exp::InputModule::PostInitialize()
+{
+	m_EngineModule = Exp::ModuleManager::Get().GetModule<EngineModule>("Engine");
+	if (m_EngineModule)
+	{
+		window = m_EngineModule->m_mainWindow;
+		glfwSetCursorPosCallback(m_EngineModule->m_mainWindow, Exp::InputModule::glfw_mouse);
+		glfwSetKeyCallback(m_EngineModule->m_mainWindow, Exp::InputModule::glfw_key);
+	}
+	else
+	{
+		spdlog::critical("InputModule Error : 'Core' Module not initialized");
+	}
 }
 
 const glm::vec2 Exp::InputModule::GetMouseDelta()

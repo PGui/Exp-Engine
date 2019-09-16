@@ -6,6 +6,7 @@
 #include "../Mesh/Mesh.h"
 #include "../Rendering/Material.h"
 
+
 namespace Exp
 {
 	std::vector<Mesh*> ModelLoader::meshes = std::vector<Mesh*>();
@@ -20,20 +21,20 @@ namespace Exp
 
 	SceneNode * ModelLoader::LoadMesh(Renderer * renderer, std::string path, bool setDefaultMaterial)
 	{
-		std::cout << "Loading mesh file at: " + path + "." << std::endl;
+		spdlog::info("Loading mesh file at {}", path);
 
 		Assimp::Importer importer;
 		const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 
 		if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
-			std::cout << "Assimp failed to load model at path: " + path << std::endl;
+			spdlog::error("Assimp failed to load model at {}", path);
 			return nullptr;
 		}
 
 		std::string directory = path.substr(0, path.find_last_of("/"));
 
-		std::cout << "Succesfully loaded: " + path + "." << std::endl;
+		spdlog::info("Succesfully loaded {}", path);
 
 		return ModelLoader::processNode(renderer, scene->mRootNode, scene, directory, setDefaultMaterial);
 	}
