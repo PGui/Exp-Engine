@@ -1,10 +1,8 @@
+
+
+
+
 #include "CommandBuffer.h"
-
-#include "../Mesh/Mesh.h"
-#include "Material.h"
-#include "RenderCommand.h"
-
-#include <algorithm>
 
 namespace Exp
 {

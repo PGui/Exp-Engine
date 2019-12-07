@@ -1,5 +1,5 @@
 #include "Texture.h"
-#include <assert.h>
+
 
 namespace Exp
 {

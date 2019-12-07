@@ -1,5 +1,4 @@
 #include "SceneNode.h"
-#include <algorithm>
 
 namespace Exp
 {

@@ -29,9 +29,9 @@ namespace Exp
         }
 
         bool oddRow = false;
-        for (int y = 0; y < ySegments; ++y)
+        for (unsigned int y = 0; y < ySegments; ++y)
         {
-            for (int x = 0; x < xSegments; ++x)
+            for (unsigned int x = 0; x < xSegments; ++x)
             {
                 Indices.push_back((y + 1) * (xSegments + 1) + x);
                 Indices.push_back(y       * (xSegments + 1) + x);

@@ -1,23 +1,5 @@
-#include "resources.h"
-#include "../hash/Hash.h"
+#include "Resources.h"
 
-#include "ShaderLoader.h"
-#include "TextureLoader.h"
-//#include "MeshLoader.h"
-
-#include "../Rendering/Shader.h"
-#include "../Rendering/Material.h"
-#include "../Rendering/Texture.h"
-#include "../Rendering/TextureCube.h"
-#include "../Mesh/Mesh.h"
-
-#include "../Scene/Scene.h"
-#include "../Scene/SceneNode.h"
-
-#include "ModelLoader.h"
-
-#include <stack>
-#include <vector>
 
 namespace Exp
 {

@@ -78,7 +78,7 @@ namespace Exp
 		bool m_DisplaySkybox = false;
 
 		// 
-		glm::vec2 m_RenderSize = glm::vec2(1280, 768);
+		glm::tvec2<GLint> m_RenderSize = glm::vec2(1280, 768);
 
 	public:
 		std::shared_ptr<RenderTarget> GetGBuffer();

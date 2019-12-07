@@ -1,12 +1,13 @@
 #pragma once
-
+#include <vector>
+#include <algorithm>
 #include "../Mesh/Mesh.h"
 #include "../Rendering/Material.h"
 #include "../glm/glm.hpp"
 #include "../glm/gtc/matrix_transform.hpp"
 #include "../glm/gtc/type_ptr.hpp"
 
-#include <vector>
+
 
 namespace Exp
 {

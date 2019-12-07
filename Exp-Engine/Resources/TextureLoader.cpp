@@ -1,7 +1,4 @@
 #include "TextureLoader.h"
-#include "../StbImage/stb_image.h"
-#include "../Rendering/Texture.h"
-#include "../Rendering/TextureCube.h"
 
 namespace Exp
 {

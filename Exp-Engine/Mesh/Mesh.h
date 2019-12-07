@@ -5,6 +5,8 @@
 
 #include "../glm/glm.hpp"
 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
 namespace Exp
 {
 

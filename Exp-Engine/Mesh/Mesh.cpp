@@ -132,32 +132,32 @@ namespace Exp
 
 			//Positions
 			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)offset);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(offset));
 			offset += 3 * sizeof(float);
 
 			if (Normals.size() > 0)
 			{
 				glEnableVertexAttribArray(1);
-				glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)offset);
+				glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(offset));
 				offset += 3 * sizeof(float);
 
 			}
 			if (UV.size() > 0)
 			{
 				glEnableVertexAttribArray(2);
-				glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)offset);
+				glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(offset));
 				offset += 2 * sizeof(float);
 			}
 			if (Tangents.size() > 0)
 			{
 				glEnableVertexAttribArray(3);
-				glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, stride, (void*)offset);
+				glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(offset));
 				offset += 3 * sizeof(float);
 			}
 			if (Bitangents.size() > 0)
 			{
 				glEnableVertexAttribArray(4);
-				glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, stride, (void*)offset);
+				glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(offset));
 				offset += 3 * sizeof(float);
 			}
 		}

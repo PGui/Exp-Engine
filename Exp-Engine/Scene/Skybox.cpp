@@ -1,9 +1,4 @@
 #include "Skybox.h"
-#include "Scene.h"
-#include "../Resources/Resources.h"
-#include "../Rendering/Material.h"
-#include "../Glm/glm.hpp"
-#include "../Mesh/Cube.h"
 
 namespace Exp
 {

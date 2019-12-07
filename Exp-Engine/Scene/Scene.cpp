@@ -1,12 +1,5 @@
 #include "Scene.h"
 
-#include "SceneNode.h"
-#include "../Mesh/Mesh.h"
-#include "../Rendering/Material.h"
-
-#include <stack>
-
-
 namespace Exp
 {
 	SceneNode* Scene::Root = new SceneNode(0);

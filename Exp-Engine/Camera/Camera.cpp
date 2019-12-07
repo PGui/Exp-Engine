@@ -1,6 +1,6 @@
-#include "Camera.h"
 #include "../Input/InputModule.h"
 #include <Remotery/Remotery.h>
+#include "Camera.h"
 
 namespace Exp
 {

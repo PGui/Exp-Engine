@@ -1,9 +1,16 @@
 #pragma once
 
+//#include <glad/glad.h>
+//#include <GLFW/glfw3.h>
 #include <vector>
 #include <map>
+
+#include "../hash/Hash.h"
+#include "../Profiling/RemoteryModule.h"
+#include "../Rendering/Material.h"
 #include "../Resources/Resources.h"
 #include "../Module/ModuleInterface.h"
+
 
 namespace Exp
 {

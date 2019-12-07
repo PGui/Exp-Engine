@@ -1,6 +1,11 @@
 #pragma once
 #include <vector>
+#include <stack>
 
+#include "SceneNode.h"
+
+#include "../Mesh/Mesh.h"
+#include "../Rendering/Material.h"
 
 namespace Exp
 {

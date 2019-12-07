@@ -1,9 +1,10 @@
 #pragma once
 #include <map>
 
+#include "Shader.h"
 #include "Texture.h"
 #include "TextureCube.h"
-#include "Shader.h"
+
 #include "ShadingTypes.h"
 
 namespace Exp

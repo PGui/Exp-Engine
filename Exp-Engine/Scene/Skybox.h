@@ -1,5 +1,12 @@
 #pragma once
 #include "SceneNode.h"
+#include "Scene.h"
+
+#include "../Glm/glm.hpp"
+#include "../Mesh/Cube.h"
+
+#include "../Resources/Resources.h"
+#include "../Rendering/Material.h"
 
 namespace Exp
 {

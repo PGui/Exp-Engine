@@ -1,11 +1,12 @@
 #pragma once
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <string>
 #include <iostream>
 #include <assert.h>
 #include <spdlog/spdlog.h>
 
+#include "../StbImage/stb_image.h"
+#include "../Rendering/Texture.h"
+#include "../Rendering/TextureCube.h"
 
 namespace Exp
 {
