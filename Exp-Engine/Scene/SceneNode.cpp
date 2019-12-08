@@ -4,7 +4,7 @@ namespace Exp
 {
 
 	SceneNode::SceneNode(unsigned int id) :
-		ID(id)
+		id(id)
 	{
 	}
 
@@ -99,14 +99,14 @@ namespace Exp
 
 	const unsigned int SceneNode::GetID() const
 	{
-		return ID;
+		return id;
 	}
 
 	void SceneNode::AddChild(SceneNode * node)
 	{
 		if (node->Parent)
 		{
-			node->Parent->RemoveChild(node->ID);
+			node->Parent->RemoveChild(node->id);
 		}
 		node->Parent = this;
 		Children.push_back(node);

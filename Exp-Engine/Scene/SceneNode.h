@@ -39,7 +39,7 @@ namespace Exp
 
 		bool bDirty = false;
 
-		unsigned int ID;
+		unsigned int id;
 
 	public:
 

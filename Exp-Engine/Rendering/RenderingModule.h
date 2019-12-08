@@ -45,7 +45,7 @@ namespace Exp
 		virtual void PostInitialize();
 	private:
 		//Modules
-		MaterialLibraryModule* m_MaterialLibrary = nullptr;
+		MaterialLibraryModule* materialLibrary = nullptr;
 	private:
 		void InitGL();
 
@@ -59,26 +59,26 @@ namespace Exp
 
 
 		// lighting
-		std::vector<std::shared_ptr<DirectionalLight>> m_DirectionalLights;
-		std::vector<std::shared_ptr<PointLight>> m_PointLights;
-		std::shared_ptr<RenderTarget> m_GBuffer;
-		std::shared_ptr<RenderTarget> m_CustomTarget;
-		std::shared_ptr<Quad> m_NDCPlane;
-		std::shared_ptr<Mesh> m_PointLightSphere;
+		std::vector<std::shared_ptr<DirectionalLight>> directionalLights;
+		std::vector<std::shared_ptr<PointLight>> pointLights;
+		std::shared_ptr<RenderTarget> GBuffer;
+		std::shared_ptr<RenderTarget> customTarget;
+		std::shared_ptr<Quad> ndcPlane;
+		std::shared_ptr<Mesh> pointLightSphere;
 
 		// Debug Lighting
 		std::shared_ptr<Cube> debugLightMesh;
 
 		// Skybox
-		std::shared_ptr<Skybox> CurrentSkybox;
+		std::shared_ptr<Skybox> currentSkybox;
 	private:
 		//Debug
 		bool wireframe = false;
-		bool m_DisplayLights = true;
-		bool m_DisplaySkybox = false;
+		bool displayLights = true;
+		bool displaySkybox = false;
 
 		// 
-		glm::tvec2<GLint> m_RenderSize = glm::vec2(1280, 768);
+		glm::tvec2<GLint> renderSize = glm::vec2(1280, 768);
 
 	public:
 		std::shared_ptr<RenderTarget> GetGBuffer();
@@ -93,7 +93,7 @@ namespace Exp
 		void PushMesh(SceneNode * Node);
 		void Render();
 
-		void ResizeRenderer(int Width, int Height);
+		void ResizeRenderer(int width, int height);
 	protected:
 		void PushMeshRenderCommand(Mesh * mesh, Material * material, const glm::mat4 & transform);
 
@@ -108,7 +108,7 @@ namespace Exp
 		void RenderDebugLights();
 
 	public:
-		Camera* RenderCamera;
-		CommandBuffer m_CommandBuffer;
+		Camera* renderCamera;
+		CommandBuffer commandBuffer;
 	};
 }

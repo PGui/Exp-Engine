@@ -42,8 +42,8 @@ namespace Exp
 		if (ImGui::CollapsingHeader("Rendering", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImGui::Checkbox("Wireframe", &wireframe);
-			ImGui::Checkbox("Lights", &m_DisplayLights);
-			ImGui::Checkbox("Skybox", &m_DisplaySkybox);
+			ImGui::Checkbox("Lights", &displayLights);
+			ImGui::Checkbox("Skybox", &displaySkybox);
 			if (ImGui::CollapsingHeader("Lights", ImGuiTreeNodeFlags_DefaultOpen))
 			{
 				ImGui::AlignTextToFramePadding();
@@ -58,7 +58,7 @@ namespace Exp
 
 				if (dirtreeopen)
 				{
-					for (int i = 0; i < m_DirectionalLights.size(); ++i)
+					for (int i = 0; i < directionalLights.size(); ++i)
 					{
 						ImGui::Separator();
 
@@ -68,12 +68,12 @@ namespace Exp
 						{
 							//Remove DL
 						}
-						ImGui::Checkbox(	std::string("Visibility###VisDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->visible);
-						ImGui::ColorEdit3(	std::string("Color###ColDir"		+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->color[0]);
-						ImGui::SliderFloat3(std::string("Direction###DirDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->direction[0], -1.0f, 1.0f);
-						ImGui::SliderFloat(	std::string("Intensity###IntDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->intensity, 0.0f, 5.0f);
-						ImGui::Checkbox(	std::string("Shadow###ShaDir"		+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->castShadows);
-						ImGui::Checkbox(	std::string("Debug Mesh###DebDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->renderMesh);
+						ImGui::Checkbox(	std::string("Visibility###VisDir"	+ std::to_string(i)).c_str(), &directionalLights[i]->visible);
+						ImGui::ColorEdit3(	std::string("Color###ColDir"		+ std::to_string(i)).c_str(), &directionalLights[i]->color[0]);
+						ImGui::SliderFloat3(std::string("Direction###DirDir"	+ std::to_string(i)).c_str(), &directionalLights[i]->direction[0], -1.0f, 1.0f);
+						ImGui::SliderFloat(	std::string("Intensity###IntDir"	+ std::to_string(i)).c_str(), &directionalLights[i]->intensity, 0.0f, 5.0f);
+						ImGui::Checkbox(	std::string("Shadow###ShaDir"		+ std::to_string(i)).c_str(), &directionalLights[i]->castShadows);
+						ImGui::Checkbox(	std::string("Debug Mesh###DebDir"	+ std::to_string(i)).c_str(), &directionalLights[i]->renderMesh);
 					}
 					
 					ImGui::TreePop();
@@ -93,7 +93,7 @@ namespace Exp
 				if (pointtreeopen)
 				{
 					int index = 0;
-					for (int i = 0; i < m_PointLights.size(); ++i)
+					for (int i = 0; i < pointLights.size(); ++i)
 					{
 						ImGui::Separator();
 						
@@ -104,13 +104,13 @@ namespace Exp
 						{
 							//Remove PL
 						}
-						ImGui::Checkbox(std::string("Visibility##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->visible);
-						ImGui::ColorEdit3(std::string("Color##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->color[0]);
-						ImGui::SliderFloat3(std::string("Position##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->position[0],-50.0f, 50.0f);
-						ImGui::SliderFloat(std::string("Radius##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->radius, 0.0f, 50.0f);
-						ImGui::SliderFloat(std::string("Intensity##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->intensity, 0.0f, 5.0f);
-						ImGui::Checkbox(std::string("Shadow##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->castShadows);
-						ImGui::Checkbox(std::string("Debug Mesh##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->renderMesh);
+						ImGui::Checkbox(std::string("Visibility##" + std::to_string(i + index++)).c_str(), &pointLights[i]->visible);
+						ImGui::ColorEdit3(std::string("Color##" + std::to_string(i + index++)).c_str(), &pointLights[i]->color[0]);
+						ImGui::SliderFloat3(std::string("Position##" + std::to_string(i + index++)).c_str(), &pointLights[i]->position[0],-50.0f, 50.0f);
+						ImGui::SliderFloat(std::string("Radius##" + std::to_string(i + index++)).c_str(), &pointLights[i]->radius, 0.0f, 50.0f);
+						ImGui::SliderFloat(std::string("Intensity##" + std::to_string(i + index++)).c_str(), &pointLights[i]->intensity, 0.0f, 5.0f);
+						ImGui::Checkbox(std::string("Shadow##" + std::to_string(i + index++)).c_str(), &pointLights[i]->castShadows);
+						ImGui::Checkbox(std::string("Debug Mesh##" + std::to_string(i + index++)).c_str(), &pointLights[i]->renderMesh);
 					}
 
 					ImGui::TreePop();
@@ -123,12 +123,12 @@ namespace Exp
 		{
 			for (auto it = Resources::DebugGetShaders().begin(); it != Resources::DebugGetShaders().end(); ++it)
 			{
-				ImGui::Text(it->second.Name.c_str());
+				ImGui::Text(it->second.name.c_str());
 				ImGui::SameLine();
-				if (ImGui::Button(std::string("Reload###"+ it->second.Name).c_str()))
+				if (ImGui::Button(std::string("Reload###"+ it->second.name).c_str()))
 				{
-					spdlog::info("Reloading {}...", it->second.Name);
-					Resources::ReloadShader(it->second.Name);
+					spdlog::info("Reloading {}...", it->second.name);
+					Resources::ReloadShader(it->second.name);
 				}
 			}
 		}
@@ -136,7 +136,7 @@ namespace Exp
 
 	void RenderingModule::PostInitialize()
 	{
-		m_MaterialLibrary= ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary");
+		materialLibrary= ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary");
 	}
 
 	void RenderingModule::InitGL()
@@ -150,24 +150,24 @@ namespace Exp
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		// Initialize Deferred Rendering
-		m_GBuffer = std::make_shared<RenderTarget>(m_RenderSize.x, m_RenderSize.y, GL_HALF_FLOAT, 3, true);
-		m_CustomTarget = std::make_shared<RenderTarget>(1, 1, GL_HALF_FLOAT, 1, true);
-		m_NDCPlane = std::make_shared<Quad>(1.0f, 1.0f);
-		m_PointLightSphere = std::make_shared<Sphere>(16, 16);
+		GBuffer = std::make_shared<RenderTarget>(renderSize.x, renderSize.y, GL_HALF_FLOAT, 3, true);
+		customTarget = std::make_shared<RenderTarget>(1, 1, GL_HALF_FLOAT, 1, true);
+		ndcPlane = std::make_shared<Quad>(1.0f, 1.0f);
+		pointLightSphere = std::make_shared<Sphere>(16, 16);
 
 		// Debug Lighting
 		debugLightMesh = std::make_shared<Cube>();
 
-		GLCache::getInstance().Reset(true);
+		GLCache::GetInstance().Reset(true);
 	}
 
 	void RenderingModule::UpdateGlobalUBO()
 	{
-		if (RenderCamera)
+		if (renderCamera)
 		{
-			projUBOData.viewMatrix = this->RenderCamera->view;
-			projUBOData.projectionMatrix = this->RenderCamera->projection;
-			projUBOData.viewPosition = this->RenderCamera->position;
+			projUBOData.viewMatrix = this->renderCamera->view;
+			projUBOData.projectionMatrix = this->renderCamera->projection;
+			projUBOData.viewPosition = this->renderCamera->position;
 
 			glGenBuffers(1, &projUBOId);
 			glBindBuffer(GL_UNIFORM_BUFFER, projUBOId);
@@ -186,28 +186,28 @@ namespace Exp
 
 		if (updateGLSettings)
 		{
-			GLCache::getInstance().SetBlend(material->blend);
+			GLCache::GetInstance().SetBlend(material->blend);
 			if (material->blend)
 			{
-				GLCache::getInstance().SetBlendFunc(material->blendSrc, material->blendDst);
+				GLCache::GetInstance().SetBlendFunc(material->blendSrc, material->blendDst);
 			}
-			GLCache::getInstance().SetDepthFunc(material->depthCompare);
-			GLCache::getInstance().SetDepthTest(material->depthTest);
-			GLCache::getInstance().SetCull(material->cull);
-			GLCache::getInstance().SetCullFace(material->cullFace);
+			GLCache::GetInstance().SetDepthFunc(material->depthCompare);
+			GLCache::GetInstance().SetDepthTest(material->depthTest);
+			GLCache::GetInstance().SetCull(material->cull);
+			GLCache::GetInstance().SetCullFace(material->cullFace);
 		}
 
 		if (!currentShader)
 			return;
 
-		currentShader->use();
-		currentShader->setMat4("model", transform);
+		currentShader->Use();
+		currentShader->SetMat4("model", transform);
 
 		// bind/active uniform sampler/texture objects
 		auto samplers = material->GetSamplerUniforms();
 		for (auto it = samplers.begin(); it != samplers.end(); ++it)
 		{
-			if (it->second.Type == SHADER_TYPE_SAMPLERCUBE)
+			if (it->second.type == SHADER_TYPE_SAMPLERCUBE)
 				it->second.TextureCube->Bind(it->second.Unit);
 			else
 				it->second.Texture->Bind(it->second.Unit);
@@ -216,16 +216,16 @@ namespace Exp
 		auto uniforms = material->GetUniforms();
 		for (auto it = uniforms.begin(); it != uniforms.end(); ++it)
 		{
-			switch (it->second.Type)
+			switch (it->second.type)
 			{
 			case SHADER_TYPE_INT:
-				currentShader->setInt(it->first, it->second.Int);
+				currentShader->SetInt(it->first, it->second.Int);
 				break;
 			case SHADER_TYPE_FLOAT:
-				currentShader->setFloat(it->first, it->second.Float);
+				currentShader->SetFloat(it->first, it->second.Float);
 				break;
 			case SHADER_TYPE_VEC3:
-				currentShader->setVec3(it->first, it->second.Vec3);
+				currentShader->SetVec3(it->first, it->second.Vec3);
 				break;
 			default:
 				break;
@@ -237,14 +237,14 @@ namespace Exp
 
 	std::shared_ptr<RenderTarget> RenderingModule::GetGBuffer()
 	{
-		return m_GBuffer;
+		return GBuffer;
 	}
 
 	DirectionalLight * RenderingModule::AddDirectionalLight(glm::vec3 Direction)
 	{
 		std::shared_ptr<DirectionalLight> Light = std::make_shared<DirectionalLight>();
 		Light->direction = Direction;
-		m_DirectionalLights.push_back(Light);
+		directionalLights.push_back(Light);
 		return Light.get();
 	}
 
@@ -253,37 +253,37 @@ namespace Exp
 		std::shared_ptr<PointLight> Light = std::make_shared<PointLight>();
 		Light->position = Position;
 		Light->radius = Radius;
-		m_PointLights.push_back(Light);
+		pointLights.push_back(Light);
 		return Light.get();
 	}
 
 	void RenderingModule::SetCamera(Camera* Camera)
 	{
-		if (RenderCamera != Camera)
+		if (renderCamera != Camera)
 		{
-			RenderCamera = Camera;
+			renderCamera = Camera;
 		}
 	}
 
 	void RenderingModule::SetSkybox(std::string folder)
 	{
-		CurrentSkybox = std::make_shared<Skybox>();
-		CurrentSkybox->SetCubemap(Resources::LoadTextureCube("skybox", folder));
+		currentSkybox = std::make_shared<Skybox>();
+		currentSkybox->SetCubemap(Resources::LoadTextureCube("skybox", folder));
 	}
 
 	void RenderingModule::RenderSkybox()
 	{
-		if (CurrentSkybox.get())
+		if (currentSkybox.get())
 		{
-			GLCache::getInstance().SetPolygonMode(wireframe ? GL_LINE : GL_FILL);
+			GLCache::GetInstance().SetPolygonMode(wireframe ? GL_LINE : GL_FILL);
 
 			RenderCommand command;
-			command.mesh = CurrentSkybox->mesh;
-			command.material = CurrentSkybox->Material;
-			command.transform = CurrentSkybox->GetTransform();
+			command.mesh = currentSkybox->mesh;
+			command.material = currentSkybox->Material;
+			command.transform = currentSkybox->GetTransform();
 			Render(&command, true);
 
-			GLCache::getInstance().SetPolygonMode(GL_FILL);
+			GLCache::GetInstance().SetPolygonMode(GL_FILL);
 		}
 	}
 
@@ -292,26 +292,26 @@ namespace Exp
 		Node->UpdateTransform(true);
 
 		//Push the node and all the children for rendering
-		std::stack<SceneNode*> StackNode;
-		StackNode.push(Node);
+		std::stack<SceneNode*> stackNode;
+		stackNode.push(Node);
 		for (unsigned int i = 0; i < Node->GetChildCount(); ++i)
 		{
-			StackNode.push(Node->GetChildByIndex(i));
+			stackNode.push(Node->GetChildByIndex(i));
 		}
 
-		while (!StackNode.empty())
+		while (!stackNode.empty())
 		{
-			SceneNode * CurrentNode = StackNode.top();
-			StackNode.pop();
+			SceneNode * currentNode = stackNode.top();
+			stackNode.pop();
 
-			if (CurrentNode->mesh && CurrentNode->Material)
+			if (currentNode->mesh && currentNode->Material)
 			{
-				PushMeshRenderCommand(CurrentNode->mesh, CurrentNode->Material, CurrentNode->GetTransform());
+				PushMeshRenderCommand(currentNode->mesh, currentNode->Material, currentNode->GetTransform());
 			}
 
-			for (unsigned int i = 0; i < CurrentNode->GetChildCount(); ++i)
+			for (unsigned int i = 0; i < currentNode->GetChildCount(); ++i)
 			{
-				StackNode.push(CurrentNode->GetChildByIndex(i));
+				stackNode.push(currentNode->GetChildByIndex(i));
 			}
 		}
 	}
@@ -326,45 +326,45 @@ namespace Exp
 		UpdateGlobalUBO();
 
 		// set default GL state
-		GLCache::getInstance().Reset();
+		GLCache::GetInstance().Reset();
 		
 
-		m_CommandBuffer.Sort();
+		commandBuffer.Sort();
 
-		glBindFramebuffer(GL_FRAMEBUFFER, m_GBuffer->ID);
+		glBindFramebuffer(GL_FRAMEBUFFER, GBuffer->ID);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 		glDrawBuffers(3, attachments);
 
-		GLCache::getInstance().SetPolygonMode(wireframe ? GL_LINE : GL_FILL);
+		GLCache::GetInstance().SetPolygonMode(wireframe ? GL_LINE : GL_FILL);
 
-		for (auto& CurrentRenderCommand : m_CommandBuffer.deferredCommands)
+		for (auto& currentRenderCommand : commandBuffer.deferredCommands)
 		{
-			Render(&CurrentRenderCommand, true);
+			Render(&currentRenderCommand, true);
 		}
 
 		
 
-		GLCache::getInstance().SetPolygonMode(GL_FILL);
+		GLCache::GetInstance().SetPolygonMode(GL_FILL);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		// 4. Render deferred shader for each light
-		GLCache::getInstance().SetDepthTest(false);
-		GLCache::getInstance().SetBlend(true);
-		GLCache::getInstance().SetBlendFunc(GL_ONE, GL_ONE);
+		GLCache::GetInstance().SetDepthTest(false);
+		GLCache::GetInstance().SetBlend(true);
+		GLCache::GetInstance().SetBlendFunc(GL_ONE, GL_ONE);
 
 		// bind gbuffer
-		m_GBuffer->GetColorTexture(0)->Bind(0);
-		m_GBuffer->GetColorTexture(1)->Bind(1);
-		m_GBuffer->GetColorTexture(2)->Bind(2);
+		GBuffer->GetColorTexture(0)->Bind(0);
+		GBuffer->GetColorTexture(1)->Bind(1);
+		GBuffer->GetColorTexture(2)->Bind(2);
 
-		if (m_DisplayLights)
+		if (displayLights)
 		{
-			//GLCache::getInstance().SetCull(false);//TODO Remove - DEBUG
+			//GLCache::GetInstance().SetCull(false);//TODO Remove - DEBUG
 			// directional lights
-			for (auto it = m_DirectionalLights.begin(); it != m_DirectionalLights.end(); ++it)
+			for (auto it = directionalLights.begin(); it != directionalLights.end(); ++it)
 			{
 				RenderDeferredDirLight((*it).get());
 			}
@@ -372,23 +372,23 @@ namespace Exp
 
 ////////////////////////////////////////////////////////////////
 			// Pre point light
-			/*for (auto it = m_PointLights.begin(); it != m_PointLights.end(); ++it)
+			/*for (auto it = pointLights.begin(); it != pointLights.end(); ++it)
 			{
 				PreRenderDeferredPointLight((*it).get());
 			}
 
 
-			GLCache::getInstance().SetCullFace(GL_FRONT);
-			for (auto it = m_PointLights.begin(); it != m_PointLights.end(); ++it)
+			GLCache::GetInstance().SetCullFace(GL_FRONT);
+			for (auto it = pointLights.begin(); it != pointLights.end(); ++it)
 			{
 				RenderDeferredPointLight((*it).get());
 			}
-			GLCache::getInstance().SetCullFace(GL_BACK);*/
+			GLCache::GetInstance().SetCullFace(GL_BACK);*/
 ////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////
-			GLCache::getInstance().SetCullFace(GL_FRONT);
-			for (auto it = m_PointLights.begin(); it != m_PointLights.end(); ++it)
+			GLCache::GetInstance().SetCullFace(GL_FRONT);
+			for (auto it = pointLights.begin(); it != pointLights.end(); ++it)
 			{
 				// only render point lights if within frustum
 				if (true/*camera->Frustum.Intersect((*it)->position, (*it)->radius)*/)
@@ -396,47 +396,47 @@ namespace Exp
 					RenderDeferredPointLight((*it).get());
 				}
 			}
-			GLCache::getInstance().SetCullFace(GL_BACK);
+			GLCache::GetInstance().SetCullFace(GL_BACK);
 ////////////////////////////////////////////////////////////////
 		}
 
-		GLCache::getInstance().SetDepthTest(true);
-		GLCache::getInstance().SetBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-		GLCache::getInstance().SetBlend(false);
+		GLCache::GetInstance().SetDepthTest(true);
+		GLCache::GetInstance().SetBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+		GLCache::GetInstance().SetBlend(false);
 
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_GBuffer->ID);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, GBuffer->ID);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
-		glBlitFramebuffer(0, 0, m_GBuffer->Width, m_GBuffer->Height, 0, 0, m_RenderSize.x, m_RenderSize.y, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+		glBlitFramebuffer(0, 0, GBuffer->Width, GBuffer->Height, 0, 0, renderSize.x, renderSize.y, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		if (m_DisplaySkybox)
+		if (displaySkybox)
 			RenderSkybox();
 
 
 		RenderDebugLights();
 		
 		// Debug GBuffer
-		//GLCache::getInstance().SetPolygonMode(GL_LINE);
+		//GLCache::GetInstance().SetPolygonMode(GL_LINE);
 		/*glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glClear(GL_COLOR_BUFFER_BIT);
-		Blit(m_GBuffer->GetDepthStencilTexture());*/
+		Blit(GBuffer->GetDepthStencilTexture());*/
 
-		m_CommandBuffer.Clear();
+		commandBuffer.Clear();
 	}
 
-	void RenderingModule::ResizeRenderer(int Width, int Height)
+	void RenderingModule::ResizeRenderer(int width, int height)
 	{
-		m_RenderSize = glm::vec2(Width, Height);
-		m_GBuffer->Resize(Width, Height);
-		if (CurrentSkybox.get())
+		renderSize = glm::vec2(width, height);
+		GBuffer->Resize(width, height);
+		if (currentSkybox.get())
 		{
-			CurrentSkybox->GetCubemap()->Resize(Width, Height);
+			currentSkybox->GetCubemap()->Resize(width, height);
 		}
 	}
 
 	void RenderingModule::PushMeshRenderCommand(Mesh * mesh, Material * material, const glm::mat4 & transform)
 	{
-		m_CommandBuffer.Push(mesh, material, transform);
+		commandBuffer.Push(mesh, material, transform);
 	}
 
 	void RenderingModule::RenderMesh(Mesh* mesh)
@@ -468,15 +468,15 @@ namespace Exp
 		else
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glViewport(0, 0, m_RenderSize.x, m_RenderSize.y);
+			glViewport(0, 0, renderSize.x, renderSize.y);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		}
 		// if no material is given, use default blit material
 		if (!material)
 		{
-			if (m_MaterialLibrary)
+			if (materialLibrary)
 			{
-				material = m_MaterialLibrary->GetMaterial("blit");
+				material = materialLibrary->GetMaterial("blit");
 			}
 			
 		}
@@ -488,7 +488,7 @@ namespace Exp
 		// render screen-space material to quad which will be displayed in dst's buffers.
 		RenderCommand command;
 		command.material = material;
-		command.mesh = m_NDCPlane.get();
+		command.mesh = ndcPlane.get();
 		Render(&command, true);
 	}
 
@@ -497,18 +497,18 @@ namespace Exp
 		if (!light->visible)
 			return;
 		Shader* dirShader = nullptr;
-		if (m_MaterialLibrary)
+		if (materialLibrary)
 		{
-			dirShader = m_MaterialLibrary->GetShader("deferredDirectional");
+			dirShader = materialLibrary->GetShader("deferredDirectional");
 			if (dirShader)//TODO put as member
 			{
-				dirShader->use();
-				dirShader->setVec3("lightDir", light->direction);
-				dirShader->setVec3("lightColor", /*glm::normalize*/(light->color) * light->intensity);
+				dirShader->Use();
+				dirShader->SetVec3("lightDir", light->direction);
+				dirShader->SetVec3("lightColor", /*glm::normalize*/(light->color) * light->intensity);
 
-				dirShader->setInt("gPosition", 0);
-				dirShader->setInt("gNormal", 1);
-				dirShader->setInt("gAlbedoSpec", 2);
+				dirShader->SetInt("gPosition", 0);
+				dirShader->SetInt("gNormal", 1);
+				dirShader->SetInt("gAlbedoSpec", 2);
 
 				if (light->shadowMapRT)
 				{
@@ -516,7 +516,7 @@ namespace Exp
 					light->ShadowMapRT->GetDepthStencilTexture()->Bind(3);*/
 				}
 
-				RenderMesh(m_NDCPlane.get());
+				RenderMesh(ndcPlane.get());
 
 			}
 		}
@@ -525,17 +525,17 @@ namespace Exp
 	void RenderingModule::PreRenderDeferredPointLight(PointLight* light)
 	{
 		Shader* stencilShader = nullptr;
-		if (m_MaterialLibrary)
+		if (materialLibrary)
 		{
-			stencilShader = m_MaterialLibrary->GetShader("stencilLightShader");
+			stencilShader = materialLibrary->GetShader("stencilLightShader");
 
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, light->position);
 			model = glm::scale(model, glm::vec3(light->radius));
 
-			//glBindTexture(GL_TEXTURE_2D, m_GBuffer->GetDepthStencilTexture()->ID);
-			//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderSize.x, m_RenderSize.y, 0, GL_RGB, GL_FLOAT, NULL);
-			//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, m_GBuffer->GetDepthStencilTexture()->ID, 0);
+			//glBindTexture(GL_TEXTURE_2D, GBuffer->GetDepthStencilTexture()->id);
+			//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, renderSize.x, renderSize.y, 0, GL_RGB, GL_FLOAT, NULL);
+			//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, GBuffer->GetDepthStencilTexture()->id, 0);
 
 			//glEnable(GL_STENCIL_TEST);
 			
@@ -552,10 +552,10 @@ namespace Exp
 			// we'll render the light volume faces once per light
 			glStencilFunc(GL_EQUAL, 0, 0xFF);
 			glStencilOp(GL_KEEP, GL_INCR, GL_INCR);
-			stencilShader->use();
-			RenderMesh(m_PointLightSphere.get());
+			stencilShader->Use();
+			RenderMesh(pointLightSphere.get());
 
-		/*	stencilShader->use();
+		/*	stencilShader->Use();
 			glDrawBuffer(GL_NONE);
 			glClear(GL_STENCIL_BUFFER_BIT);
 			glEnable(GL_DEPTH_TEST);
@@ -563,8 +563,8 @@ namespace Exp
 			glStencilFunc(GL_ALWAYS, 0, 0);
 			glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
 			glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
-			stencilShader->setMat4("model", model);
-			RenderMesh(m_PointLightSphere.get());
+			stencilShader->SetMat4("model", model);
+			RenderMesh(pointLightSphere.get());
 */
 		}
 
@@ -577,41 +577,41 @@ namespace Exp
 			return;
 
 		Shader* pointShader = nullptr;
-		if (m_MaterialLibrary)
+		if (materialLibrary)
 		{
-			pointShader = m_MaterialLibrary->GetShader("deferredPoint");
+			pointShader = materialLibrary->GetShader("deferredPoint");
 			if (pointShader)
 			{
 				glm::mat4 model = glm::mat4(1.0f);
 				model = glm::translate(model, light->position);
 				model = glm::scale(model, glm::vec3(light->radius));
 
-				pointShader->use();
-				pointShader->setVec3("lightPos", light->position);
-				pointShader->setVec3("lightColor",/* glm::normalize*/(light->color) * light->intensity);
-				pointShader->setFloat("lightRadius", light->radius);
-				pointShader->setInt("gPosition", 0);
-				pointShader->setInt("gNormal", 1);
-				pointShader->setInt("gAlbedoSpec", 2);
-				pointShader->setMat4("model", model);
+				pointShader->Use();
+				pointShader->SetVec3("lightPos", light->position);
+				pointShader->SetVec3("lightColor",/* glm::normalize*/(light->color) * light->intensity);
+				pointShader->SetFloat("lightRadius", light->radius);
+				pointShader->SetInt("gPosition", 0);
+				pointShader->SetInt("gNormal", 1);
+				pointShader->SetInt("gAlbedoSpec", 2);
+				pointShader->SetMat4("model", model);
 
-				//GLCache::getInstance().SetPolygonMode(GL_LINE);
-				RenderMesh(m_PointLightSphere.get());
-				//GLCache::getInstance().SetPolygonMode(GL_FILL);
+				//GLCache::GetInstance().SetPolygonMode(GL_LINE);
+				RenderMesh(pointLightSphere.get());
+				//GLCache::GetInstance().SetPolygonMode(GL_FILL);
 			}
 		}
 	}
 
 	void RenderingModule::RenderDebugLights()
 	{
-		if (m_MaterialLibrary)
+		if (materialLibrary)
 		{
-			for (auto it = m_PointLights.begin(); it != m_PointLights.end(); ++it)
+			for (auto it = pointLights.begin(); it != pointLights.end(); ++it)
 			{
 				if ((*it)->renderMesh)
 				{
 					RenderCommand command;
-					command.material = m_MaterialLibrary->GetMaterial("debugLight");
+					command.material = materialLibrary->GetMaterial("debugLight");
 					command.material->SetVector("lightColor", (*it)->color * (*it)->intensity);
 					command.mesh = debugLightMesh.get();
 					glm::mat4 model = glm::mat4(1.0f);

@@ -36,7 +36,7 @@ namespace Exp
 			{
 				if (!a.material->GetShader() || !b.material->GetShader())
 					return false;
-				return a.material->GetShader()->ID > b.material->GetShader()->ID;
+				return a.material->GetShader()->id > b.material->GetShader()->id;
 			});
 	}
 

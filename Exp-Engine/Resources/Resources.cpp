@@ -54,8 +54,8 @@ namespace Exp
 			
 		}
 
-		Resources::m_Shaders[id].deleteProgram();
-		Resources::m_Shaders[id] = ShaderLoader::LoadShader(name, Resources::m_Shaders[id].VertexFilePath, Resources::m_Shaders[id].FragmentFilePath);
+		Resources::m_Shaders[id].DeleteProgram();
+		Resources::m_Shaders[id] = ShaderLoader::LoadShader(name, Resources::m_Shaders[id].vertexFilePath, Resources::m_Shaders[id].fragmentFilePath);
 		return &Resources::m_Shaders[id];
 			
 	}

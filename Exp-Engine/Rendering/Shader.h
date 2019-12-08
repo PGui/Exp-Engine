@@ -21,39 +21,39 @@ namespace Exp
 	{
 
 	public:
-		unsigned int ID;
-		std::string Name;
+		unsigned int id;
+		std::string name;
 		Shader() {};
 		Shader(std::string name, std::string vsCode, std::string fsCode, std::string vsfile, std::string fsfile);
 
 		~Shader();
 
-		void use();
-		void deleteProgram();
+		void Use();
+		void DeleteProgram();
 
-		void setBool(const std::string & name, bool value) const;
-		void setInt(const std::string & name, int value) const;
-		void setFloat(const std::string & name, float value) const;
-		void setVec2(const std::string & name, const glm::vec2 & value) const;
-		void setVec2(const std::string & name, float x, float y) const;
-		void setVec3(const std::string & name, const glm::vec3 & value) const;
-		void setVec3(const std::string & name, float x, float y, float z) const;
-		void setVec4(const std::string & name, const glm::vec3 & value) const;
-		void setMat2(const std::string & name, const glm::mat2 & value) const;
-		void setMat3(const std::string & name, const glm::mat3 & value) const;
-		void setMat4(const std::string & name, const glm::mat4 & value) const;
+		void SetBool(const std::string & name, bool value) const;
+		void SetInt(const std::string & name, int value) const;
+		void SetFloat(const std::string & name, float value) const;
+		void SetVec2(const std::string & name, const glm::vec2 & value) const;
+		void SetVec2(const std::string & name, float x, float y) const;
+		void SetVec3(const std::string & name, const glm::vec3 & value) const;
+		void SetVec3(const std::string & name, float x, float y, float z) const;
+		void SetVec4(const std::string & name, const glm::vec3 & value) const;
+		void SetMat2(const std::string & name, const glm::mat2 & value) const;
+		void SetMat3(const std::string & name, const glm::mat3 & value) const;
+		void SetMat4(const std::string & name, const glm::mat4 & value) const;
 
-		std::string VertexFilePath;
-		std::string FragmentFilePath;
+		std::string vertexFilePath;
+		std::string fragmentFilePath;
 
 	private:
 
 		std::vector<Uniform> uniforms;
-		std::vector<VertexAttribute> Attributes;
+		std::vector<VertexAttribute> attributes;
 
-		void compile(std::string vsCode, std::string fsCode);
+		void Compile(std::string vsCode, std::string fsCode);
 
-		void checkCompileErrors(unsigned int shader, std::string type);
+		void CheckCompileErrors(unsigned int shader, std::string type);
 	};
 
 }

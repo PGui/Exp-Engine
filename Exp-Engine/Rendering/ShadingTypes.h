@@ -25,7 +25,7 @@ namespace Exp
 
 	struct UniformValueSampler
 	{
-		SHADER_TYPE  Type;
+		SHADER_TYPE  type;
 		unsigned int Unit;
 		union
 		{
@@ -38,7 +38,7 @@ namespace Exp
 
 	struct UniformValue
 	{
-		SHADER_TYPE Type;
+		SHADER_TYPE type;
 		// TODO(Joey): now each element takes up the space of its largest 
 		// element (mat4) which is 64 bytes; come up with a better solution!
 		union
@@ -60,14 +60,14 @@ namespace Exp
 
 	struct Uniform
 	{
-		std::string  Name;
+		std::string  name;
 		int          Size;
 		unsigned int Location;
 	};
 
 	struct VertexAttribute
 	{
-		std::string  Name;
+		std::string  name;
 		int          Size;
 		unsigned int Location;
 	};

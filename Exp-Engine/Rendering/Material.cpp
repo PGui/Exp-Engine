@@ -68,23 +68,23 @@ namespace Exp
 		switch (texture->Target)
 		{
 		case GL_TEXTURE_1D:
-			samplerUniforms[name].Type = SHADER_TYPE_SAMPLER1D;
+			samplerUniforms[name].type = SHADER_TYPE_SAMPLER1D;
 			break;
 		case GL_TEXTURE_2D:
-			samplerUniforms[name].Type = SHADER_TYPE_SAMPLER2D;
+			samplerUniforms[name].type = SHADER_TYPE_SAMPLER2D;
 			break;
 		case GL_TEXTURE_3D:
-			samplerUniforms[name].Type = SHADER_TYPE_SAMPLER3D;
+			samplerUniforms[name].type = SHADER_TYPE_SAMPLER3D;
 			break;
 		case GL_TEXTURE_CUBE_MAP:
-			samplerUniforms[name].Type = SHADER_TYPE_SAMPLERCUBE;
+			samplerUniforms[name].type = SHADER_TYPE_SAMPLERCUBE;
 			break;
 		}
 
 		if (shader)
 		{
-			shader->use();
-			shader->setInt(name, unit);
+			shader->Use();
+			shader->SetInt(name, unit);
 		}
 
 	}
@@ -92,31 +92,31 @@ namespace Exp
 	void Material::SetTextureCube(std::string name, TextureCube* value, unsigned int unit)
 	{
 		samplerUniforms[name].Unit = unit;
-		samplerUniforms[name].Type = SHADER_TYPE_SAMPLERCUBE;
+		samplerUniforms[name].type = SHADER_TYPE_SAMPLERCUBE;
 		samplerUniforms[name].TextureCube = value;
 
 		if (shader)
 		{
-			shader->use();
-			shader->setInt(name, unit);
+			shader->Use();
+			shader->SetInt(name, unit);
 		}
 	}
 
 	void Material::SetInt(std::string name, int value)
 	{
-		uniforms[name].Type = SHADER_TYPE_INT;
+		uniforms[name].type = SHADER_TYPE_INT;
 		uniforms[name].Int = value;
 	}
 
 	void Material::SetFloat(std::string name, float value)
 	{
-		uniforms[name].Type = SHADER_TYPE_FLOAT;
+		uniforms[name].type = SHADER_TYPE_FLOAT;
 		uniforms[name].Float = value;
 	}
 
 	void Material::SetVector(std::string name, glm::vec3 value)
 	{
-		uniforms[name].Type = SHADER_TYPE_VEC3;
+		uniforms[name].type = SHADER_TYPE_VEC3;
 		uniforms[name].Vec3 = value;
 	}
 }

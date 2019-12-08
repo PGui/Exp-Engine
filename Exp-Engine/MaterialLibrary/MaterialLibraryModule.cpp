@@ -87,21 +87,21 @@ namespace Exp
 	void MaterialLibraryModule::GenerateDefaultShaders()
 	{
 		Shader* DeferredDirectionalLightShader = Resources::LoadShader("deferredDirectional", "../resources/shaders/directional.vert", "../resources/shaders/directional.frag");
-		DeferredDirectionalLightShader->use();
-		DeferredDirectionalLightShader->setInt("gPosition", 0);
-		DeferredDirectionalLightShader->setInt("gNormal", 1);
-		DeferredDirectionalLightShader->setInt("gAlbedoSpec", 2);
+		DeferredDirectionalLightShader->Use();
+		DeferredDirectionalLightShader->SetInt("gPosition", 0);
+		DeferredDirectionalLightShader->SetInt("gNormal", 1);
+		DeferredDirectionalLightShader->SetInt("gAlbedoSpec", 2);
 		defaultShaders[SID("deferredDirectional")] = DeferredDirectionalLightShader;
 
 		Shader* DeferredPointLightShader = Resources::LoadShader("deferredPoint", "../resources/shaders/point.vert", "../resources/shaders/point.frag");
-		DeferredPointLightShader->use();
-		DeferredPointLightShader->setInt("gPosition", 0);
-		DeferredPointLightShader->setInt("gNormal", 1);
-		DeferredPointLightShader->setInt("gAlbedoSpec", 2);
+		DeferredPointLightShader->Use();
+		DeferredPointLightShader->SetInt("gPosition", 0);
+		DeferredPointLightShader->SetInt("gNormal", 1);
+		DeferredPointLightShader->SetInt("gAlbedoSpec", 2);
 		defaultShaders[SID("deferredPoint")] = DeferredPointLightShader;
 
 		Shader* StencilLightShader = Resources::LoadShader("stencilLightShader", "../resources/shaders/stencil_light.vert", "../resources/shaders/stencil_light.frag");
-		StencilLightShader->use();
+		StencilLightShader->Use();
 		defaultShaders[SID("stencilLightShader")] = StencilLightShader;
 	}
 
