@@ -20,37 +20,37 @@ namespace Exp
 	class Camera
 	{
 	public:
-		glm::mat4 m_view = glm::mat4(1.0f);
-		glm::mat4 m_projection = glm::mat4(1.0f);
+		glm::mat4 view = glm::mat4(1.0f);
+		glm::mat4 projection = glm::mat4(1.0f);
 
-		glm::mat4 m_viewProjection = glm::mat4(1.0f);
+		glm::mat4 viewProjection = glm::mat4(1.0f);
 
-		glm::vec3 m_position = glm::vec3(0.0f, 0.0f, 0.0f);
-		glm::vec3 m_forward = glm::vec3(0.0f, 0.0f, -1.0f);
-		glm::vec3 m_up = glm::vec3(0.0f, 1.0f, 0.0f);
-		glm::vec3 m_right = glm::vec3(1.0f, 0.0f, 0.0f);
+		glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::vec3 forward = glm::vec3(0.0f, 0.0f, -1.0f);
+		glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::vec3 right = glm::vec3(1.0f, 0.0f, 0.0f);
 
-		float m_fovY = 50.0f;
-		float m_aspectRatio = 16.0f / 9.0f;
-		float m_nearPlane = 0.1f;
-		float m_farPlane = 2000.0f;
+		float fovY = 50.0f;
+		float aspectRatio = 16.0f / 9.0f;
+		float nearPlane = 0.1f;
+		float farPlane = 2000.0f;
 
-		float m_yaw = -90.0f;
-		float m_pitch = 0.0f;
+		float yaw = -90.0f;
+		float pitch = 0.0f;
 
-		float m_speed = 10.0f;
-		float m_sensitivity = 0.3f;
+		float speed = 10.0f;
+		float sensitivity = 0.3f;
 
-		float m_damping = 5.0f;
+		float damping = 5.0f;
 
-		bool m_disableMouse = false;
+		bool disableMouse = false;
 
 	private:
-		float m_targetYaw = 0.0f;
-		float m_targetPitch = 0.0f;
+		float targetYaw = 0.0f;
+		float targetPitch = 0.0f;
 
-		glm::vec3 m_worldUp;
-		glm::vec3 m_targetPosition;
+		glm::vec3 worldUp;
+		glm::vec3 targetPosition;
 
 	public:
 		~Camera();

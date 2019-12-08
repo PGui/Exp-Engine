@@ -11,9 +11,9 @@ namespace Exp
 {
 	class Material
 	{
-		static int CurrentMaterialId;
+		static int currentMaterialId;
 	public:
-		enum MaterialType
+		enum class MaterialType
 		{
 			MATERIAL_DEFAULT,
 			MATERIAL_CUSTOM,
@@ -39,33 +39,33 @@ namespace Exp
 		void SetFloat(std::string name, float value);
 		void SetVector(std::string name, glm::vec3 value);
 
-		int MaterialId;
+		int materialId;
 
-		MaterialType Type = MaterialType::MATERIAL_DEFAULT;
+		MaterialType type = MaterialType::MATERIAL_DEFAULT;
 
 		// depth state
-		bool   DepthTest = true;
-		bool   DepthWrite = true;
-		GLenum DepthCompare = GL_LESS;
+		bool   depthTest = true;
+		bool   depthWrite = true;
+		GLenum depthCompare = GL_LESS;
 
 		// face culling state
-		bool   Cull = true;
-		GLenum CullFace = GL_BACK;
-		GLenum CullWindingOrder = GL_CCW;
+		bool   cull = true;
+		GLenum cullFace = GL_BACK;
+		GLenum cullWindingOrder = GL_CCW;
 
 		// blending state
-		bool   Blend = false;
-		GLenum BlendSrc = GL_ONE; // pre-multiplied alpha
-		GLenum BlendDst = GL_ONE_MINUS_SRC_ALPHA;
-		GLenum BlendEquation = GL_FUNC_ADD;
+		bool   blend = false;
+		GLenum blendSrc = GL_ONE; // pre-multiplied alpha
+		GLenum blendDst = GL_ONE_MINUS_SRC_ALPHA;
+		GLenum blendEquation = GL_FUNC_ADD;
 
 		// shadow state
-		bool ShadowCast = true;
-		bool ShadowReceive = true;
+		bool shadowCast = true;
+		bool shadowReceive = true;
 	private:
-		std::map<std::string, UniformValueSampler> SamplerUniforms;
-		std::map<std::string, UniformValue>        Uniforms;
+		std::map<std::string, UniformValueSampler> samplerUniforms;
+		std::map<std::string, UniformValue>        uniforms;
 
-		Shader * MatShader;
+		Shader * shader;
 	};
 }

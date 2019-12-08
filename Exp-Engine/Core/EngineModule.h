@@ -24,8 +24,6 @@ namespace Exp
 	class RenderingModule;
 	class MaterialLibraryModule;
 
-	
-
 	class EngineModule:
 		public IModuleInterface
 	{
@@ -34,28 +32,28 @@ namespace Exp
 	public:
 		
 
-		GLFWwindow*  m_mainWindow = nullptr;
+		GLFWwindow*  mainWindow = nullptr;
 
 		// Deltatime
-		double m_deltaTime = 1.0 / 60.0;
-		double m_lastTime = 0.0;
-		double m_accumulatedTime = 0.0;
-		const double m_updatePeriod = 1.0/60.0;
+		double deltaTime = 1.0 / 60.0;
+		double lastTime = 0.0;
+		double accumulatedTime = 0.0;
+		const double updatePeriod = 1.0/60.0;
 		//const double m_precisionUpdatePeriod ;
-		const int m_maxUpdatesPerLoop = 1;
+		const int maxUpdatesPerLoop = 1;
 
 		//Camera
-		Camera m_Camera = Camera(glm::vec3(0.0f));
+		Camera camera = Camera(glm::vec3(0.0f));
 
 		//Debug render parameters
-		bool m_wireframe = false;
-		bool m_debugLight = false;
+		bool wireframe = false;
+		bool debugLight = false;
 
 	// Modules
 	public:
-		InputModule * m_inputModule = nullptr;
-		RenderingModule * m_renderingModule = nullptr;
-		MaterialLibraryModule * m_materialLibraryModule = nullptr;
+		InputModule * inputModule = nullptr;
+		RenderingModule * renderingModule = nullptr;
+		MaterialLibraryModule * materialLibraryModule = nullptr;
 
 	public:
 		//IModuleInterface
@@ -80,7 +78,7 @@ namespace Exp
 	public:
 
 		//Callbacks
-		static void framebuffer_size_callback(GLFWwindow * window, int width, int height);
-		static void glfw_error_callback(int error, const char* description);
+		static void FramebufferSizeCallback(GLFWwindow * window, int width, int height);
+		static void GlfwErrorCallback(int error, const char* description);
 	};
 }

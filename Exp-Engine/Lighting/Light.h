@@ -10,17 +10,17 @@ namespace Exp
 		Light();
 		virtual ~Light();
 
-		glm::vec3 m_Color = glm::vec3(1.0f, 1.0f ,1.0f);
-		float m_Intensity = 1.0f;
+		glm::vec3 color = glm::vec3(1.0f, 1.0f ,1.0f);
+		float intensity = 1.0f;
 
-		bool			m_CastShadows = true;
-		RenderTarget*	m_ShadowMapRT = nullptr;
-		glm::mat4		m_LightSpaceViewProjection = glm::mat4(1.0f);
+		bool			castShadows = true;
+		RenderTarget*	shadowMapRT = nullptr;
+		glm::mat4		lightSpaceViewProjection = glm::mat4(1.0f);
 
 
 		//Debug
-		bool       m_Visible = true;
-		bool       m_RenderMesh = false;
+		bool       visible = true;
+		bool       renderMesh = false;
 	};
 }
 

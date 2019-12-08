@@ -16,12 +16,12 @@ namespace Exp
 	private:
 
 		glm::vec2 lastPos = glm::vec2();
-		glm::vec2 delta = glm::vec2();
+		glm::vec2 mouseDelta = glm::vec2();
 
 		bool keysDown[512];
 
 		GLFWwindow * window = nullptr;
-		EngineModule* m_EngineModule = nullptr;
+		EngineModule* engineModule = nullptr;
 
 	public:
 		InputModule();
@@ -32,11 +32,11 @@ namespace Exp
 		virtual void PostInitialize();
 
 		//Static cb
-		static void glfw_mouse(GLFWwindow* window, double xpos, double ypos);
-		static void glfw_key(GLFWwindow* window, int key, int scancode, int action, int mods);
+		static void GlfwMouse(GLFWwindow* window, double xpos, double ypos);
+		static void GlfwKey(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 	public:
-		const glm::vec2 GetMouseDelta();
+		const glm::vec2 & GetMouseDelta();
 
 		//Todo : Come up with something better, but that'll do for now.
 		const bool IsKeyPressed(int key);

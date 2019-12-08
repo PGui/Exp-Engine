@@ -22,13 +22,13 @@ namespace Exp
 	{
 
 	public:
-		std::vector<RenderCommand> DeferredCommands;
-		std::vector<RenderCommand> ForwardCommands;
+		std::vector<RenderCommand> deferredCommands;
+		std::vector<RenderCommand> forwardCommands;
 
 
 	public:
 
-		void Push(Mesh* mesh, Material* Material, glm::mat4 transform);
+		void Push(Mesh* mesh, Material* material, glm::mat4 transform);
 
 		void Clear();
 

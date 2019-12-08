@@ -116,7 +116,7 @@ namespace Exp
 		glGetProgramiv(ID, GL_ACTIVE_ATTRIBUTES, &nrAttributes);
 		glGetProgramiv(ID, GL_ACTIVE_UNIFORMS, &nrUniforms);
 		Attributes.resize(nrAttributes);
-		Uniforms.resize(nrUniforms);
+		uniforms.resize(nrUniforms);
 
 		char buffer[128];
 		//Iterate over attributes
@@ -133,9 +133,9 @@ namespace Exp
 		for (int i = 0; i < nrUniforms; ++i)
 		{
 			GLenum glType;
-			glGetActiveUniform(ID, i, sizeof(buffer), 0, &Uniforms[i].Size, &glType, buffer);
-			Uniforms[i].Name = std::string(buffer);
-			Uniforms[i].Location = glGetUniformLocation(ID, buffer);
+			glGetActiveUniform(ID, i, sizeof(buffer), 0, &uniforms[i].Size, &glType, buffer);
+			uniforms[i].Name = std::string(buffer);
+			uniforms[i].Location = glGetUniformLocation(ID, buffer);
 		}
 	}
 

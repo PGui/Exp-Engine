@@ -22,9 +22,9 @@ namespace Exp
                 float yPos = std::cos(ySegment * glm::pi<float>());
                 float zPos = std::sin(xSegment * (glm::pi<float>() * 2.0f)) * std::sin(ySegment * glm::pi<float>());
 
-                Positions.push_back(glm::vec3(xPos, yPos, zPos));
-                UV.push_back(glm::vec2(xSegment, ySegment));
-                Normals.push_back(glm::vec3(xPos, yPos, zPos));
+                positions.push_back(glm::vec3(xPos, yPos, zPos));
+                uv.push_back(glm::vec2(xSegment, ySegment));
+                normals.push_back(glm::vec3(xPos, yPos, zPos));
             }
         }
 
@@ -33,17 +33,17 @@ namespace Exp
         {
             for (unsigned int x = 0; x < xSegments; ++x)
             {
-                Indices.push_back((y + 1) * (xSegments + 1) + x);
-                Indices.push_back(y       * (xSegments + 1) + x);
-                Indices.push_back(y       * (xSegments + 1) + x + 1);
+                indices.push_back((y + 1) * (xSegments + 1) + x);
+                indices.push_back(y       * (xSegments + 1) + x);
+                indices.push_back(y       * (xSegments + 1) + x + 1);
 
-                Indices.push_back((y + 1) * (xSegments + 1) + x);
-                Indices.push_back(y       * (xSegments + 1) + x + 1);
-                Indices.push_back((y + 1) * (xSegments + 1) + x + 1);
+                indices.push_back((y + 1) * (xSegments + 1) + x);
+                indices.push_back(y       * (xSegments + 1) + x + 1);
+                indices.push_back((y + 1) * (xSegments + 1) + x + 1);
             }
         }
 
-        Topology = TRIANGLES;
-        finalize();
+        topology = TRIANGLES;
+        Finalize();
     }
 }

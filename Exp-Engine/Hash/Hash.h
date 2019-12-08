@@ -1,11 +1,11 @@
 #pragma once
 #include <string>
 
-#define SID(string) custom_simple_hash(string)
+#define SID(string) CustomSimpleHash(string)
 
 namespace Exp
 {
-	inline unsigned int custom_simple_hash(const std::string &str)
+	inline unsigned int CustomSimpleHash(const std::string &str)
 	{
 		unsigned long hash = 5381;
 
@@ -15,10 +15,9 @@ namespace Exp
 		return hash;
 	}
 
-	inline unsigned int custom_simple_hash(const char* cStr)
+	inline unsigned int CustomSimpleHash(const char* cStr)
 	{
 		std::string str(cStr);
-		return custom_simple_hash(str);
+		return CustomSimpleHash(str);
 	}
 }
-

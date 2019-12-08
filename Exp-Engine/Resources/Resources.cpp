@@ -21,7 +21,7 @@ namespace Exp
 
 	void Resources::Clean()
 	{
-		// traverse all stored mesh scene nodes and delete accordingly.
+		// traverse all stored Mesh scene nodes and delete accordingly.
 		// Note that this time we don't care about deleting dangling pointers as each scene node is
 		// unique and shouldn't reference other scene nodes than their children.
 		for (auto it = m_Meshes.begin(); it != m_Meshes.end(); it++)
@@ -154,7 +154,7 @@ namespace Exp
 	{
 		unsigned int id = SID(name);
 
-		// if mesh's scene node was already loaded before, copy the scene node's memory and return 
+		// if Mesh's scene node was already loaded before, copy the scene node's memory and return 
 		// the copied reference. We return a copy as the moment the global scene deletes the 
 		// returned node, all other and next requested scene nodes of this model will end up as
 		// dangling pointers.
@@ -177,7 +177,7 @@ namespace Exp
 	{
 		unsigned int id = SID(name);
 
-		// if mesh's scene node was already loaded before, copy the scene node's memory and return 
+		// if Mesh's scene node was already loaded before, copy the scene node's memory and return 
 		// the copied reference. We return a copy as the moment the global scene deletes the 
 		// returned node, all other and next requested scene nodes of this model will end up as
 		// dangling pointers.
@@ -187,7 +187,7 @@ namespace Exp
 		}
 		else
 		{
-			spdlog::error("Requested mesh {} not found", name);
+			spdlog::error("Requested Mesh {} not found", name);
 			return nullptr;
 		}
 	}

@@ -5,20 +5,20 @@
 namespace Exp
 {
 	Camera::Camera(glm::vec3 position, glm::vec3 forward, glm::vec3 up) :
-		m_position(position),
-		m_forward(forward),
-		m_up(up)
+		position(position),
+		forward(forward),
+		up(up)
 
 	{
-		m_worldUp = m_up;
-		m_targetPosition = m_position;
-		m_targetYaw = m_yaw;
-		m_targetPitch = m_pitch;
+		worldUp = up;
+		targetPosition = position;
+		targetYaw = yaw;
+		targetPitch = pitch;
 
 
 		UpdateView();
 
-		SetPerspective(m_fovY, m_aspectRatio, m_nearPlane, m_farPlane);
+		SetPerspective(fovY, aspectRatio, nearPlane, farPlane);
 	}
 
 	void Camera::Update(float deltatime, InputModule * inputModule)
@@ -43,60 +43,60 @@ namespace Exp
 			UpdateMouse(mouseDelta.x, mouseDelta.y);
 		}
 
-		m_position = glm::lerp(m_position, m_targetPosition, glm::clamp(1.f - pow(1.f - m_damping / 60.f, 60.f * deltatime), 0.0f, 1.0f));
-		m_yaw = glm::lerp(m_yaw, m_targetYaw, glm::clamp(1.f - pow(1.f - m_damping * 2.0f / 60.f, 60.f * deltatime), 0.0f, 1.0f));
-		m_pitch = glm::lerp(m_pitch, m_targetPitch, glm::clamp(1.f - pow(1.f - m_damping * 2.0f / 60.f, 60.f * deltatime), 0.0f, 1.0f));
+		position = glm::lerp(position, targetPosition, glm::clamp(1.f - pow(1.f - damping / 60.f, 60.f * deltatime), 0.0f, 1.0f));
+		yaw = glm::lerp(yaw, targetYaw, glm::clamp(1.f - pow(1.f - damping * 2.0f / 60.f, 60.f * deltatime), 0.0f, 1.0f));
+		pitch = glm::lerp(pitch, targetPitch, glm::clamp(1.f - pow(1.f - damping * 2.0f / 60.f, 60.f * deltatime), 0.0f, 1.0f));
 
 		glm::vec3 newForward;
-		newForward.x = float(cos(0.0174533 * m_pitch) * cos(0.0174533 * m_yaw));
-		newForward.y = float(sin(0.0174533 * m_pitch));
-		newForward.z = float(cos(0.0174533 * m_pitch) * sin(0.0174533 * m_yaw));
-		m_forward = glm::normalize(newForward);
-		m_right = glm::normalize(glm::cross(m_forward, m_worldUp));
-		m_up = glm::cross(m_right, m_forward);
+		newForward.x = float(cos(0.0174533 * pitch) * cos(0.0174533 * yaw));
+		newForward.y = float(sin(0.0174533 * pitch));
+		newForward.z = float(cos(0.0174533 * pitch) * sin(0.0174533 * yaw));
+		forward = glm::normalize(newForward);
+		right = glm::normalize(glm::cross(forward, worldUp));
+		up = glm::cross(right, forward);
 
 		UpdateView();
 	}
 
 	void Camera::UpdateMouse(float deltaX, float deltaY)
 	{
-		if (m_disableMouse)
+		if (disableMouse)
 			return;
 
-		float x = deltaX * m_sensitivity;
-		float y = deltaY * m_sensitivity;
+		float x = deltaX * sensitivity;
+		float y = deltaY * sensitivity;
 
-		m_targetYaw -= x;
-		m_targetPitch += y;
+		targetYaw -= x;
+		targetPitch += y;
 
-		if (m_targetYaw == 0.0f) m_targetYaw = 0.01f;
-		if (m_targetPitch == 0.0f) m_targetPitch = 0.01f;
+		if (targetYaw == 0.0f) targetYaw = 0.01f;
+		if (targetPitch == 0.0f) targetPitch = 0.01f;
 
-		if (m_targetPitch > 89.0f)  m_targetPitch = 89.0f;
-		if (m_targetPitch < -89.0f) m_targetPitch = -89.0f;
+		if (targetPitch > 89.0f)  targetPitch = 89.0f;
+		if (targetPitch < -89.0f) targetPitch = -89.0f;
 	}
 
 	void Camera::UpdateKey(float deltaTime, CameraMovement direction)
 	{
-		float speed = m_speed * deltaTime;
+		float currentSpeed = speed * deltaTime;
 		if (direction == CameraMovement::FORWARD)
-			m_targetPosition = m_targetPosition + m_forward * speed;
+			targetPosition = targetPosition + forward * currentSpeed;
 		else if (direction == CameraMovement::BACKWARD)
-			m_targetPosition = m_targetPosition - m_forward * speed;
+			targetPosition = targetPosition - forward * currentSpeed;
 		else if (direction == CameraMovement::LEFT)
-			m_targetPosition = m_targetPosition - m_right * speed;
+			targetPosition = targetPosition - right * currentSpeed;
 		else if (direction == CameraMovement::RIGHT)
-			m_targetPosition = m_targetPosition + m_right * speed;
+			targetPosition = targetPosition + right * currentSpeed;
 		else if (direction == CameraMovement::UP)
-			m_targetPosition = m_targetPosition + m_worldUp * speed;
+			targetPosition = targetPosition + worldUp * currentSpeed;
 		else if (direction == CameraMovement::DOWN)
-			m_targetPosition = m_targetPosition - m_worldUp * speed;
+			targetPosition = targetPosition - worldUp * currentSpeed;
 	}
 
 	void Camera::UpdateView()
 	{
-		m_view = LookAt(m_position, m_position + m_forward, m_up);
-		m_viewProjection = m_projection * m_view;
+		view = LookAt(position, position + forward, up);
+		viewProjection = projection * view;
 	}
 
 	glm::mat4 Camera::LookAt(glm::vec3 position, glm::vec3 target, glm::vec3 worldUp)
@@ -129,11 +129,11 @@ namespace Exp
 
 	void Camera::SetPerspective(float fovY, float aspectRatio, float nearPlane, float farPlane)
 	{
-		m_fovY = fovY;
-		m_aspectRatio = aspectRatio;
-		m_nearPlane = nearPlane;
-		m_farPlane = farPlane;
-		m_projection = glm::perspective(glm::radians(m_fovY), m_aspectRatio, m_nearPlane, m_farPlane);
+		fovY = fovY;
+		aspectRatio = aspectRatio;
+		nearPlane = nearPlane;
+		farPlane = farPlane;
+		projection = glm::perspective(glm::radians(fovY), aspectRatio, nearPlane, farPlane);
 	}
 
 

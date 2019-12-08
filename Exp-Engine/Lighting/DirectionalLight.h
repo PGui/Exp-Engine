@@ -10,7 +10,7 @@ namespace Exp
 		DirectionalLight();
 		virtual ~DirectionalLight();
 
-		glm::vec3 m_Direction;
+		glm::vec3 direction;
 	};
 
 }

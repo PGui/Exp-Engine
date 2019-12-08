@@ -21,7 +21,7 @@ namespace Exp
 
 	SceneNode * ModelLoader::LoadMesh(Renderer * renderer, std::string path, bool setDefaultMaterial)
 	{
-		spdlog::info("Loading mesh file at {}", path);
+		spdlog::info("Loading Mesh file at {}", path);
 
 		Assimp::Importer importer;
 		const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
@@ -55,10 +55,10 @@ namespace Exp
 				material = ModelLoader::parseMaterial(renderer, assimpMat, aScene, directory);
 			}
 
-			// if we only have one mesh, this node itself contains the mesh/material.
+			// if we only have one Mesh, this node itself contains the Mesh/material.
 			if (aNode->mNumMeshes == 1)
 			{
-				node->Mesh = mesh;
+				node->mesh = mesh;
 				if (setDefaultMaterial)
 				{
 					node->Material = material;
@@ -70,7 +70,7 @@ namespace Exp
 			else
 			{
 				SceneNode* child = new SceneNode(0);
-				child->Mesh = mesh;
+				child->mesh = mesh;
 				child->Material = material;
 				child->BoxMin = boxMin;
 				child->BoxMax = boxMax;
@@ -106,7 +106,7 @@ namespace Exp
 		}
 		// we assume a constant of 3 vertex indices per face as we always triangulate in Assimp's
 		// post-processing step; otherwise you'll want transform this to a more  flexible scheme.
-		indices.resize(aMesh->mNumFaces * 3);
+		indices.resize(aMesh->mNumFaces * (unsigned int)3);
 
 		// store min/max point in local coordinates for calculating approximate bounding box.
 		glm::vec3 pMin(99999.0);
@@ -143,14 +143,14 @@ namespace Exp
 		}
 
 		Mesh *mesh = new Mesh;
-		mesh->Positions = positions;
-		mesh->UV = uv;
-		mesh->Normals = normals;
-		mesh->Tangents = tangents;
-		mesh->Bitangents = bitangents;
-		mesh->Indices = indices;
-		mesh->Topology = Mesh::TRIANGLES;
-		mesh->finalize(true);
+		mesh->positions = positions;
+		mesh->uv = uv;
+		mesh->normals = normals;
+		mesh->tangents = tangents;
+		mesh->bitangents = bitangents;
+		mesh->indices = indices;
+		mesh->topology = Mesh::TRIANGLES;
+		mesh->Finalize(true);
 
 		out_Min.x = pMin.x;
 		out_Min.y = pMin.y;
@@ -159,7 +159,7 @@ namespace Exp
 		out_Max.y = pMax.y;
 		out_Max.z = pMax.z;
 
-		// store newly generated mesh in globally stored mesh store for memory de-allocation when 
+		// store newly generated Mesh in globally stored Mesh store for memory de-allocation when 
 		// a clean is required.
 		ModelLoader::meshes.push_back(mesh);
 
@@ -252,7 +252,7 @@ namespace Exp
 		//  textures conform the workflow: albedo, (normal), metallic, roughness, (ao). Since Assimp
 		//  made certain assumptions regarding possible types of loaded textures it doesn't directly
 		//  translate to our model thus we make some assumptions as well which the 3D author has to
-		//  comply with if he wants the mesh(es) to directly render with its specified textures:
+		//  comply with if he wants the Mesh(es) to directly render with its specified textures:
 
 		//	- aiTextureType_DIFFUSE:   Albedo
 		//	- aiTextureType_NORMALS:   Normal

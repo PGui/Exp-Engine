@@ -41,7 +41,7 @@ namespace Exp
 	{
 		if (ImGui::CollapsingHeader("Rendering", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			ImGui::Checkbox("Wireframe", &m_Wireframe);
+			ImGui::Checkbox("Wireframe", &wireframe);
 			ImGui::Checkbox("Lights", &m_DisplayLights);
 			ImGui::Checkbox("Skybox", &m_DisplaySkybox);
 			if (ImGui::CollapsingHeader("Lights", ImGuiTreeNodeFlags_DefaultOpen))
@@ -68,12 +68,12 @@ namespace Exp
 						{
 							//Remove DL
 						}
-						ImGui::Checkbox(	std::string("Visibility###VisDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Visible);
-						ImGui::ColorEdit3(	std::string("Color###ColDir"		+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Color[0]);
-						ImGui::SliderFloat3(std::string("Direction###DirDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Direction[0], -1.0f, 1.0f);
-						ImGui::SliderFloat(	std::string("Intensity###IntDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_Intensity, 0.0f, 5.0f);
-						ImGui::Checkbox(	std::string("Shadow###ShaDir"		+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_CastShadows);
-						ImGui::Checkbox(	std::string("Debug Mesh###DebDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->m_RenderMesh);
+						ImGui::Checkbox(	std::string("Visibility###VisDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->visible);
+						ImGui::ColorEdit3(	std::string("Color###ColDir"		+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->color[0]);
+						ImGui::SliderFloat3(std::string("Direction###DirDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->direction[0], -1.0f, 1.0f);
+						ImGui::SliderFloat(	std::string("Intensity###IntDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->intensity, 0.0f, 5.0f);
+						ImGui::Checkbox(	std::string("Shadow###ShaDir"		+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->castShadows);
+						ImGui::Checkbox(	std::string("Debug Mesh###DebDir"	+ std::to_string(i)).c_str(), &m_DirectionalLights[i]->renderMesh);
 					}
 					
 					ImGui::TreePop();
@@ -104,13 +104,13 @@ namespace Exp
 						{
 							//Remove PL
 						}
-						ImGui::Checkbox(std::string("Visibility##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_Visible);
-						ImGui::ColorEdit3(std::string("Color##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_Color[0]);
-						ImGui::SliderFloat3(std::string("Position##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_Position[0],-50.0f, 50.0f);
-						ImGui::SliderFloat(std::string("Radius##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_Radius, 0.0f, 50.0f);
-						ImGui::SliderFloat(std::string("Intensity##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_Intensity, 0.0f, 5.0f);
-						ImGui::Checkbox(std::string("Shadow##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_CastShadows);
-						ImGui::Checkbox(std::string("Debug Mesh##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->m_RenderMesh);
+						ImGui::Checkbox(std::string("Visibility##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->visible);
+						ImGui::ColorEdit3(std::string("Color##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->color[0]);
+						ImGui::SliderFloat3(std::string("Position##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->position[0],-50.0f, 50.0f);
+						ImGui::SliderFloat(std::string("Radius##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->radius, 0.0f, 50.0f);
+						ImGui::SliderFloat(std::string("Intensity##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->intensity, 0.0f, 5.0f);
+						ImGui::Checkbox(std::string("Shadow##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->castShadows);
+						ImGui::Checkbox(std::string("Debug Mesh##" + std::to_string(i + index++)).c_str(), &m_PointLights[i]->renderMesh);
 					}
 
 					ImGui::TreePop();
@@ -156,7 +156,7 @@ namespace Exp
 		m_PointLightSphere = std::make_shared<Sphere>(16, 16);
 
 		// Debug Lighting
-		m_DebugLightMesh = std::make_shared<Cube>();
+		debugLightMesh = std::make_shared<Cube>();
 
 		GLCache::getInstance().Reset(true);
 	}
@@ -165,9 +165,9 @@ namespace Exp
 	{
 		if (RenderCamera)
 		{
-			projUBOData.m_viewMatrix = this->RenderCamera->m_view;
-			projUBOData.m_projectionMatrix = this->RenderCamera->m_projection;
-			projUBOData.m_viewPosition = this->RenderCamera->m_position;
+			projUBOData.viewMatrix = this->RenderCamera->view;
+			projUBOData.projectionMatrix = this->RenderCamera->projection;
+			projUBOData.viewPosition = this->RenderCamera->position;
 
 			glGenBuffers(1, &projUBOId);
 			glBindBuffer(GL_UNIFORM_BUFFER, projUBOId);
@@ -179,22 +179,22 @@ namespace Exp
 
 	void RenderingModule::Render(RenderCommand* command, bool updateGLSettings)
 	{
-		Mesh* mesh = command->Mesh;
-		Material* material = command->Material;
-		glm::mat4 transform = command->Transform;
+		Mesh* mesh = command->mesh;
+		Material* material = command->material;
+		glm::mat4 transform = command->transform;
 		Shader* currentShader = material->GetShader();
 
 		if (updateGLSettings)
 		{
-			GLCache::getInstance().SetBlend(material->Blend);
-			if (material->Blend)
+			GLCache::getInstance().SetBlend(material->blend);
+			if (material->blend)
 			{
-				GLCache::getInstance().SetBlendFunc(material->BlendSrc, material->BlendDst);
+				GLCache::getInstance().SetBlendFunc(material->blendSrc, material->blendDst);
 			}
-			GLCache::getInstance().SetDepthFunc(material->DepthCompare);
-			GLCache::getInstance().SetDepthTest(material->DepthTest);
-			GLCache::getInstance().SetCull(material->Cull);
-			GLCache::getInstance().SetCullFace(material->CullFace);
+			GLCache::getInstance().SetDepthFunc(material->depthCompare);
+			GLCache::getInstance().SetDepthTest(material->depthTest);
+			GLCache::getInstance().SetCull(material->cull);
+			GLCache::getInstance().SetCullFace(material->cullFace);
 		}
 
 		if (!currentShader)
@@ -243,7 +243,7 @@ namespace Exp
 	DirectionalLight * RenderingModule::AddDirectionalLight(glm::vec3 Direction)
 	{
 		std::shared_ptr<DirectionalLight> Light = std::make_shared<DirectionalLight>();
-		Light->m_Direction = Direction;
+		Light->direction = Direction;
 		m_DirectionalLights.push_back(Light);
 		return Light.get();
 	}
@@ -251,8 +251,8 @@ namespace Exp
 	PointLight* RenderingModule::AddPointLight(glm::vec3 Position, float Radius)
 	{
 		std::shared_ptr<PointLight> Light = std::make_shared<PointLight>();
-		Light->m_Position = Position;
-		Light->m_Radius = Radius;
+		Light->position = Position;
+		Light->radius = Radius;
 		m_PointLights.push_back(Light);
 		return Light.get();
 	}
@@ -275,12 +275,12 @@ namespace Exp
 	{
 		if (CurrentSkybox.get())
 		{
-			GLCache::getInstance().SetPolygonMode(m_Wireframe ? GL_LINE : GL_FILL);
+			GLCache::getInstance().SetPolygonMode(wireframe ? GL_LINE : GL_FILL);
 
 			RenderCommand command;
-			command.Mesh = CurrentSkybox->Mesh;
-			command.Material = CurrentSkybox->Material;
-			command.Transform = CurrentSkybox->GetTransform();
+			command.mesh = CurrentSkybox->mesh;
+			command.material = CurrentSkybox->Material;
+			command.transform = CurrentSkybox->GetTransform();
 			Render(&command, true);
 
 			GLCache::getInstance().SetPolygonMode(GL_FILL);
@@ -304,9 +304,9 @@ namespace Exp
 			SceneNode * CurrentNode = StackNode.top();
 			StackNode.pop();
 
-			if (CurrentNode->Mesh && CurrentNode->Material)
+			if (CurrentNode->mesh && CurrentNode->Material)
 			{
-				PushMeshRenderCommand(CurrentNode->Mesh, CurrentNode->Material, CurrentNode->GetTransform());
+				PushMeshRenderCommand(CurrentNode->mesh, CurrentNode->Material, CurrentNode->GetTransform());
 			}
 
 			for (unsigned int i = 0; i < CurrentNode->GetChildCount(); ++i)
@@ -336,9 +336,9 @@ namespace Exp
 		unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 		glDrawBuffers(3, attachments);
 
-		GLCache::getInstance().SetPolygonMode(m_Wireframe ? GL_LINE : GL_FILL);
+		GLCache::getInstance().SetPolygonMode(wireframe ? GL_LINE : GL_FILL);
 
-		for (auto& CurrentRenderCommand : m_CommandBuffer.DeferredCommands)
+		for (auto& CurrentRenderCommand : m_CommandBuffer.deferredCommands)
 		{
 			Render(&CurrentRenderCommand, true);
 		}
@@ -391,7 +391,7 @@ namespace Exp
 			for (auto it = m_PointLights.begin(); it != m_PointLights.end(); ++it)
 			{
 				// only render point lights if within frustum
-				if (true/*m_Camera->Frustum.Intersect((*it)->m_Position, (*it)->m_Radius)*/)
+				if (true/*camera->Frustum.Intersect((*it)->position, (*it)->radius)*/)
 				{
 					RenderDeferredPointLight((*it).get());
 				}
@@ -442,13 +442,13 @@ namespace Exp
 	void RenderingModule::RenderMesh(Mesh* mesh)
 	{
 		glBindVertexArray(mesh->VAO);
-		if (mesh->Indices.size() > 0)
+		if (mesh->indices.size() > 0)
 		{
-			glDrawElements(mesh->Topology == Mesh::TOPOLOGY::TRIANGLE_STRIP ? GL_TRIANGLE_STRIP : GL_TRIANGLES, (GLsizei)mesh->Indices.size(), GL_UNSIGNED_INT, 0);
+			glDrawElements(mesh->topology == Mesh::TOPOLOGY::TRIANGLE_STRIP ? GL_TRIANGLE_STRIP : GL_TRIANGLES, (GLsizei)mesh->indices.size(), GL_UNSIGNED_INT, 0);
 		}
 		else
 		{
-			glDrawArrays(mesh->Topology == Mesh::TOPOLOGY::TRIANGLE_STRIP ? GL_TRIANGLE_STRIP : GL_TRIANGLES, 0, (GLsizei)mesh->Positions.size());
+			glDrawArrays(mesh->topology == Mesh::TOPOLOGY::TRIANGLE_STRIP ? GL_TRIANGLE_STRIP : GL_TRIANGLES, 0, (GLsizei)mesh->positions.size());
 		}
 	}
 
@@ -487,14 +487,14 @@ namespace Exp
 		}
 		// render screen-space material to quad which will be displayed in dst's buffers.
 		RenderCommand command;
-		command.Material = material;
-		command.Mesh = m_NDCPlane.get();
+		command.material = material;
+		command.mesh = m_NDCPlane.get();
 		Render(&command, true);
 	}
 
 	void RenderingModule::RenderDeferredDirLight(DirectionalLight* light)
 	{
-		if (!light->m_Visible)
+		if (!light->visible)
 			return;
 		Shader* dirShader = nullptr;
 		if (m_MaterialLibrary)
@@ -503,14 +503,14 @@ namespace Exp
 			if (dirShader)//TODO put as member
 			{
 				dirShader->use();
-				dirShader->setVec3("lightDir", light->m_Direction);
-				dirShader->setVec3("lightColor", /*glm::normalize*/(light->m_Color) * light->m_Intensity);
+				dirShader->setVec3("lightDir", light->direction);
+				dirShader->setVec3("lightColor", /*glm::normalize*/(light->color) * light->intensity);
 
 				dirShader->setInt("gPosition", 0);
 				dirShader->setInt("gNormal", 1);
 				dirShader->setInt("gAlbedoSpec", 2);
 
-				if (light->m_ShadowMapRT)
+				if (light->shadowMapRT)
 				{
 					/*dirShader->SetMatrix("lightShadowViewProjection", light->LightSpaceViewProjection);
 					light->ShadowMapRT->GetDepthStencilTexture()->Bind(3);*/
@@ -530,8 +530,8 @@ namespace Exp
 			stencilShader = m_MaterialLibrary->GetShader("stencilLightShader");
 
 			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, light->m_Position);
-			model = glm::scale(model, glm::vec3(light->m_Radius));
+			model = glm::translate(model, light->position);
+			model = glm::scale(model, glm::vec3(light->radius));
 
 			//glBindTexture(GL_TEXTURE_2D, m_GBuffer->GetDepthStencilTexture()->ID);
 			//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_RenderSize.x, m_RenderSize.y, 0, GL_RGB, GL_FLOAT, NULL);
@@ -573,7 +573,7 @@ namespace Exp
 
 	void RenderingModule::RenderDeferredPointLight(PointLight* light)
 	{
-		if (!light->m_Visible)
+		if (!light->visible)
 			return;
 
 		Shader* pointShader = nullptr;
@@ -583,13 +583,13 @@ namespace Exp
 			if (pointShader)
 			{
 				glm::mat4 model = glm::mat4(1.0f);
-				model = glm::translate(model, light->m_Position);
-				model = glm::scale(model, glm::vec3(light->m_Radius));
+				model = glm::translate(model, light->position);
+				model = glm::scale(model, glm::vec3(light->radius));
 
 				pointShader->use();
-				pointShader->setVec3("lightPos", light->m_Position);
-				pointShader->setVec3("lightColor",/* glm::normalize*/(light->m_Color) * light->m_Intensity);
-				pointShader->setFloat("lightRadius", light->m_Radius);
+				pointShader->setVec3("lightPos", light->position);
+				pointShader->setVec3("lightColor",/* glm::normalize*/(light->color) * light->intensity);
+				pointShader->setFloat("lightRadius", light->radius);
 				pointShader->setInt("gPosition", 0);
 				pointShader->setInt("gNormal", 1);
 				pointShader->setInt("gAlbedoSpec", 2);
@@ -608,16 +608,16 @@ namespace Exp
 		{
 			for (auto it = m_PointLights.begin(); it != m_PointLights.end(); ++it)
 			{
-				if ((*it)->m_RenderMesh)
+				if ((*it)->renderMesh)
 				{
 					RenderCommand command;
-					command.Material = m_MaterialLibrary->GetMaterial("debugLight");
-					command.Material->SetVector("lightColor", (*it)->m_Color * (*it)->m_Intensity);
-					command.Mesh = m_DebugLightMesh.get();
+					command.material = m_MaterialLibrary->GetMaterial("debugLight");
+					command.material->SetVector("lightColor", (*it)->color * (*it)->intensity);
+					command.mesh = debugLightMesh.get();
 					glm::mat4 model = glm::mat4(1.0f);
-					model = glm::translate(model, (*it)->m_Position);
+					model = glm::translate(model, (*it)->position);
 					model = glm::scale(model, glm::vec3(0.25f));
-					command.Transform = model;
+					command.transform = model;
 					Render(&command, false);
 				}
 			}

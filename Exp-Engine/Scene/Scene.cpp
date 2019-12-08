@@ -23,7 +23,7 @@ namespace Exp
 	{
 		SceneNode* node = new SceneNode(Scene::CounterID++);
 
-		node->Mesh = mesh;
+		node->mesh = mesh;
 		node->Material = material;
 
 		Root->AddChild(node);
@@ -34,7 +34,7 @@ namespace Exp
 	{
 		SceneNode *newNode = new SceneNode(Scene::CounterID++);
 
-		newNode->Mesh = node->Mesh;
+		newNode->mesh = node->mesh;
 		newNode->Material = node->Material;
 		newNode->BoxMin = node->BoxMin;
 		newNode->BoxMax = node->BoxMax;
@@ -48,7 +48,7 @@ namespace Exp
 			nodeStack.pop();
 			// similarly, create SceneNode for each child and push to scene node memory list.
 			SceneNode* newChild = new SceneNode(Scene::CounterID++);
-			newChild->Mesh = child->Mesh;
+			newChild->mesh = child->mesh;
 			newChild->Material = child->Material;
 			newChild->BoxMin = child->BoxMin;
 			newChild->BoxMax = child->BoxMax;

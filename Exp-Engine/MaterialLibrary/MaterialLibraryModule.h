@@ -22,12 +22,12 @@ namespace Exp
 		virtual void Shutdown();
 		virtual void PostInitialize();
 	private:
-		//Internal Default Materials that will be copied to create instances.
-		std::map<unsigned, Material*> DefaultMaterials;
-		std::map<unsigned, Shader*> DefaultShaders;
+		//Internal Default materials that will be copied to create instances.
+		std::map<unsigned, Material*> defaultMaterials;
+		std::map<unsigned, Shader*> defaultShaders;
 
 		//Created materials from default materials or added materials.
-		std::vector<Material*> Materials;
+		std::vector<Material*> materials;
 
 	public:
 		MaterialLibraryModule();

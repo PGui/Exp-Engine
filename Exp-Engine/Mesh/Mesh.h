@@ -33,22 +33,22 @@ namespace Exp
 		~Mesh();
 
 		unsigned int VAO = 0;
-		TOPOLOGY Topology = TRIANGLES;
+		TOPOLOGY topology = TRIANGLES;
 
-		std::vector<glm::vec3> Positions;
-		std::vector<glm::vec3> Normals;
-		std::vector<glm::vec2> UV;
-		std::vector<glm::vec3> Tangents;
-		std::vector<glm::vec3> Bitangents;
+		std::vector<glm::vec3> positions;
+		std::vector<glm::vec3> normals;
+		std::vector<glm::vec2> uv;
+		std::vector<glm::vec3> tangents;
+		std::vector<glm::vec3> bitangents;
 
-		std::vector<unsigned int> Indices;
+		std::vector<unsigned int> indices;
 
-		//Create VBO/Vertex attributes...
-		void finalize(bool interleaved = true);
+		//Create vbo/Vertex attributes...
+		void Finalize(bool interleaved = true);
 
 	protected:
-		unsigned int VBO;
-		unsigned int EBO;
+		unsigned int vbo;
+		unsigned int ebo;
 
 
 	};

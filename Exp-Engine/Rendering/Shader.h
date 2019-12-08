@@ -48,7 +48,7 @@ namespace Exp
 
 	private:
 
-		std::vector<Uniform> Uniforms;
+		std::vector<Uniform> uniforms;
 		std::vector<VertexAttribute> Attributes;
 
 		void compile(std::string vsCode, std::string fsCode);

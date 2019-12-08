@@ -8,8 +8,8 @@ namespace Exp
 
 	struct RenderCommand
 	{
-		glm::mat4 Transform;
-		Mesh* Mesh;
-		Material* Material;
+		glm::mat4 transform;
+		Mesh* mesh;
+		Material* material;
 	};
 }

@@ -26,12 +26,12 @@ void Exp::InputModule::Shutdown()
 
 void Exp::InputModule::PostInitialize()
 {
-	m_EngineModule = Exp::ModuleManager::Get().GetModule<EngineModule>("Engine");
-	if (m_EngineModule)
+	engineModule = Exp::ModuleManager::Get().GetModule<EngineModule>("Engine");
+	if (engineModule)
 	{
-		window = m_EngineModule->m_mainWindow;
-		glfwSetCursorPosCallback(m_EngineModule->m_mainWindow, Exp::InputModule::glfw_mouse);
-		glfwSetKeyCallback(m_EngineModule->m_mainWindow, Exp::InputModule::glfw_key);
+		window = engineModule->mainWindow;
+		glfwSetCursorPosCallback(engineModule->mainWindow, Exp::InputModule::GlfwMouse);
+		glfwSetKeyCallback(engineModule->mainWindow, Exp::InputModule::GlfwKey);
 	}
 	else
 	{
@@ -39,9 +39,9 @@ void Exp::InputModule::PostInitialize()
 	}
 }
 
-const glm::vec2 Exp::InputModule::GetMouseDelta()
+const glm::vec2 & Exp::InputModule::GetMouseDelta()
 {
-	return delta;
+	return mouseDelta;
 }
 
 const bool Exp::InputModule::IsKeyPressed(int key)
@@ -80,13 +80,13 @@ void Exp::InputModule::Update(const float & deltaTime)
 			firstMouse = false;
 		}
 
-		delta = glm::vec2((float)(lastPos.x - xpos), (float)(lastPos.y - ypos));
+		mouseDelta = glm::vec2((float)(lastPos.x - xpos), (float)(lastPos.y - ypos));
 		lastPos = glm::vec2(xpos, ypos);
 	}
 }
 
 //Static cb
-void Exp::InputModule::glfw_mouse(GLFWwindow* window, double xpos, double ypos)
+void Exp::InputModule::GlfwMouse(GLFWwindow* window, double xpos, double ypos)
 {
 	/*if (InputModule * Input = ModuleManager::Get().GetModule<InputModule>("Input"))
 	{
@@ -94,7 +94,7 @@ void Exp::InputModule::glfw_mouse(GLFWwindow* window, double xpos, double ypos)
 	}*/
 }
 
-void  Exp::InputModule::glfw_key(GLFWwindow* window, int key, int scancode, int action, int mods)
+void  Exp::InputModule::GlfwKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (InputModule * Input = ModuleManager::Get().GetModule<InputModule>("Input"))
 	{
@@ -108,8 +108,8 @@ void  Exp::InputModule::glfw_key(GLFWwindow* window, int key, int scancode, int 
 	{
 		if (EngineModule * Engine = ModuleManager::Get().GetModule<EngineModule>("Engine"))
 		{
-			Engine->m_Camera.m_disableMouse = !Engine->m_Camera.m_disableMouse;
-			if (Engine->m_Camera.m_disableMouse)
+			Engine->camera.disableMouse = !Engine->camera.disableMouse;
+			if (Engine->camera.disableMouse)
 			{
 				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			}
@@ -130,15 +130,15 @@ void  Exp::InputModule::glfw_key(GLFWwindow* window, int key, int scancode, int 
 //	}
 //
 //	if (glfwGetKey(g_Window, GLFW_KEY_W) == GLFW_PRESS)
-//		EngineRenderer->m_Camera->updateKey(deltaTime, CameraMovement::FORWARD);
+//		EngineRenderer->camera->updateKey(deltaTime, CameraMovement::FORWARD);
 //	if (glfwGetKey(g_Window, GLFW_KEY_S) == GLFW_PRESS)
-//		EngineRenderer->m_Camera->updateKey(deltaTime, CameraMovement::BACKWARD);
+//		EngineRenderer->camera->updateKey(deltaTime, CameraMovement::BACKWARD);
 //	if (glfwGetKey(g_Window, GLFW_KEY_A) == GLFW_PRESS)
-//		EngineRenderer->m_Camera->updateKey(deltaTime, CameraMovement::LEFT);
+//		EngineRenderer->camera->updateKey(deltaTime, CameraMovement::LEFT);
 //	if (glfwGetKey(g_Window, GLFW_KEY_D) == GLFW_PRESS)
-//		EngineRenderer->m_Camera->updateKey(deltaTime, CameraMovement::RIGHT);
+//		EngineRenderer->camera->updateKey(deltaTime, CameraMovement::RIGHT);
 //	if (glfwGetKey(g_Window, GLFW_KEY_SPACE) == GLFW_PRESS)
-//		EngineRenderer->m_Camera->updateKey(deltaTime, CameraMovement::UP);
+//		EngineRenderer->camera->updateKey(deltaTime, CameraMovement::UP);
 //	if (glfwGetKey(g_Window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-//		EngineRenderer->m_Camera->updateKey(deltaTime, CameraMovement::DOWN);*/
+//		EngineRenderer->camera->updateKey(deltaTime, CameraMovement::DOWN);*/
 //}

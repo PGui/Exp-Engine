@@ -4,22 +4,22 @@ namespace Exp
 {
 	Quad::Quad(float width, float height)
 	{
-		Positions =
+		positions =
 		{
 			{ -width,  height, 0.0f, },
 			{ -width, -height, 0.0f, },
 			{  width,  height, 0.0f, },
 			{  width, -height, 0.0f, },
 		};
-		UV = {
+		uv = {
 			{ 0.0f, 1.0f, },
 			{ 0.0f, 0.0f, },
 			{ 1.0f, 1.0f, },
 			{ 1.0f, 0.0f, },
 		};
-		Topology = TRIANGLE_STRIP;
+		topology = TRIANGLE_STRIP;
 
-		finalize();
+		Finalize();
 	}
 
 	Quad::~Quad()

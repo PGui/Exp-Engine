@@ -28,9 +28,9 @@ namespace Exp
 
 	struct ProjectionUBO
 	{
-		glm::mat4 m_projectionMatrix;
-		glm::mat4 m_viewMatrix;
-		glm::vec3 m_viewPosition;
+		glm::mat4 projectionMatrix;
+		glm::mat4 viewMatrix;
+		glm::vec3 viewPosition;
 	};
 
 	class RenderingModule :
@@ -67,13 +67,13 @@ namespace Exp
 		std::shared_ptr<Mesh> m_PointLightSphere;
 
 		// Debug Lighting
-		std::shared_ptr<Cube> m_DebugLightMesh;
+		std::shared_ptr<Cube> debugLightMesh;
 
 		// Skybox
 		std::shared_ptr<Skybox> CurrentSkybox;
 	private:
 		//Debug
-		bool m_Wireframe = false;
+		bool wireframe = false;
 		bool m_DisplayLights = true;
 		bool m_DisplaySkybox = false;
 

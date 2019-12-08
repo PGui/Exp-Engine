@@ -14,7 +14,7 @@ namespace Exp
 	class SceneNode
 	{
 	public:
-		Mesh * Mesh;
+		Mesh * mesh;
 		Material * Material;
 
 		// bounding box 
@@ -29,7 +29,7 @@ namespace Exp
 		std::vector<SceneNode*> Children;
 		SceneNode * Parent = nullptr;
 
-		glm::mat4 Transform = glm::mat4(1.0f);
+		glm::mat4 transform = glm::mat4(1.0f);
 		glm::mat4 PreviousTransform = glm::mat4(1.0f);
 		glm::vec3 Position = glm::vec3(0.0f);
 		glm::vec3 Scale = glm::vec3(1.0f);
@@ -44,7 +44,7 @@ namespace Exp
 	public:
 
 
-		//Transform
+		//transform
 		void SetPosition(glm::vec3 position);
 		void SetRotation(glm::vec4 rotation);
 		void SetScale(glm::vec3 scale);

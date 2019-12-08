@@ -9,34 +9,34 @@ namespace Exp
 	void CommandBuffer::Push(Mesh* mesh, Material* material, glm::mat4 transform)
 	{
 		RenderCommand command;
-		command.Mesh = mesh;
-		command.Material = material;
-		command.Transform = transform;
+		command.mesh = mesh;
+		command.material = material;
+		command.transform = transform;
 
-		if (material->Type == Material::MaterialType::MATERIAL_DEFAULT)
+		if (material->type == Material::MaterialType::MATERIAL_DEFAULT)
 		{
-			DeferredCommands.push_back(command);
+			deferredCommands.push_back(command);
 		}
-		else if (material->Type == Material::MaterialType::MATERIAL_CUSTOM)
+		else if (material->type == Material::MaterialType::MATERIAL_CUSTOM)
 		{
-			ForwardCommands.push_back(command);
+			forwardCommands.push_back(command);
 		}
 
 	}
 
 	void CommandBuffer::Clear()
 	{
-		DeferredCommands.clear();
-		ForwardCommands.clear();
+		deferredCommands.clear();
+		forwardCommands.clear();
 	}
 
 	void CommandBuffer::Sort()
 	{
-		std::sort(DeferredCommands.begin(), DeferredCommands.end(), [](const RenderCommand& a, const RenderCommand& b) -> bool
+		std::sort(deferredCommands.begin(), deferredCommands.end(), [](const RenderCommand& a, const RenderCommand& b) -> bool
 			{
-				if (!a.Material->GetShader() || !b.Material->GetShader())
+				if (!a.material->GetShader() || !b.material->GetShader())
 					return false;
-				return a.Material->GetShader()->ID > b.Material->GetShader()->ID;
+				return a.material->GetShader()->ID > b.material->GetShader()->ID;
 			});
 	}
 

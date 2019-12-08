@@ -48,12 +48,12 @@ namespace Exp
 
 	glm::vec3 SceneNode::GetWorldPosition()
 	{
-		return glm::vec3(Transform * glm::vec4(Position, 1.0f));
+		return glm::vec3(transform * glm::vec4(Position, 1.0f));
 	}
 
 	glm::vec3 SceneNode::GetWorldScale()
 	{
-		return  glm::vec3(glm::abs(Transform[0][0]), glm::abs(Transform[1][1]), glm::abs(Transform[2][2]));
+		return  glm::vec3(glm::abs(transform[0][0]), glm::abs(transform[1][1]), glm::abs(transform[2][2]));
 	}
 
 	const glm::mat4 & SceneNode::GetTransform()
@@ -62,26 +62,26 @@ namespace Exp
 		{
 			UpdateTransform(false);
 		}
-		return Transform;
+		return transform;
 	}
 
 	void SceneNode::UpdateTransform(bool updatePrevTransform)
 	{
 		if (updatePrevTransform)
 		{
-			PreviousTransform = Transform;
+			PreviousTransform = transform;
 		}
 
 		//Current Node
 		if (bDirty)
 		{
-			Transform = glm::mat4(1.0f);
-			Transform = glm::translate(Transform, Position);
-			Transform = glm::scale(Transform, Scale);
-			Transform = glm::rotate(Transform, glm::radians(Rotation.w), glm::vec3(Rotation));
+			transform = glm::mat4(1.0f);
+			transform = glm::translate(transform, Position);
+			transform = glm::scale(transform, Scale);
+			transform = glm::rotate(transform, glm::radians(Rotation.w), glm::vec3(Rotation));
 			if (Parent)
 			{
-				Transform = Parent->Transform * Transform;
+				transform = Parent->transform * transform;
 			}
 		}
 

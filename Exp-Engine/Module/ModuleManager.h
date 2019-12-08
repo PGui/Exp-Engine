@@ -16,13 +16,13 @@ namespace Exp
 		friend class Singleton<ModuleManager>;
 
 	private:
-		std::map<unsigned int, IModuleInterface *> m_modules;
-		std::vector<unsigned int> m_insertOrder;
+		std::map<unsigned int, IModuleInterface *> modules;
+		std::vector<unsigned int> insertOrder;
 
-		IModuleInterface *GetModulePtr(const std::string ModuleName)
+		IModuleInterface *GetModulePtr(const std::string moduleName)
 		{
-			unsigned int moduleId = SID(ModuleName);
-			return m_modules.find(moduleId) != m_modules.end() ? m_modules[moduleId] : nullptr;
+			unsigned int moduleId = SID(moduleName);
+			return modules.find(moduleId) != modules.end() ? modules[moduleId] : nullptr;
 		}
 
 	public:
@@ -34,11 +34,11 @@ namespace Exp
 		{
 			unsigned int moduleId = SID(moduleName);
 
-			if (m_modules.find(moduleId) == m_modules.end())
+			if (modules.find(moduleId) == modules.end())
 			{
-				m_insertOrder.push_back(moduleId);
+				insertOrder.push_back(moduleId);
 				IModuleInterface * newModule = new T();
-				m_modules[moduleId] = newModule;
+				modules[moduleId] = newModule;
 			}
 		}
 
