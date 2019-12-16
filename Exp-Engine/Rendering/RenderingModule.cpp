@@ -279,7 +279,7 @@ namespace Exp
 
 			RenderCommand command;
 			command.mesh = currentSkybox->mesh;
-			command.material = currentSkybox->Material;
+			command.material = currentSkybox->material;
 			command.transform = currentSkybox->GetTransform();
 			Render(&command, true);
 
@@ -304,9 +304,9 @@ namespace Exp
 			SceneNode * currentNode = stackNode.top();
 			stackNode.pop();
 
-			if (currentNode->mesh && currentNode->Material)
+			if (currentNode->mesh && currentNode->material)
 			{
-				PushMeshRenderCommand(currentNode->mesh, currentNode->Material, currentNode->GetTransform());
+				PushMeshRenderCommand(currentNode->mesh, currentNode->material, currentNode->GetTransform());
 			}
 
 			for (unsigned int i = 0; i < currentNode->GetChildCount(); ++i)
@@ -441,7 +441,7 @@ namespace Exp
 
 	void RenderingModule::RenderMesh(Mesh* mesh)
 	{
-		glBindVertexArray(mesh->VAO);
+		glBindVertexArray(mesh->vao);
 		if (mesh->indices.size() > 0)
 		{
 			glDrawElements(mesh->topology == Mesh::TOPOLOGY::TRIANGLE_STRIP ? GL_TRIANGLE_STRIP : GL_TRIANGLES, (GLsizei)mesh->indices.size(), GL_UNSIGNED_INT, 0);
