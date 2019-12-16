@@ -6,4 +6,5 @@ Exp::Light::Light()
 
 Exp::Light::~Light()
 {
+
 }

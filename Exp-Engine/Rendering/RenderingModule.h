@@ -82,15 +82,15 @@ namespace Exp
 
 	public:
 		std::shared_ptr<RenderTarget> GetGBuffer();
-		DirectionalLight * AddDirectionalLight(glm::vec3 Direction);
-		PointLight * AddPointLight(glm::vec3 Position = glm::vec3(0.0f), float Radius = 1.0f);
+		DirectionalLight * AddDirectionalLight(glm::vec3 direction);
+		PointLight * AddPointLight(glm::vec3 position = glm::vec3(0.0f), float radius = 1.0f);
 
-		void SetCamera(Camera* Camera);
+		void SetCamera(Camera* camera);
 
 		void SetSkybox(std::string folder);
 		void RenderSkybox();
 
-		void PushMesh(SceneNode * Node);
+		void PushMesh(SceneNode * node);
 		void Render();
 
 		void ResizeRenderer(int width, int height);

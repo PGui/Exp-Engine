@@ -240,28 +240,28 @@ namespace Exp
 		return GBuffer;
 	}
 
-	DirectionalLight * RenderingModule::AddDirectionalLight(glm::vec3 Direction)
+	DirectionalLight * RenderingModule::AddDirectionalLight(glm::vec3 direction)
 	{
-		std::shared_ptr<DirectionalLight> Light = std::make_shared<DirectionalLight>();
-		Light->direction = Direction;
-		directionalLights.push_back(Light);
-		return Light.get();
+		std::shared_ptr<DirectionalLight> light = std::make_shared<DirectionalLight>();
+		light->direction = direction;
+		directionalLights.push_back(light);
+		return light.get();
 	}
 
-	PointLight* RenderingModule::AddPointLight(glm::vec3 Position, float Radius)
+	PointLight* RenderingModule::AddPointLight(glm::vec3 position, float radius)
 	{
-		std::shared_ptr<PointLight> Light = std::make_shared<PointLight>();
-		Light->position = Position;
-		Light->radius = Radius;
-		pointLights.push_back(Light);
-		return Light.get();
+		std::shared_ptr<PointLight> light = std::make_shared<PointLight>();
+		light->position = position;
+		light->radius = radius;
+		pointLights.push_back(light);
+		return light.get();
 	}
 
-	void RenderingModule::SetCamera(Camera* Camera)
+	void RenderingModule::SetCamera(Camera* camera)
 	{
-		if (renderCamera != Camera)
+		if (renderCamera != camera)
 		{
-			renderCamera = Camera;
+			renderCamera = camera;
 		}
 	}
 
@@ -287,16 +287,16 @@ namespace Exp
 		}
 	}
 
-	void RenderingModule::PushMesh(SceneNode * Node)
+	void RenderingModule::PushMesh(SceneNode * node)
 	{
-		Node->UpdateTransform(true);
+		node->UpdateTransform(true);
 
 		//Push the node and all the children for rendering
 		std::stack<SceneNode*> stackNode;
-		stackNode.push(Node);
-		for (unsigned int i = 0; i < Node->GetChildCount(); ++i)
+		stackNode.push(node);
+		for (unsigned int i = 0; i < node->GetChildCount(); ++i)
 		{
-			stackNode.push(Node->GetChildByIndex(i));
+			stackNode.push(node->GetChildByIndex(i));
 		}
 
 		while (!stackNode.empty())
