@@ -20,8 +20,8 @@ namespace Exp
 		public SceneNode
 	{
 	private:
-		TextureCube* m_CubeMap;
-		Shader* m_Shader;
+		TextureCube * cubeMap = nullptr;
+		Shader * shader = nullptr;
 
 	public:
 		Skybox();

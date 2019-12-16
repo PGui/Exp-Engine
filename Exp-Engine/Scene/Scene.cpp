@@ -2,42 +2,42 @@
 
 namespace Exp
 {
-	SceneNode* Scene::Root = new SceneNode(0);
-	unsigned int Scene::CounterID = 0;
+	SceneNode* Scene::root = new SceneNode(0);
+	unsigned int Scene::counterID = 0;
 	// --------------------------------------------------------------------------------------------
 	void Scene::Clear()
 	{
-		Scene::DeleteSceneNode(Root);
-		Scene::Root = new SceneNode(0);
+		Scene::DeleteSceneNode(root);
+		Scene::root = new SceneNode(0);
 	}
 	// --------------------------------------------------------------------------------------------
 	SceneNode* Scene::MakeSceneNode()
 	{
-		SceneNode* node = new SceneNode(Scene::CounterID++);
+		SceneNode* node = new SceneNode(Scene::counterID++);
 
-		Root->AddChild(node);
+		root->AddChild(node);
 		return node;
 	}
 	// --------------------------------------------------------------------------------------------
 	SceneNode* Scene::MakeSceneNode(Mesh* mesh, Material* material)
 	{
-		SceneNode* node = new SceneNode(Scene::CounterID++);
+		SceneNode* node = new SceneNode(Scene::counterID++);
 
 		node->mesh = mesh;
-		node->Material = material;
+		node->material = material;
 
-		Root->AddChild(node);
+		root->AddChild(node);
 		return node;
 	}
 	// --------------------------------------------------------------------------------------------
 	SceneNode* Scene::MakeSceneNode(SceneNode* node)
 	{
-		SceneNode *newNode = new SceneNode(Scene::CounterID++);
+		SceneNode *newNode = new SceneNode(Scene::counterID++);
 
 		newNode->mesh = node->mesh;
-		newNode->Material = node->Material;
-		newNode->BoxMin = node->BoxMin;
-		newNode->BoxMax = node->BoxMax;
+		newNode->material = node->material;
+		newNode->boxMin = node->boxMin;
+		newNode->boxMax = node->boxMax;
 
 		std::stack<SceneNode*> nodeStack;
 		for (unsigned int i = 0; i < node->GetChildCount(); ++i)
@@ -47,18 +47,18 @@ namespace Exp
 			SceneNode* child = nodeStack.top();
 			nodeStack.pop();
 			// similarly, create SceneNode for each child and push to scene node memory list.
-			SceneNode* newChild = new SceneNode(Scene::CounterID++);
+			SceneNode* newChild = new SceneNode(Scene::counterID++);
 			newChild->mesh = child->mesh;
-			newChild->Material = child->Material;
-			newChild->BoxMin = child->BoxMin;
-			newChild->BoxMax = child->BoxMax;
+			newChild->material = child->material;
+			newChild->boxMin = child->boxMin;
+			newChild->boxMax = child->boxMax;
 			newNode->AddChild(newChild);
 
 			for (unsigned int i = 0; i < child->GetChildCount(); ++i)
 				nodeStack.push(child->GetChildByIndex(i));
 		}
 
-		Root->AddChild(newNode);
+		root->AddChild(newNode);
 		return newNode;
 	}
 	// --------------------------------------------------------------------------------------------

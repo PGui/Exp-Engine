@@ -4,14 +4,14 @@
 namespace Exp
 {
 
-	std::map<unsigned, Shader>      Resources::m_Shaders		= std::map<unsigned, Shader>();
-	std::map<unsigned, Texture>     Resources::m_Textures		= std::map<unsigned, Texture>();
-	std::map<unsigned, TextureCube> Resources::m_TexturesCube	= std::map<unsigned, TextureCube>();
-	std::map<unsigned, SceneNode*>  Resources::m_Meshes			= std::map<unsigned, SceneNode*>();
+	std::map<unsigned, Shader>      Resources::shaders		= std::map<unsigned, Shader>();
+	std::map<unsigned, Texture>     Resources::textures		= std::map<unsigned, Texture>();
+	std::map<unsigned, TextureCube> Resources::texturesCube	= std::map<unsigned, TextureCube>();
+	std::map<unsigned, SceneNode*>  Resources::meshes			= std::map<unsigned, SceneNode*>();
 
 	std::map<unsigned, Shader>& Resources::DebugGetShaders()
 	{
-		return Resources::m_Shaders;
+		return Resources::shaders;
 	}
 	// --------------------------------------------------------------------------------------------
 	void Resources::Init()
@@ -24,7 +24,7 @@ namespace Exp
 		// traverse all stored Mesh scene nodes and delete accordingly.
 		// Note that this time we don't care about deleting dangling pointers as each scene node is
 		// unique and shouldn't reference other scene nodes than their children.
-		for (auto it = m_Meshes.begin(); it != m_Meshes.end(); it++)
+		for (auto it = meshes.begin(); it != meshes.end(); it++)
 		{
 			delete it->second;
 		}
@@ -36,27 +36,27 @@ namespace Exp
 		unsigned int id = SID(name);
 
 		// if shader already exists, return that handle
-		if (Resources::m_Shaders.find(id) != Resources::m_Shaders.end())
-			return &Resources::m_Shaders[id];
+		if (Resources::shaders.find(id) != Resources::shaders.end())
+			return &Resources::shaders[id];
 
 		Shader shader = ShaderLoader::LoadShader(name, vsPath, fsPath);
-		Resources::m_Shaders[id] = shader;
-		return &Resources::m_Shaders[id];
+		Resources::shaders[id] = shader;
+		return &Resources::shaders[id];
 	}
 
 	Shader* Resources::ReloadShader(std::string name)
 	{
 		unsigned int id = SID(name);
 
-		if (Resources::m_Shaders.find(id) == Resources::m_Shaders.end())
+		if (Resources::shaders.find(id) == Resources::shaders.end())
 		{
 			return nullptr;
 			
 		}
 
-		Resources::m_Shaders[id].DeleteProgram();
-		Resources::m_Shaders[id] = ShaderLoader::LoadShader(name, Resources::m_Shaders[id].vertexFilePath, Resources::m_Shaders[id].fragmentFilePath);
-		return &Resources::m_Shaders[id];
+		Resources::shaders[id].DeleteProgram();
+		Resources::shaders[id] = ShaderLoader::LoadShader(name, Resources::shaders[id].vertexFilePath, Resources::shaders[id].fragmentFilePath);
+		return &Resources::shaders[id];
 			
 	}
 	// --------------------------------------------------------------------------------------------
@@ -65,9 +65,9 @@ namespace Exp
 		unsigned int id = SID(name);
 
 		// if shader exists, return that handle
-		if (Resources::m_Shaders.find(id) != Resources::m_Shaders.end())
+		if (Resources::shaders.find(id) != Resources::shaders.end())
 		{
-			return &Resources::m_Shaders[id];
+			return &Resources::shaders[id];
 		}
 		else
 		{
@@ -81,8 +81,8 @@ namespace Exp
 		unsigned int id = SID(name);
 
 		// if texture already exists, return that handle
-		if (Resources::m_Textures.find(id) != Resources::m_Textures.end())
-			return &Resources::m_Textures[id];
+		if (Resources::textures.find(id) != Resources::textures.end())
+			return &Resources::textures[id];
 
 		spdlog::info("Loading texture file at {}", path);
 
@@ -91,10 +91,10 @@ namespace Exp
 		spdlog::info("Successfully loaded {}", path);
 
 		// make sure texture got properly loaded
-		if (texture.Width > 0)
+		if (texture.width > 0)
 		{
-			Resources::m_Textures[id] = texture;
-			return &Resources::m_Textures[id];
+			Resources::textures[id] = texture;
+			return &Resources::textures[id];
 		}
 		else
 		{
@@ -108,9 +108,9 @@ namespace Exp
 		unsigned int id = SID(name);
 
 		// if shader exists, return that handle
-		if (Resources::m_Textures.find(id) != Resources::m_Textures.end())
+		if (Resources::textures.find(id) != Resources::textures.end())
 		{
-			return &Resources::m_Textures[id];
+			return &Resources::textures[id];
 		}
 		else
 		{
@@ -124,12 +124,12 @@ namespace Exp
 		unsigned int id = SID(name);
 
 		// if texture already exists, return that handle
-		if (Resources::m_TexturesCube.find(id) != Resources::m_TexturesCube.end())
-			return &Resources::m_TexturesCube[id];
+		if (Resources::texturesCube.find(id) != Resources::texturesCube.end())
+			return &Resources::texturesCube[id];
 
 		TextureCube texture = TextureLoader::LoadTextureCube(folder);
-		Resources::m_TexturesCube[id] = texture;
-		return &Resources::m_TexturesCube[id];
+		Resources::texturesCube[id] = texture;
+		return &Resources::texturesCube[id];
 	}
 
 	TextureCube* Resources::GetTextureCube(std::string name)
@@ -137,9 +137,9 @@ namespace Exp
 		unsigned int id = SID(name);
 
 		// if shader exists, return that handle
-		if (Resources::m_TexturesCube.find(id) != Resources::m_TexturesCube.end())
+		if (Resources::texturesCube.find(id) != Resources::texturesCube.end())
 		{
-			return &Resources::m_TexturesCube[id];
+			return &Resources::texturesCube[id];
 		}
 		else
 		{
@@ -158,15 +158,15 @@ namespace Exp
 		// the copied reference. We return a copy as the moment the global scene deletes the 
 		// returned node, all other and next requested scene nodes of this model will end up as
 		// dangling pointers.
-		if (Resources::m_Meshes.find(id) != Resources::m_Meshes.end())
+		if (Resources::meshes.find(id) != Resources::meshes.end())
 		{
-			return Scene::MakeSceneNode(Resources::m_Meshes[id]);
+			return Scene::MakeSceneNode(Resources::meshes[id]);
 		}
 
 		// MeshLoader::LoadMesh initializes a scene node hierarchy on the heap. We are responsible 
 		// for managing the memory; keep a reference to the root node of the model scene. 
 		SceneNode* node = ModelLoader::LoadMesh(renderer, path);
-		Resources::m_Meshes[id] = node;
+		Resources::meshes[id] = node;
 
 		// return a copied reference through the scene to prevent dangling pointers. 
 		// See description above.
@@ -181,9 +181,9 @@ namespace Exp
 		// the copied reference. We return a copy as the moment the global scene deletes the 
 		// returned node, all other and next requested scene nodes of this model will end up as
 		// dangling pointers.
-		if (Resources::m_Meshes.find(id) != Resources::m_Meshes.end())
+		if (Resources::meshes.find(id) != Resources::meshes.end())
 		{
-			return Scene::MakeSceneNode(Resources::m_Meshes[id]);
+			return Scene::MakeSceneNode(Resources::meshes[id]);
 		}
 		else
 		{

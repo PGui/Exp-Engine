@@ -15,29 +15,29 @@ namespace Exp
 	{
 	public:
 		Mesh * mesh;
-		Material * Material;
+		Material * material;
 
 		// bounding box 
-		glm::vec3 BoxMin = glm::vec3(-99999.0f);
-		glm::vec3 BoxMax = glm::vec3(99999.0f);
+		glm::vec3 boxMin = glm::vec3(-99999.0f);
+		glm::vec3 boxMax = glm::vec3(99999.0f);
 
 	public:
 		SceneNode(unsigned int id);
 		~SceneNode();
 
 	private:
-		std::vector<SceneNode*> Children;
-		SceneNode * Parent = nullptr;
+		std::vector<SceneNode*> children;
+		SceneNode * parent = nullptr;
 
 		glm::mat4 transform = glm::mat4(1.0f);
-		glm::mat4 PreviousTransform = glm::mat4(1.0f);
-		glm::vec3 Position = glm::vec3(0.0f);
-		glm::vec3 Scale = glm::vec3(1.0f);
-		glm::vec4 Rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f); //Axis + Angle
+		glm::mat4 previousTransform = glm::mat4(1.0f);
+		glm::vec3 position = glm::vec3(0.0f);
+		glm::vec3 scale = glm::vec3(1.0f);
+		glm::vec4 rotation = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f); //Axis + Angle
 
 
 
-		bool bDirty = false;
+		bool dirty = false;
 
 		unsigned int id;
 

@@ -43,10 +43,10 @@ namespace Exp
 	{
 	private:
 		// we index all resources w/ a hashed string ID
-		static std::map<unsigned, Shader>		m_Shaders;
-		static std::map<unsigned, Texture>		m_Textures;
-		static std::map<unsigned, TextureCube>  m_TexturesCube;
-		static std::map<unsigned, SceneNode*>	m_Meshes;
+		static std::map<unsigned, Shader>		shaders;
+		static std::map<unsigned, Texture>		textures;
+		static std::map<unsigned, TextureCube>  texturesCube;
+		static std::map<unsigned, SceneNode*>	meshes;
 	public:
 
 	private:

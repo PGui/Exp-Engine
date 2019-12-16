@@ -32,7 +32,7 @@ namespace Exp
 		Mesh(std::vector<glm::vec3> positions, std::vector<glm::vec3> normals, std::vector<glm::vec2> uv, std::vector<unsigned int> indices);
 		~Mesh();
 
-		unsigned int VAO = 0;
+		unsigned int vao = 0;
 		TOPOLOGY topology = TRIANGLES;
 
 		std::vector<glm::vec3> positions;

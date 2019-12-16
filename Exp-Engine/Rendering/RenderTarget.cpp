@@ -14,11 +14,11 @@ namespace Exp
 		for (unsigned int i = 0; i < nrColorAttachments; ++i)
 		{
 			Texture texture;
-			texture.FilterMin = GL_LINEAR;
-			texture.FilterMax = GL_LINEAR;
-			texture.WrapS = GL_CLAMP_TO_EDGE;
-			texture.WrapT = GL_CLAMP_TO_EDGE;
-			texture.Mipmapping = false;
+			texture.filterMin = GL_LINEAR;
+			texture.filterMax = GL_LINEAR;
+			texture.wrapS = GL_CLAMP_TO_EDGE;
+			texture.wrapT = GL_CLAMP_TO_EDGE;
+			texture.mipmapping = false;
 
 			GLenum internalFormat = GL_RGBA;
 			if (type == GL_HALF_FLOAT)
@@ -27,7 +27,7 @@ namespace Exp
 				internalFormat = GL_RGBA32F;
 			texture.Generate(width, height, internalFormat, GL_RGBA, type, 0);
 
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, texture.ID, 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, texture.id, 0);
 
 			GLuint depthrenderbuffer;
 			glGenRenderbuffers(1, &depthrenderbuffer);
@@ -43,14 +43,14 @@ namespace Exp
 		if (bHasDepthAndStencil)
 		{
 			Texture texture;
-			texture.FilterMin = GL_LINEAR;
-			texture.FilterMax = GL_LINEAR;
-			texture.WrapS = GL_CLAMP_TO_EDGE;
-			texture.WrapT = GL_CLAMP_TO_EDGE;
-			texture.Mipmapping = false;
+			texture.filterMin = GL_LINEAR;
+			texture.filterMax = GL_LINEAR;
+			texture.wrapS = GL_CLAMP_TO_EDGE;
+			texture.wrapT = GL_CLAMP_TO_EDGE;
+			texture.mipmapping = false;
 			texture.Generate(width, height, GL_DEPTH_STENCIL, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 0);
 
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture.ID, 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture.id, 0);
 			DepthStencil = texture;
 		}
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)

@@ -21,7 +21,7 @@ namespace Exp
 	{
 
 	public:
-		unsigned int id;
+		unsigned int id = -1;
 		std::string name;
 		Shader() {};
 		Shader(std::string name, std::string vsCode, std::string fsCode, std::string vsfile, std::string fsfile);

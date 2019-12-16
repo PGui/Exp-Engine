@@ -34,9 +34,9 @@ namespace Exp
 		assert(positions.size() > 0);
 
 		//Generatebuffers
-		if (VAO == 0)
+		if (vao == 0)
 		{
-			glGenVertexArrays(1, &VAO);
+			glGenVertexArrays(1, &vao);
 			glGenBuffers(1, &vbo);
 			glGenBuffers(1, &ebo);
 		}
@@ -110,7 +110,7 @@ namespace Exp
 		//	}*/
 		//}
 
-		glBindVertexArray(VAO);
+		glBindVertexArray(vao);
 
 		glBindBuffer(GL_ARRAY_BUFFER, vbo);
 		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);

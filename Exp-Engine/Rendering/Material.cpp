@@ -65,7 +65,7 @@ namespace Exp
 	{
 		samplerUniforms[name].Unit = unit;
 		samplerUniforms[name].Texture = texture;
-		switch (texture->Target)
+		switch (texture->target)
 		{
 		case GL_TEXTURE_1D:
 			samplerUniforms[name].type = SHADER_TYPE_SAMPLER1D;

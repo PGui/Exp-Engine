@@ -22,8 +22,8 @@ namespace Exp
 	class Scene
 	{
 	public:
-		static SceneNode* Root;
-		static unsigned int CounterID;
+		static SceneNode* root;
+		static unsigned int counterID;
 	public:
 
 		static void Clear();

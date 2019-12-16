@@ -36,10 +36,10 @@ namespace Exp
 
 		spdlog::info("Succesfully loaded {}", path);
 
-		return ModelLoader::processNode(renderer, scene->mRootNode, scene, directory, setDefaultMaterial);
+		return ModelLoader::ProcessNode(renderer, scene->mRootNode, scene, directory, setDefaultMaterial);
 	}
 
-	SceneNode * ModelLoader::processNode(Renderer * renderer, aiNode * aNode, const aiScene * aScene, std::string directory, bool setDefaultMaterial)
+	SceneNode * ModelLoader::ProcessNode(Renderer * renderer, aiNode * aNode, const aiScene * aScene, std::string directory, bool setDefaultMaterial)
 	{
 		SceneNode* node = new SceneNode(0);
 
@@ -48,11 +48,11 @@ namespace Exp
 			glm::vec3 boxMin, boxMax;
 			aiMesh*     assimpMesh = aScene->mMeshes[aNode->mMeshes[i]];
 			aiMaterial* assimpMat = aScene->mMaterials[assimpMesh->mMaterialIndex];
-			Mesh*       mesh = ModelLoader::parseMesh(assimpMesh, aScene, boxMin, boxMax);
+			Mesh*       mesh = ModelLoader::ParseMesh(assimpMesh, aScene, boxMin, boxMax);
 			Material*   material = nullptr;
 			if (setDefaultMaterial)
 			{
-				material = ModelLoader::parseMaterial(renderer, assimpMat, aScene, directory);
+				material = ModelLoader::ParseMaterial(renderer, assimpMat, aScene, directory);
 			}
 
 			// if we only have one Mesh, this node itself contains the Mesh/material.
@@ -61,19 +61,19 @@ namespace Exp
 				node->mesh = mesh;
 				if (setDefaultMaterial)
 				{
-					node->Material = material;
+					node->material = material;
 				}
-				node->BoxMin = boxMin;
-				node->BoxMax = boxMax;
+				node->boxMin = boxMin;
+				node->boxMax = boxMax;
 			}
 			// otherwise, the meshes are considered on equal depth of its children
 			else
 			{
 				SceneNode* child = new SceneNode(0);
 				child->mesh = mesh;
-				child->Material = material;
-				child->BoxMin = boxMin;
-				child->BoxMax = boxMax;
+				child->material = material;
+				child->boxMin = boxMin;
+				child->boxMax = boxMax;
 				node->AddChild(child);
 			}
 		}
@@ -81,13 +81,13 @@ namespace Exp
 		// also recursively parse this node's children 
 		for (unsigned int i = 0; i < aNode->mNumChildren; ++i)
 		{
-			node->AddChild(ModelLoader::processNode(renderer, aNode->mChildren[i], aScene, directory, setDefaultMaterial));
+			node->AddChild(ModelLoader::ProcessNode(renderer, aNode->mChildren[i], aScene, directory, setDefaultMaterial));
 		}
 
 		return node;
 	}
 
-	Mesh * ModelLoader::parseMesh(aiMesh * aMesh, const aiScene * aScene, glm::vec3 & out_Min, glm::vec3 & out_Max)
+	Mesh * ModelLoader::ParseMesh(aiMesh * aMesh, const aiScene * aScene, glm::vec3 & out_Min, glm::vec3 & out_Max)
 	{
 		std::vector<glm::vec3> positions;
 		std::vector<glm::vec2> uv;
@@ -166,7 +166,7 @@ namespace Exp
 		return mesh;
 	}
 
-	Material * ModelLoader::parseMaterial(Renderer * renderer, aiMaterial * aMaterial, const aiScene * aScene, std::string directory)
+	Material * ModelLoader::ParseMaterial(Renderer * renderer, aiMaterial * aMaterial, const aiScene * aScene, std::string directory)
 	{
 		MaterialLibraryModule * MaterialLibrary = Exp::ModuleManager::Get().GetModule<Exp::MaterialLibraryModule>("MaterialLibrary");
 		Material* material;
@@ -188,7 +188,7 @@ namespace Exp
 			// meshes with multiple diffuse layers; same holds for other texture types.
 			aiString file;
 			aMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &file);
-			std::string fileName = ModelLoader::processPath(&file, directory);
+			std::string fileName = ModelLoader::ProcessPath(&file, directory);
 			// we name the texture the same as the filename as to reduce naming conflicts while 
 			// still only loading unique textures.
 			Texture* texture = Resources::LoadTexture(fileName, fileName, GL_TEXTURE_2D, alpha ? GL_RGBA : GL_RGB, false /*TODO put this on*/);
@@ -202,7 +202,7 @@ namespace Exp
 		{
 			aiString file;
 			aMaterial->GetTexture(aiTextureType_SPECULAR, 0, &file);
-			std::string fileName = ModelLoader::processPath(&file, directory);
+			std::string fileName = ModelLoader::ProcessPath(&file, directory);
 
 			Texture* texture = Resources::LoadTexture(fileName, fileName);
 			if (texture)
@@ -215,7 +215,7 @@ namespace Exp
 		{
 			aiString file;
 			aMaterial->GetTexture(aiTextureType_HEIGHT, 0, &file);
-			std::string fileName = ModelLoader::processPath(&file, directory);
+			std::string fileName = ModelLoader::ProcessPath(&file, directory);
 
 			Texture* texture = Resources::LoadTexture(fileName, fileName);
 			if (texture)
@@ -329,7 +329,7 @@ namespace Exp
 		//return material;
 	}
 
-	std::string ModelLoader::processPath(aiString * aPath, std::string directory)
+	std::string ModelLoader::ProcessPath(aiString * aPath, std::string directory)
 	{
 		std::string path = std::string(aPath->C_Str());
 		// parse path directly if path contains "/" indicating it is an absolute path;  otherwise 

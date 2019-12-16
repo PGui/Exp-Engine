@@ -15,40 +15,40 @@ namespace Exp
 
 	void SceneNode::SetPosition(glm::vec3 position)
 	{
-		Position = position;
-		bDirty = true;
+		this->position = position;
+		dirty = true;
 	}
 
 	void SceneNode::SetRotation(glm::vec4 rotation)
 	{
-		Rotation = rotation;
-		bDirty = true;
+		this->rotation = rotation;
+		dirty = true;
 	}
 
 	void SceneNode::SetScale(glm::vec3 scale)
 	{
-		Scale = scale;
-		bDirty = true;
+		this->scale = scale;
+		dirty = true;
 	}
 
 	glm::vec3 SceneNode::GetLocalPosition()
 	{
-		return Position;
+		return position;
 	}
 
 	glm::vec3 SceneNode::GetLocalScale()
 	{
-		return Scale;
+		return scale;
 	}
 
 	glm::vec4 SceneNode::GetRotation()
 	{
-		return Rotation;
+		return rotation;
 	}
 
 	glm::vec3 SceneNode::GetWorldPosition()
 	{
-		return glm::vec3(transform * glm::vec4(Position, 1.0f));
+		return glm::vec3(transform * glm::vec4(position, 1.0f));
 	}
 
 	glm::vec3 SceneNode::GetWorldScale()
@@ -58,7 +58,7 @@ namespace Exp
 
 	const glm::mat4 & SceneNode::GetTransform()
 	{
-		if (bDirty)
+		if (dirty)
 		{
 			UpdateTransform(false);
 		}
@@ -69,32 +69,32 @@ namespace Exp
 	{
 		if (updatePrevTransform)
 		{
-			PreviousTransform = transform;
+			previousTransform = transform;
 		}
 
 		//Current Node
-		if (bDirty)
+		if (dirty)
 		{
 			transform = glm::mat4(1.0f);
-			transform = glm::translate(transform, Position);
-			transform = glm::scale(transform, Scale);
-			transform = glm::rotate(transform, glm::radians(Rotation.w), glm::vec3(Rotation));
-			if (Parent)
+			transform = glm::translate(transform, position);
+			transform = glm::scale(transform, scale);
+			transform = glm::rotate(transform, glm::radians(rotation.w), glm::vec3(rotation));
+			if (parent)
 			{
-				transform = Parent->transform * transform;
+				transform = parent->transform * transform;
 			}
 		}
 
 		//Children
-		for (auto & Child : Children)
+		for (auto & child : children)
 		{
-			if (bDirty)
+			if (dirty)
 			{
-				Child->bDirty = true;
+				child->dirty = true;
 			}
-			Child->UpdateTransform(updatePrevTransform);
+			child->UpdateTransform(updatePrevTransform);
 		}
-		bDirty = false;
+		dirty = false;
 	}
 
 	const unsigned int SceneNode::GetID() const
@@ -104,46 +104,46 @@ namespace Exp
 
 	void SceneNode::AddChild(SceneNode * node)
 	{
-		if (node->Parent)
+		if (node->parent)
 		{
-			node->Parent->RemoveChild(node->id);
+			node->parent->RemoveChild(node->id);
 		}
-		node->Parent = this;
-		Children.push_back(node);
+		node->parent = this;
+		children.push_back(node);
 	}
 
 	void SceneNode::RemoveChild(const unsigned int id)
 	{
-		auto it = std::find(Children.begin(), Children.end(), GetChild(id));
-		if (it != Children.end())
-			Children.erase(it);
+		auto it = std::find(children.begin(), children.end(), GetChild(id));
+		if (it != children.end())
+			children.erase(it);
 	}
 
 	const std::vector<SceneNode*> & SceneNode::GetChildren() const
 	{
-		return Children;
+		return children;
 	}
 
 	unsigned int SceneNode::GetChildCount()
 	{
-		return (unsigned int)Children.size();
+		return (unsigned int)children.size();
 	}
 
 	SceneNode * SceneNode::GetChild(const unsigned int id)
 	{
-		std::vector<SceneNode*>::iterator it = std::find_if(Children.begin(), Children.end(), [id](SceneNode * Node) {return Node->GetID() == id; });
-		return (it != Children.end()) ? *it : nullptr;
+		std::vector<SceneNode*>::iterator it = std::find_if(children.begin(), children.end(), [id](SceneNode * Node) {return Node->GetID() == id; });
+		return (it != children.end()) ? *it : nullptr;
 	}
 
 	SceneNode * SceneNode::GetChildByIndex(unsigned int index)
 	{
 		assert(index < GetChildCount());
-		return Children[index];
+		return children[index];
 	}
 
 	SceneNode * SceneNode::GetParent()
 	{
-		return Parent;
+		return parent;
 	}
 
 }

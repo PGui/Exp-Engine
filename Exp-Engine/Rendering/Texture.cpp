@@ -15,42 +15,48 @@ namespace Exp
 
 	void Texture::Generate(unsigned int width, unsigned int height, GLenum internalFormat, GLenum format, GLenum type, void* data)
 	{
-		glGenTextures(1, &ID);
+		glGenTextures(1, &id);
 
-		Width = width;
-		Height = height;
-		InternalFormat = internalFormat;
-		Format = format;
-		Type = type;
+		this->width = width;
+		this->height = height;
+		this->internalFormat = internalFormat;
+		this->format = format;
+		this->type = type;
 
-		assert(Target == GL_TEXTURE_2D);
+		assert(this->target == GL_TEXTURE_2D);
 		Bind();
-		glTexImage2D(Target, 0, internalFormat, width, height, 0, format, type, data);
-		glTexParameteri(Target, GL_TEXTURE_MIN_FILTER, FilterMin);
-		glTexParameteri(Target, GL_TEXTURE_MAG_FILTER, FilterMax);
-		glTexParameteri(Target, GL_TEXTURE_WRAP_S, WrapS);
-		glTexParameteri(Target, GL_TEXTURE_WRAP_T, WrapT);
-		if (Mipmapping)
-			glGenerateMipmap(Target);
+		glTexImage2D(this->target, 0, this->internalFormat, this->width, this->height, 0, this->format, this->type, data);
+		glTexParameteri(this->target, GL_TEXTURE_MIN_FILTER, this->filterMin);
+		glTexParameteri(this->target, GL_TEXTURE_MAG_FILTER, this->filterMax);
+		glTexParameteri(this->target, GL_TEXTURE_WRAP_S, this->wrapS);
+		glTexParameteri(this->target, GL_TEXTURE_WRAP_T, this->wrapT);
+		if (this->mipmapping)
+			glGenerateMipmap(this->target);
 		Unbind();
 	}
 
 	void Texture::Resize(unsigned int width, unsigned int height, unsigned int depth)
 	{
 		Bind();
-		if (Target == GL_TEXTURE_1D)
+		if (this->target == GL_TEXTURE_1D)
 		{
-			glTexImage1D(GL_TEXTURE_1D, 0, InternalFormat, width, 0, Format, Type, 0);
+			this->width = width;
+			glTexImage1D(GL_TEXTURE_1D, 0, this->internalFormat, width, 0, this->format, this->type, 0);
 		}
-		else if (Target == GL_TEXTURE_2D)
+		else if (this->target == GL_TEXTURE_2D)
 		{
 			assert(height > 0);
-			glTexImage2D(GL_TEXTURE_2D, 0, InternalFormat, width, height, 0, Format, Type, 0);
+			this->width = width;
+			this->height = height;
+			glTexImage2D(GL_TEXTURE_2D, 0, this->internalFormat, width, height, 0, this->format, this->type, 0);
 		}
-		else if (Target == GL_TEXTURE_3D)
+		else if (this->target == GL_TEXTURE_3D)
 		{
 			assert(height > 0 && depth > 0);
-			glTexImage3D(GL_TEXTURE_3D, 0, InternalFormat, width, height, depth, 0, Format, Type, 0);
+			this->width = width;
+			this->height = height;
+			this->depth = depth;
+			glTexImage3D(GL_TEXTURE_3D, 0, this->internalFormat, width, height, depth, 0, this->format, this->type, 0);
 		}
 	}
 
@@ -61,12 +67,12 @@ namespace Exp
 			glActiveTexture(GL_TEXTURE0 + textureUnit);
 		}
 
-		glBindTexture(Target, ID);
+		glBindTexture(this->target, this->id);
 	}
 
 	void Texture::Unbind()
 	{
-		glBindTexture(Target, 0);
+		glBindTexture(this->target, 0);
 	}
 
 }

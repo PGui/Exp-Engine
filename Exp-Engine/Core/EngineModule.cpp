@@ -65,7 +65,7 @@ void Exp::EngineModule::RunEngine()
 	SceneNode* PlaneNode = Scene::MakeSceneNode(&myPlane, materialLibraryModule->CreateMaterial("default"));
 	PlaneNode->SetScale(glm::vec3(30, 1, 30));
 	PlaneNode->SetRotation(glm::vec4(1, 0, 0, 90.0f));
-	PlaneNode->Material->SetTexture("material.diffuse", Resources::LoadTexture("wood", "../resources/texture/wood.png", GL_TEXTURE_2D, GL_RGB, false), 0);
+	PlaneNode->material->SetTexture("material.diffuse", Resources::LoadTexture("wood", "../resources/texture/wood.png", GL_TEXTURE_2D, GL_RGB, false), 0);
 
 	/*DirectionalLight* MyLight = renderingModule->AddDirectionalLight(glm::vec3(1.0, 1.0, 0.0));
 	MyLight->color = glm::vec3(1.0f, 1.0f, 1.0f);

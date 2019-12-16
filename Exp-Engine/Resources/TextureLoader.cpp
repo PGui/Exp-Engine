@@ -16,12 +16,12 @@ namespace Exp
 		Texture texture;
 		stbi_set_flip_vertically_on_load(true);
 
-		texture.Target = target;
-		texture.InternalFormat = internalFormat;
-		if (texture.InternalFormat == GL_RGB || texture.InternalFormat == GL_SRGB)
-			texture.InternalFormat = srgb ? GL_SRGB : GL_RGB;
-		if (texture.InternalFormat == GL_RGBA || texture.InternalFormat == GL_SRGB_ALPHA)
-			texture.InternalFormat = srgb ? GL_SRGB_ALPHA : GL_RGBA;
+		texture.target = target;
+		texture.internalFormat = internalFormat;
+		if (texture.internalFormat == GL_RGB || texture.internalFormat == GL_SRGB)
+			texture.internalFormat = srgb ? GL_SRGB : GL_RGB;
+		if (texture.internalFormat == GL_RGBA || texture.internalFormat == GL_SRGB_ALPHA)
+			texture.internalFormat = srgb ? GL_SRGB_ALPHA : GL_RGBA;
 
 
 
@@ -37,8 +37,8 @@ namespace Exp
 			else if (nrComponents == 4)
 				format = GL_RGBA;
 
-			if (texture.Target == GL_TEXTURE_2D)
-				texture.Generate(width, height, texture.InternalFormat, format, GL_UNSIGNED_BYTE, (void*)data);
+			if (texture.target == GL_TEXTURE_2D)
+				texture.Generate(width, height, texture.internalFormat, format, GL_UNSIGNED_BYTE, (void*)data);
 
 			//TODO Other types of textures
 
@@ -84,7 +84,7 @@ namespace Exp
 				return texture;
 			}
 		}
-		if (texture.Mipmapping)
+		if (texture.mipmapping)
 			glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
 		return texture;

@@ -3,39 +3,39 @@
 namespace Exp
 {
 	Skybox::Skybox(): 
-		SceneNode(Scene::CounterID++)
+		SceneNode(Scene::counterID++)
 	{
-		Scene::Root->AddChild(this);
+		Scene::root->AddChild(this);
 
-		m_Shader = Resources::LoadShader("background", "../resources/shaders/skybox.vert", "../resources/shaders/skybox.frag");
-		Material = new Exp::Material(m_Shader);
+		shader = Resources::LoadShader("background", "../resources/shaders/skybox.vert", "../resources/shaders/skybox.frag");
+		material = new Exp::Material(shader);
 		mesh = new Cube();
-		BoxMin = glm::vec3(-99999.0);
-		BoxMax = glm::vec3(99999.0);
+		boxMin = glm::vec3(-99999.0);
+		boxMax = glm::vec3(99999.0);
 
 		// default material configuration
-		Material->SetFloat("Exposure", 1.0f);
-		Material->depthCompare = GL_LEQUAL;
-		Material->cull = false;
-		Material->shadowCast = false;
-		Material->shadowReceive = false;
+		material->SetFloat("Exposure", 1.0f);
+		material->depthCompare = GL_LEQUAL;
+		material->cull = false;
+		material->shadowCast = false;
+		material->shadowReceive = false;
 	}
 
 	Skybox::~Skybox()
 	{
 		//TODO Refacto
 		delete mesh;
-		delete Material;
+		delete material;
 	}
 
 	void Skybox::SetCubemap(TextureCube* cubemap)
 	{
-		m_CubeMap = cubemap;
-		Material->SetTextureCube("background", m_CubeMap, 0);
-		Material->SetFloat("lodLevel", 1.5f);
+		cubeMap = cubemap;
+		material->SetTextureCube("background", cubeMap, 0);
+		material->SetFloat("lodLevel", 1.5f);
 	}
 	TextureCube* Skybox::GetCubemap()
 	{
-		return m_CubeMap;
+		return cubeMap;
 	}
 }
