@@ -169,9 +169,8 @@ namespace Exp
 			projUBOData.projectionMatrix = this->renderCamera->projection;
 			projUBOData.viewPosition = this->renderCamera->position;
 
-			glGenBuffers(1, &projUBOId);
 			glBindBuffer(GL_UNIFORM_BUFFER, projUBOId);
-			glBufferData(GL_UNIFORM_BUFFER, sizeof(ProjectionUBO), &projUBOData, GL_STREAM_DRAW);
+			glBufferData(GL_UNIFORM_BUFFER, sizeof(ProjectionUBO), &projUBOData, GL_DYNAMIC_DRAW);
 			glBindBufferBase(GL_UNIFORM_BUFFER, 0, projUBOId);
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		}
@@ -416,10 +415,7 @@ namespace Exp
 		RenderDebugLights();
 		
 		// Debug GBuffer
-		//GLCache::GetInstance().SetPolygonMode(GL_LINE);
-		/*glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClear(GL_COLOR_BUFFER_BIT);
-		Blit(GBuffer->GetDepthStencilTexture());*/
+		// Blit(GBuffer->GetColorTexture(2));
 
 		commandBuffer.Clear();
 	}

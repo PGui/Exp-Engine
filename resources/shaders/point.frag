@@ -8,12 +8,7 @@ uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedoSpec;
 
-layout (std140, binding = 0) uniform Global
-{
-    mat4 projection;
-    mat4 view;
-    vec3 viewPos;
-};
+#include common/uniforms.glsl
 
 uniform vec3 lightPos;
 uniform vec3 lightColor;

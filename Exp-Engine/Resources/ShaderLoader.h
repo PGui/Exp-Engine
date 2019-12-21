@@ -11,6 +11,8 @@ namespace Exp
 
 	public:
 		static Shader LoadShader(std::string name, std::string vsFile, std::string fsFile);
+	private:
+		static std::string ReadShader(std::ifstream& file, const std::string& name, std::string path);
 	};
 }
 
