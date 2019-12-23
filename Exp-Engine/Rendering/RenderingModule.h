@@ -25,6 +25,7 @@ namespace Exp
 	class Material;
 	class Camera;
 	class Skybox;
+	class PostProcessor;
 
 	struct ProjectionUBO
 	{
@@ -36,6 +37,7 @@ namespace Exp
 	class RenderingModule :
 		public IModuleInterface
 	{
+		friend class PostProcessor;
 	public:
 		virtual ~RenderingModule();
 
@@ -52,6 +54,9 @@ namespace Exp
 		void UpdateGlobalUBO();
 		void Render(RenderCommand* command, bool updateGLSettings=true);
 
+		// Post Process
+		std::shared_ptr<PostProcessor> postProcessor;
+
 		// Camera ProjectionUBO
 		GLuint projUBOLocation;
 		unsigned int projUBOId;
@@ -62,7 +67,7 @@ namespace Exp
 		std::vector<std::shared_ptr<DirectionalLight>> directionalLights;
 		std::vector<std::shared_ptr<PointLight>> pointLights;
 		std::shared_ptr<RenderTarget> GBuffer;
-		std::shared_ptr<RenderTarget> customTarget;
+		std::shared_ptr<RenderTarget> renderingTarget;
 		std::shared_ptr<Quad> ndcPlane;
 		std::shared_ptr<Mesh> pointLightSphere;
 

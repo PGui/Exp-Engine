@@ -156,6 +156,7 @@
     <ClCompile Include="Rendering\CommandBuffer.cpp" />
     <ClCompile Include="Rendering\GLCache.cpp" />
     <ClCompile Include="Rendering\Material.cpp" />
+    <ClCompile Include="Rendering\PostProcessor.cpp" />
     <ClCompile Include="Rendering\RenderingModule.cpp" />
     <ClCompile Include="Rendering\RenderTarget.cpp" />
     <ClCompile Include="Rendering\Shader.cpp" />
@@ -441,6 +442,7 @@
     <ClInclude Include="Rendering\CommandBuffer.h" />
     <ClInclude Include="Rendering\GLCache.h" />
     <ClInclude Include="Rendering\Material.h" />
+    <ClInclude Include="Rendering\PostProcessor.h" />
     <ClInclude Include="Rendering\RenderCommand.h" />
     <ClInclude Include="Rendering\RenderingModule.h" />
     <ClInclude Include="Rendering\RenderTarget.h" />

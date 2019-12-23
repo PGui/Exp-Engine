@@ -104,7 +104,17 @@ void Exp::EngineModule::RunEngine()
 			}
 		}
 
-		SphereNode->SetPosition(glm::vec3(10.0f, 10.0f, 10.0f));
+		for (int i = 0; i < 5; ++i)
+		{
+			for (int j = 0; j < 5; ++j)
+			{
+				SphereNode->SetPosition(glm::vec3(i * 5.0f, 10.0f, j * 5.0f));
+				SphereNode->SetScale(glm::vec3(1.0f));
+				renderingModule->PushMesh(SphereNode);
+			}
+		}
+
+		SphereNode->SetPosition(glm::vec3(10.0f, 20.0f, 10.0f));
 		SphereNode->SetScale(glm::vec3(3.0f));
 		renderingModule->PushMesh(SphereNode);
 

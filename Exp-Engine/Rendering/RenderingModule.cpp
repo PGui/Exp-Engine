@@ -6,6 +6,7 @@
 #include <Remotery/Remotery.h>
 
 #include "Material.h"
+#include "PostProcessor.h"
 
 #include "../Module/ModuleManager.h"
 #include "../Core/EngineModule.h"
@@ -132,11 +133,16 @@ namespace Exp
 				}
 			}
 		}
+
+		postProcessor->DisplayDebug();
 	}
 
 	void RenderingModule::PostInitialize()
 	{
-		materialLibrary= ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary");
+		materialLibrary = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary");
+
+		// Initialize PostProcessor nneds the Material Library
+		postProcessor = std::make_shared<PostProcessor>(this);
 	}
 
 	void RenderingModule::InitGL()
@@ -146,12 +152,12 @@ namespace Exp
 		projUBOLocation = 0; // Fixed in shaders
 		glGenBuffers(1, &projUBOId);
 		glBindBuffer(GL_UNIFORM_BUFFER, projUBOId);
-		glBufferData(GL_UNIFORM_BUFFER, sizeof(ProjectionUBO), &projUBOData, GL_STATIC_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(ProjectionUBO), &projUBOData, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		// Initialize Deferred Rendering
-		GBuffer = std::make_shared<RenderTarget>(renderSize.x, renderSize.y, GL_HALF_FLOAT, 3, true);
-		customTarget = std::make_shared<RenderTarget>(1, 1, GL_HALF_FLOAT, 1, true);
+		GBuffer = std::make_shared<RenderTarget>(renderSize.x, renderSize.y, GL_HALF_FLOAT, 4, true);
+		renderingTarget = std::make_shared<RenderTarget>(renderSize.x, renderSize.y, GL_HALF_FLOAT, 1, true);
 		ndcPlane = std::make_shared<Quad>(1.0f, 1.0f);
 		pointLightSphere = std::make_shared<Sphere>(16, 16);
 
@@ -170,7 +176,7 @@ namespace Exp
 			projUBOData.viewPosition = this->renderCamera->position;
 
 			glBindBuffer(GL_UNIFORM_BUFFER, projUBOId);
-			glBufferData(GL_UNIFORM_BUFFER, sizeof(ProjectionUBO), &projUBOData, GL_DYNAMIC_DRAW);
+			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ProjectionUBO), &projUBOData);
 			glBindBufferBase(GL_UNIFORM_BUFFER, 0, projUBOId);
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		}
@@ -331,10 +337,9 @@ namespace Exp
 		commandBuffer.Sort();
 
 		glBindFramebuffer(GL_FRAMEBUFFER, GBuffer->ID);
+		unsigned int attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+		glDrawBuffers(4, attachments);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-		glDrawBuffers(3, attachments);
-
 		GLCache::GetInstance().SetPolygonMode(wireframe ? GL_LINE : GL_FILL);
 
 		for (auto& currentRenderCommand : commandBuffer.deferredCommands)
@@ -342,11 +347,21 @@ namespace Exp
 			Render(&currentRenderCommand, true);
 		}
 
-		
+		//attachments[0] = GL_NONE; // disable for next pass (shadow map generation)
+		attachments[1] = GL_NONE;
+		attachments[2] = GL_NONE;
+		attachments[3] = GL_NONE;
+		glDrawBuffers(4, attachments);
+
+		//TODO Shadows
+
+
+		attachments[0] = GL_COLOR_ATTACHMENT0;
+		glDrawBuffers(4, attachments);
 
 		GLCache::GetInstance().SetPolygonMode(GL_FILL);
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, renderingTarget->ID);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		// 4. Render deferred shader for each light
@@ -404,15 +419,16 @@ namespace Exp
 		GLCache::GetInstance().SetBlend(false);
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, GBuffer->ID);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, renderingTarget->ID); // write to default framebuffer
 		glBlitFramebuffer(0, 0, GBuffer->Width, GBuffer->Height, 0, 0, renderSize.x, renderSize.y, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, renderingTarget->ID);
 
 		if (displaySkybox)
 			RenderSkybox();
 
-
 		RenderDebugLights();
+
+		postProcessor->Blit(renderingTarget->GetColorTexture(0));
 		
 		// Debug GBuffer
 		// Blit(GBuffer->GetColorTexture(2));
@@ -423,11 +439,14 @@ namespace Exp
 	void RenderingModule::ResizeRenderer(int width, int height)
 	{
 		renderSize = glm::vec2(width, height);
+		glViewport(0, 0, renderSize.x, renderSize.y);
 		GBuffer->Resize(width, height);
 		if (currentSkybox.get())
 		{
 			currentSkybox->GetCubemap()->Resize(width, height);
 		}
+
+		renderingTarget->Resize(width, height);
 	}
 
 	void RenderingModule::PushMeshRenderCommand(Mesh * mesh, Material * material, const glm::mat4 & transform)

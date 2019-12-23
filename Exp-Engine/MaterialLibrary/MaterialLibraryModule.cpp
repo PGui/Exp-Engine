@@ -86,23 +86,53 @@ namespace Exp
 
 	void MaterialLibraryModule::GenerateDefaultShaders()
 	{
-		Shader* DeferredDirectionalLightShader = Resources::LoadShader("deferredDirectional", "../resources/shaders/directional.vert", "../resources/shaders/directional.frag");
-		DeferredDirectionalLightShader->Use();
-		DeferredDirectionalLightShader->SetInt("gPosition", 0);
-		DeferredDirectionalLightShader->SetInt("gNormal", 1);
-		DeferredDirectionalLightShader->SetInt("gAlbedoSpec", 2);
-		defaultShaders[SID("deferredDirectional")] = DeferredDirectionalLightShader;
+		{
+			Shader* deferredDirectionalLightShader = Resources::LoadShader(
+				"deferredDirectional", 
+				"../resources/shaders/directional.vert", 
+				"../resources/shaders/directional.frag");
+			deferredDirectionalLightShader->Use();
+			deferredDirectionalLightShader->SetInt("gPosition", 0);
+			deferredDirectionalLightShader->SetInt("gNormal", 1);
+			deferredDirectionalLightShader->SetInt("gAlbedoSpec", 2);
+			defaultShaders[SID("deferredDirectional")] = deferredDirectionalLightShader;
+		}
 
-		Shader* DeferredPointLightShader = Resources::LoadShader("deferredPoint", "../resources/shaders/point.vert", "../resources/shaders/point.frag");
-		DeferredPointLightShader->Use();
-		DeferredPointLightShader->SetInt("gPosition", 0);
-		DeferredPointLightShader->SetInt("gNormal", 1);
-		DeferredPointLightShader->SetInt("gAlbedoSpec", 2);
-		defaultShaders[SID("deferredPoint")] = DeferredPointLightShader;
+		{
+			Shader* deferredPointLightShader = Resources::LoadShader(
+				"deferredPoint", 
+				"../resources/shaders/point.vert", 
+				"../resources/shaders/point.frag");
+			deferredPointLightShader->Use();
+			deferredPointLightShader->SetInt("gPosition", 0);
+			deferredPointLightShader->SetInt("gNormal", 1);
+			deferredPointLightShader->SetInt("gAlbedoSpec", 2);
+			defaultShaders[SID("deferredPoint")] = deferredPointLightShader;
+		}
+		// global post-processing shader
+		{
+			Shader * postProcessShader = Resources::LoadShader(
+				"postprocess", 
+				"../resources/shaders/screen_quad.vert", 
+				"../resources/shaders/post_processing.frag");
+			postProcessShader->Use();
+			/*postProcessShader->SetInt("TexSrc", 0);
+			postProcessShader->SetInt("TexBloom1", 1);
+			postProcessShader->SetInt("TexBloom2", 2);
+			postProcessShader->SetInt("TexBloom3", 3);
+			postProcessShader->SetInt("TexBloom4", 4);
+			postProcessShader->SetInt("gMotion", 5);*/
+			defaultShaders[SID("postprocess")] = postProcessShader;
+		}
 
-		Shader* StencilLightShader = Resources::LoadShader("stencilLightShader", "../resources/shaders/stencil_light.vert", "../resources/shaders/stencil_light.frag");
-		StencilLightShader->Use();
-		defaultShaders[SID("stencilLightShader")] = StencilLightShader;
+		{
+			Shader* stencilLightShader = Resources::LoadShader(
+				"stencilLightShader", 
+				"../resources/shaders/stencil_light.vert", 
+				"../resources/shaders/stencil_light.frag");
+			stencilLightShader->Use();
+			defaultShaders[SID("stencilLightShader")] = stencilLightShader;
+		}
 	}
 
 	Material* MaterialLibraryModule::CreateMaterial(std::string base)
