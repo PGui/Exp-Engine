@@ -116,8 +116,8 @@ namespace Exp
 				"../resources/shaders/screen_quad.vert", 
 				"../resources/shaders/post_processing.frag");
 			postProcessShader->Use();
-			/*postProcessShader->SetInt("TexSrc", 0);
-			postProcessShader->SetInt("TexBloom1", 1);
+			postProcessShader->SetInt("TexSrc", 0);
+			/*postProcessShader->SetInt("TexBloom1", 1);
 			postProcessShader->SetInt("TexBloom2", 2);
 			postProcessShader->SetInt("TexBloom3", 3);
 			postProcessShader->SetInt("TexBloom4", 4);

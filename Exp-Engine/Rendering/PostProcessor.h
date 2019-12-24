@@ -24,6 +24,12 @@ namespace Exp
         bool TXAA = false;
         bool motionBlur = false;
 
+        // exposure
+        float exposure = 1.0f;
+
+        // gamma
+        float gamma = 2.2f;
+
         // ssao
         int SSAOKernelSize = 32;
 

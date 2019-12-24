@@ -42,6 +42,12 @@ void Exp::PostProcessor::Blit(Texture* source)
 	postProcessShader->SetBool("Sepia", sepia);
 	postProcessShader->SetBool("Vignette", vignette);
 	postProcessShader->SetBool("Bloom", bloom);
+	// exposure
+	postProcessShader->SetFloat("Exposure", exposure);
+
+	// gamma
+	postProcessShader->SetFloat("Gamma", gamma);
+
 	// motion blur
 	/*postProcessShader->SetBool("MotionBlur", motionBlur);
 	postProcessShader->SetFloat("MotionScale", ImGui::GetIO().Framerate / FPSTarget * 0.8);
@@ -54,11 +60,14 @@ void Exp::PostProcessor::DisplayDebug()
 {
 	if (ImGui::CollapsingHeader("PostProcess"))
 	{
-		ImGui::Checkbox("Bloom", &bloom);
-		ImGui::Checkbox("TXAA", &TXAA);
-		ImGui::Checkbox("Motionblur", &motionBlur);
+		//ImGui::Checkbox("Bloom", &bloom);
+		//ImGui::Checkbox("TXAA", &TXAA);
+		//ImGui::Checkbox("Motionblur", &motionBlur);
 		ImGui::Checkbox("Vignette", &vignette);
 		ImGui::Checkbox("SSAO", &SSAO);
 		ImGui::Checkbox("Sepia", &sepia);
+		ImGui::Separator();
+		ImGui::SliderFloat("Exposure", &exposure, 0.1f, 10.0f);
+		ImGui::SliderFloat("Gamma", &gamma, 0.1f, 10.0f);
 	}
 }
