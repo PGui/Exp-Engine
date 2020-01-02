@@ -24,7 +24,7 @@ namespace Exp
 		spdlog::info("Loading Mesh file at {}", path);
 
 		Assimp::Importer importer;
-		const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
+		const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 		if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
@@ -182,6 +182,24 @@ namespace Exp
 
 		material = MaterialLibrary->CreateMaterial();
 
+		/*
+
+		  About texture types:
+
+		  We use a PBR metallic/roughness workflow so the loaded models are expected to have
+		  textures conform the workflow: albedo, (normal), metallic, roughness, (ao). Since Assimp
+		  made certain assumptions regarding possible types of loaded textures it doesn't directly
+		  translate to our model thus we make some assumptions as well which the 3D author has to
+		  comply with if he wants the mesh(es) to directly render with its specified textures:
+
+			- aiTextureType_DIFFUSE:   Albedo
+			- aiTextureType_NORMALS:   Normal
+			- aiTextureType_SPECULAR:  metallic
+			- aiTextureType_SHININESS: roughness
+			- aiTextureType_AMBIENT:   AO (ambient occlusion)
+			- aiTextureType_EMISSIVE:  Emissive
+
+		*/
 		if (aMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0)
 		{
 			// we only load the first of the list of diffuse textures, we don't really care about 
@@ -191,26 +209,12 @@ namespace Exp
 			std::string fileName = ModelLoader::ProcessPath(&file, directory);
 			// we name the texture the same as the filename as to reduce naming conflicts while 
 			// still only loading unique textures.
-			Texture* texture = Resources::LoadTexture(fileName, fileName, GL_TEXTURE_2D, alpha ? GL_RGBA : GL_RGB, false /*TODO put this on*/);
+			Texture* texture = Resources::LoadTexture(fileName, fileName, GL_TEXTURE_2D, alpha ? GL_RGBA : GL_RGB, true);
 			if (texture)
 			{
-				material->SetTexture("material.diffuse", texture, 0);
+				material->SetTexture("TexAlbedo", texture, 3);
 			}
 		}
-
-		if (aMaterial->GetTextureCount(aiTextureType_SPECULAR) > 0)
-		{
-			aiString file;
-			aMaterial->GetTexture(aiTextureType_SPECULAR, 0, &file);
-			std::string fileName = ModelLoader::ProcessPath(&file, directory);
-
-			Texture* texture = Resources::LoadTexture(fileName, fileName);
-			if (texture)
-			{
-				material->SetTexture("material.specular", texture, 1);
-			}
-		}
-
 		if (aMaterial->GetTextureCount(aiTextureType_HEIGHT) > 0)
 		{
 			aiString file;
@@ -220,113 +224,47 @@ namespace Exp
 			Texture* texture = Resources::LoadTexture(fileName, fileName);
 			if (texture)
 			{
-				material->SetTexture("material.normals", texture, 2);
+				material->SetTexture("TexNormal", texture, 4);
+			}
+		}
+		if (aMaterial->GetTextureCount(aiTextureType_SPECULAR) > 0)
+		{
+			aiString file;
+			aMaterial->GetTexture(aiTextureType_SPECULAR, 0, &file);
+			std::string fileName = ModelLoader::ProcessPath(&file, directory);
+
+			Texture* texture = Resources::LoadTexture(fileName, fileName);
+			if (texture)
+			{
+				material->SetTexture("TexMetallic", texture, 5);
+			}
+		}
+		if (aMaterial->GetTextureCount(aiTextureType_SHININESS) > 0)
+		{
+			aiString file;
+			aMaterial->GetTexture(aiTextureType_SHININESS, 0, &file);
+			std::string fileName = ModelLoader::ProcessPath(&file, directory);
+
+			Texture* texture = Resources::LoadTexture(fileName, fileName);
+			if (texture)
+			{
+				material->SetTexture("TexRoughness", texture, 6);
+			}
+		}
+		if (aMaterial->GetTextureCount(aiTextureType_AMBIENT) > 0)
+		{
+			aiString file;
+			aMaterial->GetTexture(aiTextureType_AMBIENT, 0, &file);
+			std::string fileName = ModelLoader::ProcessPath(&file, directory);
+
+			Texture* texture = Resources::LoadTexture(fileName, fileName);
+			if (texture)
+			{
+				material->SetTexture("TexAO", texture, 7);
 			}
 		}
 
 		return material;
-
-
-
-		//Material* material;
-		//// check if diffuse texture has alpha, if so: make alpha blend material; 
-		//aiString file;
-		//aMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &file);
-		//std::string diffPath = std::string(file.C_Str());
-		//bool alpha = false;
-		//if (diffPath.find("_alpha") != std::string::npos)
-		//{
-		//	material = renderer->CreateMaterial("alpha discard");
-		//	alpha = true;
-		//}
-		//else  // else, make default deferred material
-		//{
-		//	material = renderer->CreateMaterial();
-		//}
-
-		///* NOTE(Joey):
-
-		//  About texture types:
-
-		//  We use a PBR metallic/roughness workflow so the loaded models are expected to have
-		//  textures conform the workflow: albedo, (normal), metallic, roughness, (ao). Since Assimp
-		//  made certain assumptions regarding possible types of loaded textures it doesn't directly
-		//  translate to our model thus we make some assumptions as well which the 3D author has to
-		//  comply with if he wants the Mesh(es) to directly render with its specified textures:
-
-		//	- aiTextureType_DIFFUSE:   Albedo
-		//	- aiTextureType_NORMALS:   Normal
-		//	- aiTextureType_SPECULAR:  metallic
-		//	- aiTextureType_SHININESS: roughness
-		//	- aiTextureType_AMBIENT:   AO (ambient occlusion)
-		//	- aiTextureType_EMISSIVE:  Emissive
-
-		//*/
-		//if (aMaterial->GetTextureCount(aiTextureType_DIFFUSE) > 0)
-		//{
-		//	// we only load the first of the list of diffuse textures, we don't really care about 
-		//	// meshes with multiple diffuse layers; same holds for other texture types.
-		//	aiString file;
-		//	aMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &file);
-		//	std::string fileName = MeshLoader::processPath(&file, directory);
-		//	// we name the texture the same as the filename as to reduce naming conflicts while 
-		//	// still only loading unique textures.
-		//	Texture* texture = Resources::LoadTexture(fileName, fileName, GL_TEXTURE_2D, alpha ? GL_RGBA : GL_RGB, true);
-		//	if (texture)
-		//	{
-		//		material->SetTexture("TexAlbedo", texture, 3);
-		//	}
-		//}
-		//if (aMaterial->GetTextureCount(aiTextureType_DISPLACEMENT) > 0)
-		//{
-		//	aiString file;
-		//	aMaterial->GetTexture(aiTextureType_DISPLACEMENT, 0, &file);
-		//	std::string fileName = MeshLoader::processPath(&file, directory);
-
-		//	Texture* texture = Resources::LoadTexture(fileName, fileName);
-		//	if (texture)
-		//	{
-		//		material->SetTexture("TexNormal", texture, 4);
-		//	}
-		//}
-		//if (aMaterial->GetTextureCount(aiTextureType_SPECULAR) > 0)
-		//{
-		//	aiString file;
-		//	aMaterial->GetTexture(aiTextureType_SPECULAR, 0, &file);
-		//	std::string fileName = MeshLoader::processPath(&file, directory);
-
-		//	Texture* texture = Resources::LoadTexture(fileName, fileName);
-		//	if (texture)
-		//	{
-		//		material->SetTexture("TexMetallic", texture, 5);
-		//	}
-		//}
-		//if (aMaterial->GetTextureCount(aiTextureType_SHININESS) > 0)
-		//{
-		//	aiString file;
-		//	aMaterial->GetTexture(aiTextureType_SHININESS, 0, &file);
-		//	std::string fileName = MeshLoader::processPath(&file, directory);
-
-		//	Texture* texture = Resources::LoadTexture(fileName, fileName);
-		//	if (texture)
-		//	{
-		//		material->SetTexture("TexRoughness", texture, 6);
-		//	}
-		//}
-		//if (aMaterial->GetTextureCount(aiTextureType_AMBIENT) > 0)
-		//{
-		//	aiString file;
-		//	aMaterial->GetTexture(aiTextureType_AMBIENT, 0, &file);
-		//	std::string fileName = MeshLoader::processPath(&file, directory);
-
-		//	Texture* texture = Resources::LoadTexture(fileName, fileName);
-		//	if (texture)
-		//	{
-		//		material->SetTexture("TexAO", texture, 7);
-		//	}
-		//}
-
-		//return material;
 	}
 
 	std::string ModelLoader::ProcessPath(aiString * aPath, std::string directory)

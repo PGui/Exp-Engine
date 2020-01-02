@@ -53,19 +53,24 @@ void Exp::EngineModule::RunEngine()
 {
 	//TEST
 	SceneNode * Bunny = Resources::LoadMesh(nullptr, "bunny", "../resources/models/bunny/bunny.obj");
-	//SceneNode * Nano = Resources::LoadMesh(nullptr, "nano", "../resources/models/nanosuit/nanosuit.obj");
+	SceneNode * Nano = Resources::LoadMesh(nullptr, "nano", "../resources/models/nanosuit/nanosuit.obj");
 	//SceneNode * Sponza = Resources::LoadMesh(nullptr, "sponza", "../resources/models/sponza/sponza.obj");
 	Cube myCube;
 	SceneNode* Cube = Scene::MakeSceneNode(&myCube, materialLibraryModule->GetMaterial("default"));
 
 	Sphere mySphere(16, 16);
 	SceneNode* SphereNode = Scene::MakeSceneNode(&mySphere, materialLibraryModule->GetMaterial("default"));
+	SphereNode->material->SetTexture("TexAlbedo", Resources::LoadTexture("albedo", "../resources/textures/pbr/rusted metal/albedo.png"), 3);
+	SphereNode->material->SetTexture("TexNormal", Resources::LoadTexture("normal", "../resources/textures/pbr/rusted metal/normal.png"), 4);
+	SphereNode->material->SetTexture("TexMetallic", Resources::LoadTexture("metallic", "../resources/textures/pbr/rusted metal/metallic.png"), 5);
+	SphereNode->material->SetTexture("TexRoughness", Resources::LoadTexture("roughness", "../resources/textures/pbr/rusted metal/roughness.png"), 6);
+	SphereNode->material->SetTexture("TexAO", Resources::LoadTexture("roughness", "../resources/textures/pbr/rusted metal/ao.png"), 7);
 
 	Plane myPlane(10,10);
 	SceneNode* PlaneNode = Scene::MakeSceneNode(&myPlane, materialLibraryModule->CreateMaterial("default"));
 	PlaneNode->SetScale(glm::vec3(30, 1, 30));
 	PlaneNode->SetRotation(glm::vec4(1, 0, 0, 90.0f));
-	PlaneNode->material->SetTexture("material.diffuse", Resources::LoadTexture("wood", "../resources/texture/wood.png", GL_TEXTURE_2D, GL_RGB, false), 0);
+	//PlaneNode->material->SetTexture("material.diffuse", Resources::LoadTexture("wood", "../resources/textures/wood.png", GL_TEXTURE_2D, GL_RGB, false), 0);
 
 	/*DirectionalLight* MyLight = renderingModule->AddDirectionalLight(glm::vec3(1.0, 1.0, 0.0));
 	MyLight->color = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -76,7 +81,7 @@ void Exp::EngineModule::RunEngine()
 	//DirectionalLight* MyLight3 = renderingModule->AddDirectionalLight(glm::vec3(0.0, 1.0, 0.0));
 	//MyLight3->color = glm::vec3(0.0f, 1.0f, 1.0f);
 
-	PointLight* MyPL1 = renderingModule->AddPointLight(glm::vec3(3.0, 3.0, 4.0), 26.f);
+	PointLight* MyPL1 = renderingModule->AddPointLight(glm::vec3(3.0, 3.0, 4.0), 926.f);
 	//MyPL1->color = glm::vec3(1.0f, 0.0f, 0.0f);
 
 	while (!glfwWindowShouldClose(mainWindow))
@@ -94,9 +99,9 @@ void Exp::EngineModule::RunEngine()
 
 		ModuleManager::Get().DisplayModulesUI();
 
-		for (int i = 0; i < 5; ++i)
+		for (int i = 0; i < 2; ++i)
 		{
-			for (int j = 0; j < 5; ++j)
+			for (int j = 0; j < 2; ++j)
 			{
 				Bunny->SetPosition(glm::vec3(i * 5.0f, 1.0f, j * 5.0f));
 				Bunny->SetRotation(glm::vec4(0.0, 1.0, 0.0, sin(glfwGetTime() * 0.2f) * 360.0f));
@@ -104,7 +109,7 @@ void Exp::EngineModule::RunEngine()
 			}
 		}
 
-		for (int i = 0; i < 5; ++i)
+		/*for (int i = 0; i < 5; ++i)
 		{
 			for (int j = 0; j < 5; ++j)
 			{
@@ -112,16 +117,16 @@ void Exp::EngineModule::RunEngine()
 				SphereNode->SetScale(glm::vec3(1.0f));
 				renderingModule->PushMesh(SphereNode);
 			}
-		}
+		}*/
 
-		SphereNode->SetPosition(glm::vec3(10.0f, 20.0f, 10.0f));
+		SphereNode->SetPosition(glm::vec3(0.0f, 10.0f, 0.0f));
 		SphereNode->SetScale(glm::vec3(3.0f));
 		renderingModule->PushMesh(SphereNode);
 
 		renderingModule->PushMesh(Cube);
 		renderingModule->PushMesh(PlaneNode);
 		//renderingModule->PushMesh(Sponza);
-		//renderingModule->PushMesh(Nano);
+		renderingModule->PushMesh(Nano);
 		
 
 		//Rendering
@@ -329,5 +334,5 @@ void Exp::EngineModule::PostInitialize()
 	materialLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary");
 
 	renderingModule->SetCamera(&camera);
-	renderingModule->SetSkybox("../resources/Skyboxes/Fjaderholmarna/");
+	//renderingModule->SetSkybox("../resources/Skyboxes/Fjaderholmarna/");
 }

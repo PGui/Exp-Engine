@@ -174,6 +174,7 @@ namespace Exp
 			projUBOData.viewMatrix = this->renderCamera->view;
 			projUBOData.projectionMatrix = this->renderCamera->projection;
 			projUBOData.viewPosition = this->renderCamera->position;
+			projUBOData.viewProjection = this->renderCamera->projection * this->renderCamera->view;
 
 			glBindBuffer(GL_UNIFORM_BUFFER, projUBOId);
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(ProjectionUBO), &projUBOData);
@@ -207,6 +208,7 @@ namespace Exp
 
 		currentShader->Use();
 		currentShader->SetMat4("model", transform);
+		currentShader->SetMat4("prevModel", transform); // Todo cache the previous model transform
 
 		// bind/active uniform sampler/texture objects
 		auto samplers = material->GetSamplerUniforms();
@@ -374,6 +376,14 @@ namespace Exp
 		GBuffer->GetColorTexture(1)->Bind(1);
 		GBuffer->GetColorTexture(2)->Bind(2);
 
+		// ambient lighting
+		//RenderDeferredAmbient();
+
+		//Debug
+		//Blit(GBuffer->GetColorTexture(3));
+
+		//return;
+
 		if (displayLights)
 		{
 			//GLCache::GetInstance().SetCull(false);//TODO Remove - DEBUG
@@ -431,7 +441,7 @@ namespace Exp
 		postProcessor->Blit(renderingTarget->GetColorTexture(0));
 		
 		// Debug GBuffer
-		// Blit(GBuffer->GetColorTexture(2));
+		//Blit(GBuffer->GetColorTexture(2));
 
 		commandBuffer.Clear();
 	}
@@ -507,6 +517,19 @@ namespace Exp
 		Render(&command, true);
 	}
 
+	void RenderingModule::RenderDeferredAmbient()
+	{
+		if (Shader* ambientShader = materialLibrary->GetShader("deferredAmbientShader"))
+		{
+			ambientShader->Use();
+
+			//ambientShader->SetInt("gAlbedoAO", 2);
+				//ambientShader->SetInt("SSAO", m_PostProcessor->SSAO);
+			RenderMesh(ndcPlane.get());
+		}
+		
+	}
+
 	void RenderingModule::RenderDeferredDirLight(DirectionalLight* light)
 	{
 		if (!light->visible)
@@ -521,9 +544,9 @@ namespace Exp
 				dirShader->SetVec3("lightDir", light->direction);
 				dirShader->SetVec3("lightColor", /*glm::normalize*/(light->color) * light->intensity);
 
-				dirShader->SetInt("gPosition", 0);
+				/*dirShader->SetInt("gPosition", 0);
 				dirShader->SetInt("gNormal", 1);
-				dirShader->SetInt("gAlbedoSpec", 2);
+				dirShader->SetInt("gAlbedoSpec", 2);*/
 
 				if (light->shadowMapRT)
 				{
@@ -605,9 +628,6 @@ namespace Exp
 				pointShader->SetVec3("lightPos", light->position);
 				pointShader->SetVec3("lightColor",/* glm::normalize*/(light->color) * light->intensity);
 				pointShader->SetFloat("lightRadius", light->radius);
-				pointShader->SetInt("gPosition", 0);
-				pointShader->SetInt("gNormal", 1);
-				pointShader->SetInt("gAlbedoSpec", 2);
 				pointShader->SetMat4("model", model);
 
 				//GLCache::GetInstance().SetPolygonMode(GL_LINE);

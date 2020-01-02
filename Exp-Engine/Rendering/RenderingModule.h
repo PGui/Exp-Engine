@@ -32,6 +32,7 @@ namespace Exp
 		glm::mat4 projectionMatrix;
 		glm::mat4 viewMatrix;
 		glm::vec3 viewPosition;
+		glm::mat4 viewProjection;
 	};
 
 	class RenderingModule :
@@ -105,6 +106,8 @@ namespace Exp
 		void RenderMesh(Mesh* mesh);
 
 		void Blit(Texture* src, RenderTarget* dst = nullptr, Material* material=nullptr, std::string textureUniformName = "screenTexture");
+
+		void RenderDeferredAmbient();
 
 		void RenderDeferredDirLight(DirectionalLight* light);
 		void PreRenderDeferredPointLight(PointLight* light);
