@@ -1,0 +1,21 @@
+[submodule "thirdparty/glm"]
+	path = thirdparty/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "thirdparty/spdlog"]
+	path = thirdparty/spdlog
+	url = https://github.com/gabime/spdlog.git
+[submodule "thirdparty/FiberTaskingLib"]
+	path = thirdparty/FiberTaskingLib
+	url = https://github.com/RichieSams/FiberTaskingLib.git
+[submodule "thirdparty/glfw"]
+	path = thirdparty/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "thirdparty/Remotery"]
+	path = thirdparty/Remotery
+	url = https://github.com/Celtoys/Remotery.git
+[submodule "thirdparty/assimp"]
+	path = thirdparty/assimp
+	url = https://github.com/assimp/assimp.git
+[submodule "thirdparty/imgui"]
+	path = thirdparty/imgui
+	url = https://github.com/ocornut/imgui.git

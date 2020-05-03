@@ -38,3 +38,6 @@ x86/
 
 !*lib/Debug/
 !*lib/Release/
+
+# CMAKE
+build/
