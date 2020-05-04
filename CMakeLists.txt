@@ -29,7 +29,9 @@ file(GLOB_RECURSE SOURCE_FILES
     ${3RDPARTY_DIR}/imgui/examples/imgui_impl_glfw.cpp
     ${3RDPARTY_DIR}/imgui/examples/imgui_impl_opengl3.h
     ${3RDPARTY_DIR}/imgui/examples/imgui_impl_opengl3.cpp
-    ${3RDPARTY_DIR}/stb/stb_image.h)
+    ${3RDPARTY_DIR}/stb/stb_image.h
+    ${3RDPARTY_DIR}/Remotery/lib/Remotery.h
+    ${3RDPARTY_DIR}/Remotery/lib/Remotery.c)
 
 # Add header files
 file(GLOB_RECURSE HEADER_FILES
@@ -44,6 +46,8 @@ include_directories("${3RDPARTY_DIR}/imgui")
 include_directories("${3RDPARTY_DIR}/imgui/examples")
 
 include_directories("${3RDPARTY_DIR}/stb")
+
+include_directories("${3RDPARTY_DIR}/Remotery/lib")
 
 # add assimp source dir as a subdirectory, effectively making
 add_subdirectory(${3RDPARTY_DIR}/assimp ${CMAKE_BINARY_DIR}/assimp)
