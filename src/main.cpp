@@ -6,7 +6,13 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include <stdio.h>
-//#include <assimp/Importer.hpp>
+
+#include <assimp/Importer.hpp>
+#include <glm/glm.hpp>
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/basic_file_sink.h>
+
+#include <stb_image.h>
 
 // About Desktop OpenGL function loaders:
 //  Modern desktop OpenGL doesn't have a standard portable header file to load OpenGL function pointers.
@@ -53,6 +59,10 @@ int main(int, char**)
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return 1;
+
+	spdlog::info("Sample Info output.");
+	spdlog::warn("Sample Warn output.");
+	spdlog::error("Sample Error output.");
 
     // Decide GL+GLSL versions
 #if __APPLE__

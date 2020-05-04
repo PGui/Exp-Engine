@@ -28,7 +28,8 @@ file(GLOB_RECURSE SOURCE_FILES
     ${3RDPARTY_DIR}/imgui/examples/imgui_impl_glfw.h
     ${3RDPARTY_DIR}/imgui/examples/imgui_impl_glfw.cpp
     ${3RDPARTY_DIR}/imgui/examples/imgui_impl_opengl3.h
-    ${3RDPARTY_DIR}/imgui/examples/imgui_impl_opengl3.cpp)
+    ${3RDPARTY_DIR}/imgui/examples/imgui_impl_opengl3.cpp
+    ${3RDPARTY_DIR}/stb/stb_image.h)
 
 # Add header files
 file(GLOB_RECURSE HEADER_FILES
@@ -42,8 +43,19 @@ include_directories(${CMAKE_BINARY_DIR}/src)
 include_directories("${3RDPARTY_DIR}/imgui")
 include_directories("${3RDPARTY_DIR}/imgui/examples")
 
+include_directories("${3RDPARTY_DIR}/stb")
+
 # add assimp source dir as a subdirectory, effectively making
 add_subdirectory(${3RDPARTY_DIR}/assimp ${CMAKE_BINARY_DIR}/assimp)
+
+
+# Add glm
+add_subdirectory(${3RDPARTY_DIR}/glm)
+add_definitions(-DGLM_FORCE_RADIANS) # use only modern API in radians
+include_directories("${3RDPARTY_DIR}/glm")
+
+#spdlog
+add_subdirectory(${3RDPARTY_DIR}/spdlog)
 
 # include_directories("thirdparty/FiberTaskingLib/include")
 # include_directories("thirdparty/Remotery/lib")
@@ -93,6 +105,11 @@ target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")
 # ASSIMP
 # be sure to link in assimp, use platform-agnostic syntax for the linker
 target_link_libraries(${PROJECT_NAME} assimp)
+
+#spdlog
+target_link_libraries(${PROJECT_NAME} spdlog)
+# glm
+# target_link_libraries(${PROJECT_NAME} glm)
 
 # STB_IMAGE
 # add_library(STB_IMAGE "thirdparty/stb_image.cpp")
