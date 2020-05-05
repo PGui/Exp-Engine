@@ -9,7 +9,7 @@
 #include <iostream>
 #include <spdlog/spdlog.h>
 
-#include "../Module/ModuleInterface.h"
+#include "module/ModuleInterface.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -23,6 +23,7 @@ namespace Exp
 	class InputModule;
 	class RenderingModule;
 	class MaterialLibraryModule;
+	class ECSModule;
 
 	class EngineModule:
 		public IModuleInterface
@@ -54,7 +55,7 @@ namespace Exp
 		InputModule * inputModule = nullptr;
 		RenderingModule * renderingModule = nullptr;
 		MaterialLibraryModule * materialLibraryModule = nullptr;
-
+		ECSModule* ecsModule = nullptr;
 	public:
 		//IModuleInterface
 		virtual void StartUp();

@@ -1,7 +1,15 @@
-# Copyright (C) 2018 Tomasz Gałaj
+# Copyright (C) 2020 Guillaume Pastor
 # https://shot511.github.io/2018-05-29-how-to-setup-opengl-project-with-cmake/
-cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 project(Exp-Engine)
+
+# https://cmake.org/cmake/help/latest/prop_tgt/CXX_STANDARD.html
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# expected behaviour
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++lastest")
 
 # set any variables you might need to set for your app and assimp
 # set variables that are needed
@@ -31,7 +39,9 @@ file(GLOB_RECURSE SOURCE_FILES
     ${3RDPARTY_DIR}/imgui/examples/imgui_impl_opengl3.cpp
     ${3RDPARTY_DIR}/stb/stb_image.h
     ${3RDPARTY_DIR}/Remotery/lib/Remotery.h
-    ${3RDPARTY_DIR}/Remotery/lib/Remotery.c)
+    ${3RDPARTY_DIR}/Remotery/lib/Remotery.c
+    ${3RDPARTY_DIR}/entt/src/*.h
+    ${3RDPARTY_DIR}/entt/src/*.hpp)
 
 # Add header files
 file(GLOB_RECURSE HEADER_FILES
@@ -52,7 +62,6 @@ include_directories("${3RDPARTY_DIR}/Remotery/lib")
 # add assimp source dir as a subdirectory, effectively making
 add_subdirectory(${3RDPARTY_DIR}/assimp ${CMAKE_BINARY_DIR}/assimp)
 
-
 # Add glm
 add_subdirectory(${3RDPARTY_DIR}/glm)
 add_definitions(-DGLM_FORCE_RADIANS) # use only modern API in radians
@@ -61,10 +70,8 @@ include_directories("${3RDPARTY_DIR}/glm")
 #spdlog
 add_subdirectory(${3RDPARTY_DIR}/spdlog)
 
-# include_directories("thirdparty/FiberTaskingLib/include")
-# include_directories("thirdparty/Remotery/lib")
-# include_directories("thirdparty/spdlog/include")
-# include_directories("thirdparty/glm/glm")
+#entt
+include_directories("${3RDPARTY_DIR}/entt/src")
 
 include_directories( ${OPENGL_INCLUDE_DIRS} )
 
@@ -77,9 +84,6 @@ add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
 # OpenGL
 find_package(OpenGL REQUIRED)
-
-# GLM
-# add_subdirectory(thirdparty/glm)
 
 # GLFW
 set(GLFW_DIR "${3RDPARTY_DIR}/glfw")
@@ -99,30 +103,12 @@ target_include_directories("glad" PRIVATE "${GLAD_DIR}/include")
 target_include_directories(${PROJECT_NAME} PRIVATE "${GLAD_DIR}/include")
 target_link_libraries(${PROJECT_NAME} "glad" "${CMAKE_DL_LIBS}")
 
-# imgui
-# include_directories("${3RDPARTY_DIR}/imgui")
-# include_directories("${3RDPARTY_DIR}/examples")
-# find_package(imgui REQUIRED)
-# target_link_libraries(${PROJECT_NAME} "imgui" "${CMAKE_DL_LIBS}")
-
-
 # ASSIMP
 # be sure to link in assimp, use platform-agnostic syntax for the linker
 target_link_libraries(${PROJECT_NAME} assimp)
 
 #spdlog
 target_link_libraries(${PROJECT_NAME} spdlog)
-# glm
-# target_link_libraries(${PROJECT_NAME} glm)
-
-# STB_IMAGE
-# add_library(STB_IMAGE "thirdparty/stb_image.cpp")
-
-# GLAD
-# add_library(GLAD "thirdparty/glad.c")
-
-# Put all libraries into a variable
-# set(LIBS glfw3 ${GLFW_LIBRARIES} opengl32 assimp STB_IMAGE GLAD)
 
 # Define the include DIRs
 include_directories(
@@ -132,8 +118,11 @@ include_directories(
 
 set(CMAKE_DEBUG_POSTFIX "d")
 
-# Define the link libraries
-# target_link_libraries(${PROJECT_NAME} ${LIBS})
+IF (MSVC)
+  TARGET_COMPILE_OPTIONS(assimp PRIVATE /WX-)
+ELSE()
+  TARGET_COMPILE_OPTIONS(assimp PRIVATE -Werror)
+ENDIF()
 
 # Create virtual folders to make it look nicer in VS
 if(MSVC_IDE)

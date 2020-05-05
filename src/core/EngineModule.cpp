@@ -10,6 +10,7 @@
 #include "../Rendering/RenderingModule.h"
 #include "../Input/InputModule.h"
 #include "../MaterialLibrary/MaterialLibraryModule.h"
+#include "ecs/ECSModule.h"
 
 #include "../Scene/SceneNode.h"
 #include "../Scene/Scene.h"
@@ -67,6 +68,8 @@ void Exp::EngineModule::RunEngine()
 	PlaneNode->SetRotation(glm::vec4(1, 0, 0, 90.0f));
 	PlaneNode->material->SetTexture("material.diffuse", Resources::LoadTexture("wood", "../resources/texture/wood.png", GL_TEXTURE_2D, GL_RGB, false), 0);
 
+	SceneNode* Maple = Resources::LoadMesh(nullptr, "maple", "../resources/models/maple/maple.obj");
+
 	/*DirectionalLight* MyLight = renderingModule->AddDirectionalLight(glm::vec3(1.0, 1.0, 0.0));
 	MyLight->color = glm::vec3(1.0f, 1.0f, 1.0f);
 
@@ -116,13 +119,14 @@ void Exp::EngineModule::RunEngine()
 
 		SphereNode->SetPosition(glm::vec3(10.0f, 20.0f, 10.0f));
 		SphereNode->SetScale(glm::vec3(3.0f));
-		renderingModule->PushMesh(SphereNode);
+		//renderingModule->PushMesh(SphereNode);
+
+		renderingModule->PushMesh(Maple);
 
 		renderingModule->PushMesh(Cube);
 		renderingModule->PushMesh(PlaneNode);
 		//renderingModule->PushMesh(Sponza);
 		//renderingModule->PushMesh(Nano);
-
 
 		//Rendering
 		renderingModule->Render();
@@ -327,6 +331,7 @@ void Exp::EngineModule::PostInitialize()
 	inputModule = ModuleManager::Get().GetModule<InputModule>("Input");
 	renderingModule = ModuleManager::Get().GetModule<RenderingModule>("Rendering");
 	materialLibraryModule = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary");
+	ecsModule = ModuleManager::Get().GetModule<ECSModule>("ECS");
 
 	renderingModule->SetCamera(&camera);
 	renderingModule->SetSkybox("../resources/Skyboxes/Fjaderholmarna/");

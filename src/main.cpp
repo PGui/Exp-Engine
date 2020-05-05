@@ -1,11 +1,11 @@
-#include "Module/ModuleManager.h"
-#include "Core/EngineModule.h"
-#include "Rendering/RenderingModule.h"
-#include "MaterialLibrary/MaterialLibraryModule.h"
-#include "Profiling/RemoteryModule.h"
-#include "Input/InputModule.h"
+#include "module/ModuleManager.h"
+#include "core/EngineModule.h"
+#include "rendering/RenderingModule.h"
+#include "materialLibrary/MaterialLibraryModule.h"
+#include "profiling/RemoteryModule.h"
+#include "input/InputModule.h"
+#include "ECS/ECSModule.h"
 //#include <ftl/task_scheduler.h>
-
 
 void MainJob(/*ftl::TaskScheduler * taskScheduler, void * arg*/)
 {
@@ -16,6 +16,8 @@ void MainJob(/*ftl::TaskScheduler * taskScheduler, void * arg*/)
 	Exp::ModuleManager::Get().AddModule<Exp::RenderingModule>("Rendering");
 	Exp::ModuleManager::Get().AddModule<Exp::MaterialLibraryModule>("MaterialLibrary");
 	Exp::ModuleManager::Get().AddModule<Exp::InputModule>("Input");
+	Exp::ModuleManager::Get().AddModule<Exp::ECSModule>("ECS");
+
 	//Initialize them
 	Exp::ModuleManager::Get().InitializeModules();
 

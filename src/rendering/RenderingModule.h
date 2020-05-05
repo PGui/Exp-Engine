@@ -1,23 +1,22 @@
 #pragma once
 #include <spdlog/spdlog.h>
-#include "../Module/ModuleInterface.h"
-#include "../MaterialLibrary/MaterialLibraryModule.h"
-
-#include "../Scene/SceneNode.h"
 #include <glm/glm.hpp>
+
+#include "module/ModuleInterface.h"
+#include "scene/SceneNode.h"
 
 #include "CommandBuffer.h"
 #include "RenderCommand.h"
 #include "RenderTarget.h"
 #include "GLCache.h"
 
-#include "../Lighting/DirectionalLight.h"
-#include "../Lighting/PointLight.h"
+#include "lighting/DirectionalLight.h"
+#include "lighting/PointLight.h"
 
-#include "../Mesh/Quad.h"
-#include "../Mesh/Sphere.h"
-#include "../Mesh/Cube.h"
-#include "../Mesh/Mesh.h"
+#include "mesh/Quad.h"
+#include "mesh/Sphere.h"
+#include "mesh/Cube.h"
+#include "mesh/Mesh.h"
 
 namespace Exp
 {
@@ -47,7 +46,8 @@ namespace Exp
 		virtual void PostInitialize();
 	private:
 		//Modules
-		MaterialLibraryModule* materialLibrary = nullptr;
+		class MaterialLibraryModule* materialLibrary = nullptr;
+		class ECSModule* ecsModule = nullptr;
 	private:
 		void InitGL();
 

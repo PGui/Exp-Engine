@@ -5,7 +5,7 @@ namespace Exp
 	class IModuleInterface
 	{
 	private:
-		
+
 	public:
 		IModuleInterface() {};
 		virtual ~IModuleInterface() {};

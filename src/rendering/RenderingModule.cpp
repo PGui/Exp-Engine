@@ -3,7 +3,10 @@
 #include <memory>
 #include <stack>
 #include <string>
-#include "Remotery.h"
+
+#include "profiling/RemoteryModule.h"
+#include "ecs/ECSModule.h"
+#include "materialLibrary/MaterialLibraryModule.h"
 
 #include "Material.h"
 #include "PostProcessor.h"
@@ -140,7 +143,7 @@ namespace Exp
 	void RenderingModule::PostInitialize()
 	{
 		materialLibrary = ModuleManager::Get().GetModule<MaterialLibraryModule>("MaterialLibrary");
-
+		ecsModule = ModuleManager::Get().GetModule<ECSModule>("ECS");
 		// Initialize PostProcessor nneds the Material Library
 		postProcessor = std::make_shared<PostProcessor>(this);
 	}

@@ -18,7 +18,7 @@ namespace Exp
 		glm::vec2 lastPos = glm::vec2();
 		glm::vec2 mouseDelta = glm::vec2();
 
-		bool keysDown[512];
+		bool keysDown[512] = {0};
 
 		GLFWwindow * window = nullptr;
 		EngineModule* engineModule = nullptr;
