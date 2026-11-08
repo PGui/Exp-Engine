@@ -282,7 +282,7 @@ void Exp::EngineModule::StartUp()
 	}
 #endif
 
-	glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR);
+	glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 	glfwSetFramebufferSizeCallback(mainWindow, FramebufferSizeCallback);
 
