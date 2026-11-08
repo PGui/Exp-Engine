@@ -20,6 +20,16 @@ cmake --build build
 ```
 Options: `--vsync on|off`, `--max-fps N` (with vsync off, 0 = uncapped),
 `--sim fixed|variable`, `--fixed-rate HZ`. All of them are also editable live in the "Core" panel.
+### Visual Studio 2026 (Windows)
+```bat
+git clone --recursive -b improvements https://github.com/PGui/Exp-Engine.git
+cd Exp-Engine
+cmake -S . -B build -G "Visual Studio 18 2026" -A x64
+cmake --build build --config Debug
+```
+Or open `build/Exp-Engine.sln` (or open the folder directly in Visual Studio as a CMake project);
+`Exp-Engine` is the startup project, so F5 runs the engine.
+
 On Linux you need the X11/OpenGL development packages
 (`libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev`).
 Assets are resolved from the source directory (`ROOT_DIR`), so the executable can be launched from anywhere.

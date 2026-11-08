@@ -1,5 +1,7 @@
 #include "ECSModule.h"
 
+#include <cstdio>
+
 #include <spdlog/spdlog.h>
 #include "imgui.h"
 
