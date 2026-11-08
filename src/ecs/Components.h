@@ -29,6 +29,22 @@ namespace Exp
 		}
 	};
 
+	// Transform at the previous simulation step, used to interpolate rendering
+	// between fixed steps. Maintained automatically by the ECSModule.
+	struct PreviousTransformComponent
+	{
+		TransformComponent value;
+	};
+
+	// Blend two transforms (position/scale linearly, rotation along the shortest arc).
+	inline glm::mat4 InterpolateTransform(const TransformComponent& from, const TransformComponent& to, float t)
+	{
+		const glm::vec3 position = glm::mix(from.position, to.position, t);
+		const glm::vec3 scale = glm::mix(from.scale, to.scale, t);
+		const glm::quat rotation = glm::slerp(glm::quat(glm::radians(from.rotation)), glm::quat(glm::radians(to.rotation)), t);
+		return glm::translate(glm::mat4(1.0f), position) * glm::mat4_cast(rotation) * glm::scale(glm::mat4(1.0f), scale);
+	}
+
 	// Renders a model hierarchy (owned by Resources / Scene) at the entity transform.
 	struct MeshRendererComponent
 	{

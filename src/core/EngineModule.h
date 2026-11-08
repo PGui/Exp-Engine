@@ -36,13 +36,32 @@ namespace Exp
 
 		GLFWwindow*  mainWindow = nullptr;
 
-		// Deltatime
-		double deltaTime = 1.0 / 60.0;
+		// Timing
+		enum class SimulationMode
+		{
+			FixedInterpolated, // simulation at a fixed rate, rendering interpolates between steps
+			Variable           // simulation runs once per frame with the frame delta time
+		};
+		SimulationMode simulationMode = SimulationMode::FixedInterpolated;
+
+		double deltaTime = 1.0 / 60.0;          // real frame time (variable)
 		double lastTime = 0.0;
 		double accumulatedTime = 0.0;
-		double simulationTime = 0.0;           // total time simulated by fixed steps
-		const double updatePeriod = 1.0 / 60.0; // fixed simulation step
-		const int maxUpdatesPerLoop = 5;        // max fixed steps per frame
+		double simulationTime = 0.0;            // total simulated time
+		double updatePeriod = 1.0 / 60.0;       // fixed simulation step (FixedInterpolated mode)
+		int maxUpdatesPerLoop = 8;              // max fixed steps per frame
+		double maxDeltaTime = 0.1;              // clamp for long frames (debugger, window drag...)
+		float interpolationAlpha = 1.0f;        // [0,1] position between the last two fixed steps
+
+		bool vsync = true;
+		int maxFps = 0;                         // 0 = uncapped (only applies when vsync is off)
+
+		// Frame time history for the UI graph (ms).
+		static constexpr int frameHistorySize = 240;
+		float frameTimes[frameHistorySize] = {};
+		int frameTimeIndex = 0;
+
+		void SetVSync(bool enabled);
 
 		//Camera
 		Camera camera = Camera(glm::vec3(0.0f));
@@ -80,6 +99,7 @@ namespace Exp
 
 		// Delta time
 		void ComputeDeltatime();
+		void LimitFrameRate(double frameStartTime);
 
 	public:
 

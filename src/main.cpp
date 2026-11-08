@@ -12,12 +12,24 @@
 
 int main(int argc, char** argv)
 {
-	// --frames N : quit after N frames (handy for automated runs / CI smoke tests).
+	// Command line:
+	//   --frames N          quit after N frames (automated runs / CI smoke tests)
+	//   --vsync on|off      vertical sync (default on)
+	//   --max-fps N         frame cap when vsync is off (0 = uncapped)
+	//   --sim fixed|variable  simulation timestep mode (default fixed + interpolation)
+	//   --fixed-rate HZ     fixed simulation rate (default 60)
 	int maxFrames = 0;
+	const char* vsyncArg = nullptr;
+	const char* simArg = nullptr;
+	int maxFps = -1;
+	int fixedRate = 0;
 	for (int i = 1; i + 1 < argc; ++i)
 	{
-		if (std::strcmp(argv[i], "--frames") == 0)
-			maxFrames = std::atoi(argv[i + 1]);
+		if (std::strcmp(argv[i], "--frames") == 0)          maxFrames = std::atoi(argv[++i]);
+		else if (std::strcmp(argv[i], "--vsync") == 0)      vsyncArg = argv[++i];
+		else if (std::strcmp(argv[i], "--max-fps") == 0)    maxFps = std::atoi(argv[++i]);
+		else if (std::strcmp(argv[i], "--sim") == 0)        simArg = argv[++i];
+		else if (std::strcmp(argv[i], "--fixed-rate") == 0) fixedRate = std::atoi(argv[++i]);
 	}
 
 	Exp::ModuleManager& modules = Exp::ModuleManager::Get();
@@ -31,6 +43,15 @@ int main(int argc, char** argv)
 	modules.AddModule<Exp::ECSModule>("ECS");
 
 	modules.InitializeModules();
+
+	if (vsyncArg)
+		engine->SetVSync(std::strcmp(vsyncArg, "off") != 0);
+	if (maxFps >= 0)
+		engine->maxFps = maxFps;
+	if (simArg && std::strcmp(simArg, "variable") == 0)
+		engine->simulationMode = Exp::EngineModule::SimulationMode::Variable;
+	if (fixedRate > 0)
+		engine->updatePeriod = 1.0 / fixedRate;
 
 	{
 		Exp::DemoApplication app;

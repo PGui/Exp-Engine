@@ -5,7 +5,8 @@ A learning and experimentation purpose OpenGL engine.
 - Deferred rendering (GBuffer, directional and point lights, post-processing)
 - Directional light shadow maps (hardware PCF + 3x3 kernel, normal-offset bias, texel snapping)
 - Entity Component System (EnTT): `Transform`, `MeshRenderer`, `Spin` components and an in-game inspector
-- Fixed-timestep simulation loop, decoupled from rendering
+- Variable framerate rendering (VSync on/off, optional FPS cap) with a simulation that is either
+  fixed-step + interpolated (default, smooth at any refresh rate) or variable-step
 - Module system (Engine, Rendering, MaterialLibrary, Input, ECS, Remotery profiling)
 - Assimp model loading, ImGui debug UI, shader hot-reload
 
@@ -17,6 +18,8 @@ cmake --build build
 ./build/Exp-Engine            # runs until the window is closed
 ./build/Exp-Engine --frames 60 # quits after 60 frames (smoke test)
 ```
+Options: `--vsync on|off`, `--max-fps N` (with vsync off, 0 = uncapped),
+`--sim fixed|variable`, `--fixed-rate HZ`. All of them are also editable live in the "Core" panel.
 On Linux you need the X11/OpenGL development packages
 (`libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev`).
 Assets are resolved from the source directory (`ROOT_DIR`), so the executable can be launched from anywhere.
@@ -32,7 +35,13 @@ sandbox/DemoApplication  the demo scene (entities, lights, camera)
 ecs/ECSModule            registry, systems (FixedUpdate, SubmitRenderables), inspector UI
 rendering/               RenderingModule (deferred + shadows), ShadowMap, materials, targets
 ```
-Frame order: `OnUpdate` -> `FixedUpdate` x N (ECS systems + `OnFixedUpdate`) -> ECS submit -> render.
+Frame order: `OnUpdate` -> simulation -> ECS submit -> render -> frame cap.
+
+Simulation modes:
+- **Fixed + interpolation** (default): systems run 0..N times per frame at `updatePeriod`
+  (20-240 Hz); rendering blends each entity between its previous and current transform
+  with `interpolationAlpha`, so motion is smooth at 30, 60, 144 Hz or uncapped.
+- **Variable**: systems run once per frame with the real frame time (clamped to 100 ms).
 
 ## Dependencies
 - Assimp https://github.com/assimp/assimp

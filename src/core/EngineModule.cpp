@@ -1,6 +1,8 @@
 #include "EngineModule.h"
 #include "Application.h"
 #include <cmath>
+#include <chrono>
+#include <thread>
 #include <glad/glad.h>
 
 
@@ -56,12 +58,14 @@ void Exp::EngineModule::RunEngine(Application& app, int maxFrames)
 	application->OnStart(*this);
 
 	lastTime = glfwGetTime();
+	const double runStartTime = lastTime;
 	accumulatedTime = 0.0;
 
 	int frame = 0;
 	while (!glfwWindowShouldClose(mainWindow) && (maxFrames <= 0 || frame < maxFrames))
 	{
 		rmt_ScopedCPUSample(LogicLoop, 0);
+		const double frameStartTime = glfwGetTime();
 
 		rmt_BeginCPUSample(PollEvents, 0);
 		glfwPollEvents();
@@ -74,12 +78,22 @@ void Exp::EngineModule::RunEngine(Application& app, int maxFrames)
 		ModuleManager::Get().DisplayModulesUI();
 		application->OnUI(*this);
 
-		// Gather renderables from the ECS, then draw.
-		ecsModule->SubmitRenderables();
+		// Gather renderables from the ECS (interpolated between fixed steps), then draw.
+		const bool interpolate = simulationMode == SimulationMode::FixedInterpolated;
+		ecsModule->SubmitRenderables(interpolate ? interpolationAlpha : 1.0f, interpolate);
 		renderingModule->Render();
 
 		EndFrame();
+		LimitFrameRate(frameStartTime);
 		++frame;
+	}
+
+	const double elapsed = glfwGetTime() - runStartTime;
+	if (frame > 0 && elapsed > 0.0)
+	{
+		spdlog::info("{} frames in {:.2f}s ({:.1f} FPS avg), simulated {:.2f}s, mode: {}",
+			frame, elapsed, frame / elapsed, simulationTime,
+			simulationMode == SimulationMode::Variable ? "variable" : "fixed + interpolation");
 	}
 
 	application->OnShutdown(*this);
@@ -105,8 +119,21 @@ void Exp::EngineModule::Update()
 
 	application->OnUpdate(*this, dt);
 
+	if (simulationMode == SimulationMode::Variable)
+	{
+		// One simulation step per rendered frame, with the real (clamped) frame time.
+		rmt_ScopedCPUSample(VariableUpdate, 0);
+		ecsModule->FixedUpdate(dt);
+		application->OnFixedUpdate(*this, dt);
+		simulationTime += deltaTime;
+		accumulatedTime = 0.0;
+		interpolationAlpha = 1.0f;
+		return;
+	}
+
 	// Fixed-step simulation: consume the accumulated time in constant steps so
-	// gameplay is frame-rate independent and deterministic.
+	// gameplay is frame-rate independent and deterministic. Rendering runs at any
+	// rate and interpolates between the last two steps (interpolationAlpha).
 	const float fixedDt = static_cast<float>(updatePeriod);
 	while (accumulatedTime >= updatePeriod)
 	{
@@ -115,6 +142,28 @@ void Exp::EngineModule::Update()
 		application->OnFixedUpdate(*this, fixedDt);
 		accumulatedTime -= updatePeriod;
 		simulationTime += updatePeriod;
+	}
+	interpolationAlpha = static_cast<float>(accumulatedTime / updatePeriod);
+}
+
+void Exp::EngineModule::SetVSync(bool enabled)
+{
+	vsync = enabled;
+	glfwSwapInterval(enabled ? 1 : 0);
+}
+
+void Exp::EngineModule::LimitFrameRate(double frameStartTime)
+{
+	if (vsync || maxFps <= 0)
+		return;
+
+	const double targetFrameTime = 1.0 / maxFps;
+	// Sleep most of the remaining time, then spin for precision.
+	double remaining = targetFrameTime - (glfwGetTime() - frameStartTime);
+	if (remaining > 0.002)
+		std::this_thread::sleep_for(std::chrono::duration<double>(remaining - 0.001));
+	while (glfwGetTime() - frameStartTime < targetFrameTime)
+	{
 	}
 }
 
@@ -132,11 +181,18 @@ void Exp::EngineModule::ComputeDeltatime()
 {
 	// Logic
 	double currentTime = glfwGetTime();
-	deltaTime = (currentTime - lastTime);/* / updatePeriod;*/
+	deltaTime = currentTime - lastTime;
 	lastTime = currentTime;
 
+	frameTimes[frameTimeIndex] = static_cast<float>(deltaTime * 1000.0);
+	frameTimeIndex = (frameTimeIndex + 1) % frameHistorySize;
+
+	// Long frames (breakpoint, window drag...) must not explode the simulation.
+	if (deltaTime > maxDeltaTime)
+		deltaTime = maxDeltaTime;
+
 	// Snap to common refresh rates to reduce jitter from timer noise.
-	for (double rate : { 1.0 / 144.0, 1.0 / 120.0, 1.0 / 60.0, 1.0 / 30.0 })
+	for (double rate : { 1.0 / 240.0, 1.0 / 165.0, 1.0 / 144.0, 1.0 / 120.0, 1.0 / 75.0, 1.0 / 60.0, 1.0 / 30.0 })
 	{
 		if (std::abs(deltaTime - rate) < .0002)
 		{
@@ -206,6 +262,7 @@ void Exp::EngineModule::StartUp()
 	}
 
 	glfwMakeContextCurrent(mainWindow);
+	SetVSync(vsync);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
@@ -277,6 +334,33 @@ void Exp::EngineModule::DisplayUI()
 	if (ImGui::CollapsingHeader("Core", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::PlotLines("##frametimes", frameTimes, frameHistorySize, frameTimeIndex,
+			"frame time (ms)", 0.0f, 50.0f, ImVec2(0, 50));
+
+		bool vsyncEnabled = vsync;
+		if (ImGui::Checkbox("VSync", &vsyncEnabled))
+			SetVSync(vsyncEnabled);
+		if (!vsync)
+			ImGui::SliderInt("Max FPS (0 = off)", &maxFps, 0, 500);
+
+		int mode = static_cast<int>(simulationMode);
+		const char* modes[] = { "Fixed + interpolation", "Variable" };
+		if (ImGui::Combo("Simulation", &mode, modes, 2))
+		{
+			simulationMode = static_cast<SimulationMode>(mode);
+			accumulatedTime = 0.0;
+		}
+		if (simulationMode == SimulationMode::FixedInterpolated)
+		{
+			static const int rates[] = { 20, 30, 60, 120, 240 };
+			static const char* rateNames[] = { "20 Hz", "30 Hz", "60 Hz", "120 Hz", "240 Hz" };
+			int current = 2;
+			for (int i = 0; i < 5; ++i)
+				if (std::abs(updatePeriod - 1.0 / rates[i]) < 1e-9) current = i;
+			if (ImGui::Combo("Fixed rate", &current, rateNames, 5))
+				updatePeriod = 1.0 / rates[current];
+			ImGui::Text("Interpolation alpha: %.2f", interpolationAlpha);
+		}
 		ImGui::Checkbox("Disable Mouse (F1)", &camera.disableMouse);
 	}
 }

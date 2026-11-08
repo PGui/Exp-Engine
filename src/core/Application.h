@@ -9,7 +9,7 @@ namespace Exp
 		core no longer contains any scene-specific code.
 
 		Frame order:
-			OnUpdate (variable dt) -> OnFixedUpdate (0..N times, fixed dt) -> ECS submit -> Render
+			OnUpdate (frame dt) -> OnFixedUpdate (fixed steps, or once with frame dt) -> ECS submit -> Render
 	*/
 	class Application
 	{
@@ -22,7 +22,8 @@ namespace Exp
 		// Called once per rendered frame with the real elapsed time.
 		virtual void OnUpdate(EngineModule& engine, float deltaTime) {}
 
-		// Called at a fixed rate (EngineModule::updatePeriod); use it for simulation.
+		// Simulation step. In FixedInterpolated mode it is called at EngineModule::updatePeriod
+		// (0..N times per frame); in Variable mode once per frame with the frame delta time.
 		virtual void OnFixedUpdate(EngineModule& engine, float fixedDeltaTime) {}
 
 		// Called once per frame, inside the ImGui frame, to add app-specific UI.

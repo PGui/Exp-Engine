@@ -29,7 +29,9 @@ namespace Exp
 		void FixedUpdate(float fixedDeltaTime);
 
 		// Pushes every visible MeshRenderer to the renderer for this frame.
-		void SubmitRenderables();
+		// With 'interpolate', transforms are blended between the previous and the
+		// current simulation step by 'alpha' in [0,1].
+		void SubmitRenderables(float alpha = 1.0f, bool interpolate = false);
 
 	private:
 		RenderingModule* renderingModule = nullptr;

@@ -35,6 +35,12 @@ namespace Exp
 
 	void ECSModule::FixedUpdate(float fixedDeltaTime)
 	{
+		// Keep the state before this step so rendering can interpolate towards the new one.
+		registry.view<TransformComponent>().each([this](auto entity, const TransformComponent& transform)
+			{
+				registry.emplace_or_replace<PreviousTransformComponent>(entity, transform);
+			});
+
 		registry.view<TransformComponent, SpinComponent>().each(
 			[fixedDeltaTime](auto entity, TransformComponent& transform, const SpinComponent& spin)
 			{
@@ -42,18 +48,25 @@ namespace Exp
 			});
 	}
 
-	void ECSModule::SubmitRenderables()
+	void ECSModule::SubmitRenderables(float alpha, bool interpolate)
 	{
 		if (!renderingModule)
 			return;
 
 		registry.view<TransformComponent, MeshRendererComponent>().each(
-			[this](auto entity, const TransformComponent& transform, const MeshRendererComponent& renderer)
+			[&](auto entity, const TransformComponent& transform, const MeshRendererComponent& renderer)
 			{
-				if (renderer.visible && renderer.model)
-				{
-					renderingModule->PushMesh(renderer.model, transform.Matrix(), renderer.castShadows);
-				}
+				if (!renderer.visible || !renderer.model)
+					return;
+
+				glm::mat4 world;
+				const PreviousTransformComponent* previous = interpolate ? registry.try_get<PreviousTransformComponent>(entity) : nullptr;
+				if (previous)
+					world = InterpolateTransform(previous->value, transform, alpha);
+				else
+					world = transform.Matrix();
+
+				renderingModule->PushMesh(renderer.model, world, renderer.castShadows);
 			});
 	}
 
