@@ -2,31 +2,24 @@
 
 #ifdef _WIN32
 
+#include <csignal>
 #include <cstdio>
+#include <cstdlib>
+#include <exception>
+#include <crtdbg.h>
 #include <windows.h>
 #include <dbghelp.h>
 #pragma comment(lib, "dbghelp.lib")
 
 namespace Exp
 {
-	static LONG WINAPI UnhandledExceptionHandler(EXCEPTION_POINTERS* info)
+	static void PrintStack(CONTEXT context)
 	{
-		const DWORD code = info->ExceptionRecord->ExceptionCode;
-		void* address = info->ExceptionRecord->ExceptionAddress;
-		std::fprintf(stderr, "\n===== CRASH: exception 0x%08lX at %p =====\n", code, address);
-		if (code == EXCEPTION_ACCESS_VIOLATION && info->ExceptionRecord->NumberParameters >= 2)
-		{
-			std::fprintf(stderr, "Access violation %s address 0x%p\n",
-				info->ExceptionRecord->ExceptionInformation[0] ? "writing" : "reading",
-				reinterpret_cast<void*>(info->ExceptionRecord->ExceptionInformation[1]));
-		}
-
 		HANDLE process = GetCurrentProcess();
 		HANDLE thread = GetCurrentThread();
 		SymSetOptions(SYMOPT_LOAD_LINES | SYMOPT_UNDNAME | SYMOPT_DEFERRED_LOADS);
 		SymInitialize(process, nullptr, TRUE);
 
-		CONTEXT context = *info->ContextRecord;
 		STACKFRAME64 frame = {};
 		frame.AddrPC.Offset = context.Rip;
 		frame.AddrPC.Mode = AddrModeFlat;
@@ -58,12 +51,67 @@ namespace Exp
 		}
 		std::fflush(stderr);
 		SymCleanup(process);
+	}
+
+	static void PrintCurrentStack()
+	{
+		CONTEXT context = {};
+		RtlCaptureContext(&context);
+		PrintStack(context);
+	}
+
+	static LONG WINAPI UnhandledExceptionHandler(EXCEPTION_POINTERS* info)
+	{
+		const DWORD code = info->ExceptionRecord->ExceptionCode;
+		void* address = info->ExceptionRecord->ExceptionAddress;
+		std::fprintf(stderr, "\n===== CRASH: exception 0x%08lX at %p =====\n", code, address);
+		if (code == EXCEPTION_ACCESS_VIOLATION && info->ExceptionRecord->NumberParameters >= 2)
+		{
+			std::fprintf(stderr, "Access violation %s address 0x%p\n",
+				info->ExceptionRecord->ExceptionInformation[0] ? "writing" : "reading",
+				reinterpret_cast<void*>(info->ExceptionRecord->ExceptionInformation[1]));
+		}
+		PrintStack(*info->ContextRecord);
 		return EXCEPTION_EXECUTE_HANDLER; // terminate without the Windows error dialog
+	}
+
+	static void TerminateHandler()
+	{
+		std::fprintf(stderr, "\n===== CRASH: std::terminate =====\n");
+		if (std::exception_ptr current = std::current_exception())
+		{
+			try { std::rethrow_exception(current); }
+			catch (const std::exception& e) { std::fprintf(stderr, "Uncaught exception: %s\n", e.what()); }
+			catch (...) { std::fprintf(stderr, "Uncaught non-standard exception\n"); }
+		}
+		PrintCurrentStack();
+		std::_Exit(3);
+	}
+
+	static void AbortHandler(int)
+	{
+		std::fprintf(stderr, "\n===== CRASH: abort() =====\n");
+		PrintCurrentStack();
+		std::_Exit(3);
+	}
+
+	// Debug CRT assertions/errors (e.g. checked iterators): print instead of a blocking dialog.
+	static int CrtReportHook(int reportType, char* message, int* returnValue)
+	{
+		std::fprintf(stderr, "\n===== CRT %s: %s\n", reportType == _CRT_ASSERT ? "ASSERT" : "ERROR", message ? message : "");
+		PrintCurrentStack();
+		if (returnValue)
+			*returnValue = 0;
+		std::_Exit(3);
 	}
 
 	void InstallCrashHandler()
 	{
 		SetUnhandledExceptionFilter(UnhandledExceptionHandler);
+		std::set_terminate(TerminateHandler);
+		std::signal(SIGABRT, AbortHandler);
+		_set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
+		_CrtSetReportHook(CrtReportHook);
 	}
 }
 
