@@ -27,6 +27,10 @@ namespace Exp
         // exposure
         float exposure = 1.0f;
 
+        // 0 none, 1 Reinhard, 2 ACES (Narkowicz), 3 ACES (Hill)
+        int tonemapper = 3;
+        bool srgbOutput = true;
+
         // gamma
         float gamma = 2.2f;
 

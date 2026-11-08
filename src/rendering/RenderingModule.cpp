@@ -93,7 +93,7 @@ namespace Exp
 						ImGui::Checkbox(	std::string("Visibility###VisDir"	+ std::to_string(i)).c_str(), &directionalLights[i]->visible);
 						ImGui::ColorEdit3(	std::string("Color###ColDir"		+ std::to_string(i)).c_str(), &directionalLights[i]->color[0]);
 						ImGui::SliderFloat3(std::string("Direction###DirDir"	+ std::to_string(i)).c_str(), &directionalLights[i]->direction[0], -1.0f, 1.0f);
-						ImGui::SliderFloat(	std::string("Intensity###IntDir"	+ std::to_string(i)).c_str(), &directionalLights[i]->intensity, 0.0f, 5.0f);
+						ImGui::SliderFloat(	std::string("Intensity###IntDir"	+ std::to_string(i)).c_str(), &directionalLights[i]->intensity, 0.0f, 10.0f);
 						ImGui::Checkbox(	std::string("Shadow###ShaDir"		+ std::to_string(i)).c_str(), &directionalLights[i]->castShadows);
 						ImGui::Checkbox(	std::string("Debug Mesh###DebDir"	+ std::to_string(i)).c_str(), &directionalLights[i]->renderMesh);
 					}

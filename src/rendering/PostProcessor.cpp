@@ -47,6 +47,8 @@ void Exp::PostProcessor::Blit(Texture* source)
 
 	// gamma
 	postProcessShader->SetFloat("Gamma", gamma);
+	postProcessShader->SetInt("Tonemapper", tonemapper);
+	postProcessShader->SetBool("SRGBOutput", srgbOutput);
 
 	// motion blur
 	/*postProcessShader->SetBool("MotionBlur", motionBlur);
@@ -67,7 +69,11 @@ void Exp::PostProcessor::DisplayDebug()
 		ImGui::Checkbox("SSAO", &SSAO);
 		ImGui::Checkbox("Sepia", &sepia);
 		ImGui::Separator();
-		ImGui::SliderFloat("Exposure", &exposure, 0.1f, 10.0f);
-		ImGui::SliderFloat("Gamma", &gamma, 0.1f, 10.0f);
+		const char* tonemappers[] = { "None", "Reinhard", "ACES (Narkowicz)", "ACES (Hill)" };
+		ImGui::Combo("Tonemapper", &tonemapper, tonemappers, 4);
+		ImGui::SliderFloat("Exposure", &exposure, 0.05f, 10.0f, "%.2f", 3.0f); // power curve: finer control at low values
+		ImGui::Checkbox("sRGB output", &srgbOutput);
+		if (!srgbOutput)
+			ImGui::SliderFloat("Gamma", &gamma, 1.0f, 3.0f);
 	}
 }

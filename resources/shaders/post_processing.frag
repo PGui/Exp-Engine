@@ -12,10 +12,14 @@ uniform int Bloom;
 uniform int SSAO;
 uniform int MotionBlur;
 
-// Exposure
+// Exposure (linear multiplier applied before tonemapping)
 uniform float Exposure;
 
-// Gamma
+// 0 = none (clamp), 1 = Reinhard (luminance), 2 = ACES (Narkowicz fit), 3 = ACES (Hill fit, RRT+ODT)
+uniform int Tonemapper;
+
+// Output encoding: exact sRGB transfer function, or pow(1/Gamma) when SRGBOutput is off
+uniform bool SRGBOutput;
 uniform float Gamma;
 
 // sepia
@@ -32,18 +36,56 @@ vec3 aces(vec3 col)
     return clamp((col*(a*col+b))/(col*(c*col+d)+e), 0.0, 1.0);
 }
 
+// Reinhard on luminance: compresses highlights without desaturating colours.
+vec3 reinhardLuminance(vec3 col)
+{
+    float l = dot(col, vec3(0.2126, 0.7152, 0.0722));
+    return col / (1.0 + l);
+}
+
+// https://github.com/TheRealMJP/BakingLab/blob/master/BakingLab/ACES.hlsl (Stephen Hill)
+vec3 acesHill(vec3 col)
+{
+    const mat3 inputMat = mat3(
+        0.59719, 0.07600, 0.02840,
+        0.35458, 0.90834, 0.13383,
+        0.04823, 0.01566, 0.83777);
+    const mat3 outputMat = mat3(
+         1.60475, -0.10208, -0.00327,
+        -0.53108,  1.10813, -0.07276,
+        -0.07367, -0.00605,  1.07602);
+    col = inputMat * col;
+    vec3 a = col * (col + 0.0245786) - 0.000090537;
+    vec3 b = col * (0.983729 * col + 0.4329510) + 0.238081;
+    col = outputMat * (a / b);
+    return clamp(col, 0.0, 1.0);
+}
+
+vec3 linearToSRGB(vec3 col)
+{
+    vec3 lo = col * 12.92;
+    vec3 hi = 1.055 * pow(col, vec3(1.0 / 2.4)) - 0.055;
+    return mix(hi, lo, vec3(lessThanEqual(col, vec3(0.0031308))));
+}
+
 void main()
 {
     vec3 color = texture(TexSrc, TexCoords).rgb;
     vec3 grayscale = vec3(dot(color, vec3(0.299, 0.587, 0.114)));
     vec2 texelSize = 1.0 / textureSize(TexSrc, 0).xy;    
     
-    // HDR tonemapping
+    // HDR -> LDR: a single tonemapping operator (chaining two crushes the whites).
     color *= Exposure;
-    color = aces(color);
-    color = color / (color + vec3(1.0));
-	// Gamma correct
-	color = pow(color, vec3(1.0/Gamma));     
+    if (Tonemapper == 1)
+        color = reinhardLuminance(color);
+    else if (Tonemapper == 2)
+        color = aces(color);
+    else if (Tonemapper == 3)
+        color = acesHill(color);
+    color = clamp(color, 0.0, 1.0);
+
+    // Linear -> display encoding (exactly once: textures are decoded by the GPU as sRGB).
+    color = SRGBOutput ? linearToSRGB(color) : pow(color, vec3(1.0 / Gamma));
     
     if(Sepia == 1)
     {

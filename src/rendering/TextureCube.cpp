@@ -65,7 +65,11 @@ namespace Exp
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, this->wrapT);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, this->wrapR);
 
-        glTexImage2D(face, 0, format, width, height, 0, format, type, data);
+        // 8-bit images (jpg/png) are sRGB encoded: let the GPU linearize them when sampled.
+        GLenum internal = format;
+        if (type == GL_UNSIGNED_BYTE)
+            internal = (format == GL_RGBA) ? GL_SRGB8_ALPHA8 : GL_SRGB8;
+        glTexImage2D(face, 0, internal, width, height, 0, format, type, data);
     }
     // --------------------------------------------------------------------------------------------
     void TextureCube::SetMipFace(GLenum face, unsigned int width, unsigned int height, GLenum format, GLenum type, unsigned int mipLevel, unsigned char *data)

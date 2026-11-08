@@ -52,14 +52,14 @@ namespace Exp
 	{
 		//Default
 		/*Material * DefaultMaterial = new Material(Resources::LoadShader("default", ROOT_DIR "resources/shaders/forward_shading.vert", ROOT_DIR "resources/shaders/forward_shading.frag"));
-		DefaultMaterial->SetTexture("material.diffuse", Resources::LoadTexture("default_diffuse", ROOT_DIR "resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 0);
+		DefaultMaterial->SetTexture("material.diffuse", Resources::LoadTexture("default_diffuse", ROOT_DIR "resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB, true), 0);
 		DefaultMaterial->SetTexture("material.specular", Resources::LoadTexture("default_specular", ROOT_DIR "resources/texture/container2_specular.png", GL_TEXTURE_2D, GL_RGB), 1);
 		DefaultMaterial->SetFloat("material.shininess", 32.0f);
 		defaultMaterials[SID("default")] = DefaultMaterial;*/
 
 		//Temp default
 		Material * DefaultMaterial = new Material(Resources::LoadShader("default", ROOT_DIR "resources/shaders/g_buffer.vert", ROOT_DIR "resources/shaders/g_buffer.frag"));
-		DefaultMaterial->SetTexture("material.diffuse", Resources::LoadTexture("default_diffuse", ROOT_DIR "resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 0);
+		DefaultMaterial->SetTexture("material.diffuse", Resources::LoadTexture("default_diffuse", ROOT_DIR "resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB, true), 0);
 		DefaultMaterial->SetTexture("material.specular", Resources::LoadTexture("default_specular", ROOT_DIR "resources/texture/container2_specular.png", GL_TEXTURE_2D, GL_RGB), 1);
 		DefaultMaterial->SetTexture("material.normals", Resources::LoadTexture("default_normals", ROOT_DIR "resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 2);
 		defaultMaterials[SID("default")] = DefaultMaterial;
@@ -68,12 +68,12 @@ namespace Exp
 		Material *DefaultBlitMaterial = new Material(Resources::LoadShader("blit", ROOT_DIR "resources/shaders/screen_quad.vert", ROOT_DIR "resources/shaders/default_blit.frag"));
 		DefaultBlitMaterial->depthTest = false;
 		DefaultBlitMaterial->depthWrite = false;
-		DefaultBlitMaterial->SetTexture("screenTexture", Resources::LoadTexture("default_diffuse", ROOT_DIR "resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 0);
+		DefaultBlitMaterial->SetTexture("screenTexture", Resources::LoadTexture("default_diffuse", ROOT_DIR "resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB, true), 0);
 		defaultMaterials[SID("blit")] = DefaultBlitMaterial;
 
 		// Unlit
 		Material * UnlitMaterial = new Material(Resources::LoadShader("unlit", ROOT_DIR "resources/shaders/unlit.vert", ROOT_DIR "resources/shaders/unlit.frag"));
-		UnlitMaterial->SetTexture("material.diffuse", Resources::LoadTexture("default_diffuse", ROOT_DIR "resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 0);
+		UnlitMaterial->SetTexture("material.diffuse", Resources::LoadTexture("default_diffuse", ROOT_DIR "resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB, true), 0);
 		defaultMaterials[SID("unlit")] = UnlitMaterial;
 
 		// DebugLight

@@ -35,7 +35,7 @@ namespace Exp
 			auto plane = std::make_unique<Plane>(10, 10);
 			Material* floorMaterial = materials.CreateMaterial("default");
 			floorMaterial->SetTexture("material.diffuse",
-				Resources::LoadTexture("wood", ROOT_DIR "resources/texture/wood.png", GL_TEXTURE_2D, GL_RGB, false), 0);
+				Resources::LoadTexture("wood", ROOT_DIR "resources/texture/wood.png", GL_TEXTURE_2D, GL_RGB, true), 0); // color texture: sRGB
 			SceneNode* node = Scene::MakeSceneNode(plane.get(), floorMaterial);
 			ownedMeshes.push_back(std::move(plane));
 
@@ -99,7 +99,7 @@ namespace Exp
 		// Lights: a sun casting shadows and a coloured point light.
 		sun = renderer.AddDirectionalLight(glm::normalize(glm::vec3(-0.5f, 1.0f, 0.35f)));
 		sun->color = glm::vec3(1.0f, 0.95f, 0.85f);
-		sun->intensity = 1.2f;
+		sun->intensity = 2.5f; // linear HDR lighting, tonemapped with ACES
 		sun->castShadows = true;
 
 		PointLight* point = renderer.AddPointLight(glm::vec3(3.0f, 3.0f, 4.0f), 14.0f);
