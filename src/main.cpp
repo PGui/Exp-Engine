@@ -9,9 +9,12 @@
 #include "input/InputModule.h"
 #include "ecs/ECSModule.h"
 #include "sandbox/DemoApplication.h"
+#include "core/CrashHandler.h"
 
 int main(int argc, char** argv)
 {
+	Exp::InstallCrashHandler();
+
 	// Command line:
 	//   --frames N          quit after N frames (automated runs / CI smoke tests)
 	//   --vsync on|off      vertical sync (default on)
