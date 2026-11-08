@@ -6,10 +6,10 @@
 #include <map>
 
 #include "../hash/Hash.h"
-#include "../Profiling/RemoteryModule.h"
-#include "../Rendering/Material.h"
-#include "../Resources/Resources.h"
-#include "../Module/ModuleInterface.h"
+#include "../profiling/RemoteryModule.h"
+#include "../rendering/Material.h"
+#include "../resources/Resources.h"
+#include "../module/ModuleInterface.h"
 
 
 namespace Exp

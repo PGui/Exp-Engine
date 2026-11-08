@@ -4,6 +4,7 @@
 
 //#include <GLFW/glfw3.h>
 
+#include "helpers/RootDir.h"
 #include "MaterialLibraryModule.h"
 
 namespace Exp
@@ -50,36 +51,36 @@ namespace Exp
 	void MaterialLibraryModule::GenerateDefaultMaterials()
 	{
 		//Default
-		/*Material * DefaultMaterial = new Material(Resources::LoadShader("default", "../resources/shaders/forward_shading.vert", "../resources/shaders/forward_shading.frag"));
-		DefaultMaterial->SetTexture("material.diffuse", Resources::LoadTexture("default_diffuse", "../resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 0);
-		DefaultMaterial->SetTexture("material.specular", Resources::LoadTexture("default_specular", "../resources/texture/container2_specular.png", GL_TEXTURE_2D, GL_RGB), 1);
+		/*Material * DefaultMaterial = new Material(Resources::LoadShader("default", ROOT_DIR "resources/shaders/forward_shading.vert", ROOT_DIR "resources/shaders/forward_shading.frag"));
+		DefaultMaterial->SetTexture("material.diffuse", Resources::LoadTexture("default_diffuse", ROOT_DIR "resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 0);
+		DefaultMaterial->SetTexture("material.specular", Resources::LoadTexture("default_specular", ROOT_DIR "resources/texture/container2_specular.png", GL_TEXTURE_2D, GL_RGB), 1);
 		DefaultMaterial->SetFloat("material.shininess", 32.0f);
 		defaultMaterials[SID("default")] = DefaultMaterial;*/
 
 		//Temp default
-		Material * DefaultMaterial = new Material(Resources::LoadShader("default", "../resources/shaders/g_buffer.vert", "../resources/shaders/g_buffer.frag"));
-		DefaultMaterial->SetTexture("material.diffuse", Resources::LoadTexture("default_diffuse", "../resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 0);
-		DefaultMaterial->SetTexture("material.specular", Resources::LoadTexture("default_specular", "../resources/texture/container2_specular.png", GL_TEXTURE_2D, GL_RGB), 1);
-		DefaultMaterial->SetTexture("material.normals", Resources::LoadTexture("default_normals", "../resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 2);
+		Material * DefaultMaterial = new Material(Resources::LoadShader("default", ROOT_DIR "resources/shaders/g_buffer.vert", ROOT_DIR "resources/shaders/g_buffer.frag"));
+		DefaultMaterial->SetTexture("material.diffuse", Resources::LoadTexture("default_diffuse", ROOT_DIR "resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 0);
+		DefaultMaterial->SetTexture("material.specular", Resources::LoadTexture("default_specular", ROOT_DIR "resources/texture/container2_specular.png", GL_TEXTURE_2D, GL_RGB), 1);
+		DefaultMaterial->SetTexture("material.normals", Resources::LoadTexture("default_normals", ROOT_DIR "resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 2);
 		defaultMaterials[SID("default")] = DefaultMaterial;
 
 		//Blit Material
-		Material *DefaultBlitMaterial = new Material(Resources::LoadShader("blit", "../resources/shaders/screen_quad.vert", "../resources/shaders/default_blit.frag"));
+		Material *DefaultBlitMaterial = new Material(Resources::LoadShader("blit", ROOT_DIR "resources/shaders/screen_quad.vert", ROOT_DIR "resources/shaders/default_blit.frag"));
 		DefaultBlitMaterial->depthTest = false;
 		DefaultBlitMaterial->depthWrite = false;
-		DefaultBlitMaterial->SetTexture("screenTexture", Resources::LoadTexture("default_diffuse", "../resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 0);
+		DefaultBlitMaterial->SetTexture("screenTexture", Resources::LoadTexture("default_diffuse", ROOT_DIR "resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 0);
 		defaultMaterials[SID("blit")] = DefaultBlitMaterial;
 
 		// Unlit
-		Material * UnlitMaterial = new Material(Resources::LoadShader("unlit", "../resources/shaders/unlit.vert", "../resources/shaders/unlit.frag"));
-		UnlitMaterial->SetTexture("material.diffuse", Resources::LoadTexture("default_diffuse", "../resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 0);
+		Material * UnlitMaterial = new Material(Resources::LoadShader("unlit", ROOT_DIR "resources/shaders/unlit.vert", ROOT_DIR "resources/shaders/unlit.frag"));
+		UnlitMaterial->SetTexture("material.diffuse", Resources::LoadTexture("default_diffuse", ROOT_DIR "resources/texture/checkerboard.png", GL_TEXTURE_2D, GL_RGB), 0);
 		defaultMaterials[SID("unlit")] = UnlitMaterial;
 
 		// DebugLight
-		Material* DebugLightMaterial = new Material(Resources::LoadShader("debugLight", "../resources/shaders/debug_light.vert", "../resources/shaders/debug_light.frag"));
+		Material* DebugLightMaterial = new Material(Resources::LoadShader("debugLight", ROOT_DIR "resources/shaders/debug_light.vert", ROOT_DIR "resources/shaders/debug_light.frag"));
 		defaultMaterials[SID("debugLight")] = DebugLightMaterial;
 
-		/*Material * DepthMaterial = new Material(Resources::LoadShader("depth", "../resources/shaders/depth.vert", "../resources/shaders/depth.frag"));
+		/*Material * DepthMaterial = new Material(Resources::LoadShader("depth", ROOT_DIR "resources/shaders/depth.vert", ROOT_DIR "resources/shaders/depth.frag"));
 		defaultMaterials[SID("depth")] = DepthMaterial;*/
 
 	}
@@ -89,8 +90,8 @@ namespace Exp
 		{
 			Shader* deferredDirectionalLightShader = Resources::LoadShader(
 				"deferredDirectional", 
-				"../resources/shaders/directional.vert", 
-				"../resources/shaders/directional.frag");
+				ROOT_DIR "resources/shaders/directional.vert", 
+				ROOT_DIR "resources/shaders/directional.frag");
 			deferredDirectionalLightShader->Use();
 			deferredDirectionalLightShader->SetInt("gPosition", 0);
 			deferredDirectionalLightShader->SetInt("gNormal", 1);
@@ -101,8 +102,8 @@ namespace Exp
 		{
 			Shader* deferredPointLightShader = Resources::LoadShader(
 				"deferredPoint", 
-				"../resources/shaders/point.vert", 
-				"../resources/shaders/point.frag");
+				ROOT_DIR "resources/shaders/point.vert", 
+				ROOT_DIR "resources/shaders/point.frag");
 			deferredPointLightShader->Use();
 			deferredPointLightShader->SetInt("gPosition", 0);
 			deferredPointLightShader->SetInt("gNormal", 1);
@@ -113,8 +114,8 @@ namespace Exp
 		{
 			Shader * postProcessShader = Resources::LoadShader(
 				"postprocess", 
-				"../resources/shaders/screen_quad.vert", 
-				"../resources/shaders/post_processing.frag");
+				ROOT_DIR "resources/shaders/screen_quad.vert", 
+				ROOT_DIR "resources/shaders/post_processing.frag");
 			postProcessShader->Use();
 			postProcessShader->SetInt("TexSrc", 0);
 			/*postProcessShader->SetInt("TexBloom1", 1);
@@ -128,8 +129,8 @@ namespace Exp
 		{
 			Shader* stencilLightShader = Resources::LoadShader(
 				"stencilLightShader", 
-				"../resources/shaders/stencil_light.vert", 
-				"../resources/shaders/stencil_light.frag");
+				ROOT_DIR "resources/shaders/stencil_light.vert", 
+				ROOT_DIR "resources/shaders/stencil_light.frag");
 			stencilLightShader->Use();
 			defaultShaders[SID("stencilLightShader")] = stencilLightShader;
 		}

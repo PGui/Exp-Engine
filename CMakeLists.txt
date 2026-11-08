@@ -121,7 +121,7 @@ set(CMAKE_DEBUG_POSTFIX "d")
 IF (MSVC)
   TARGET_COMPILE_OPTIONS(assimp PRIVATE /WX-)
 ELSE()
-  TARGET_COMPILE_OPTIONS(assimp PRIVATE -Werror)
+  TARGET_COMPILE_OPTIONS(assimp PRIVATE -Wno-error)
 ENDIF()
 
 # Create virtual folders to make it look nicer in VS

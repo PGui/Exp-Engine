@@ -10,15 +10,17 @@
 
 #include "Material.h"
 #include "PostProcessor.h"
+#include "ShadowMap.h"
+#include "helpers/RootDir.h"
 
-#include "../Module/ModuleManager.h"
-#include "../Core/EngineModule.h"
-#include "../MaterialLibrary/MaterialLibraryModule.h"
-#include "../Camera/Camera.h"
-#include "../Mesh/Mesh.h"
-#include "../Core/WindowParameters.h"
+#include "../module/ModuleManager.h"
+#include "../core/EngineModule.h"
+#include "../materialLibrary/MaterialLibraryModule.h"
+#include "../camera/Camera.h"
+#include "../mesh/Mesh.h"
+#include "../core/WindowParameters.h"
 
-#include "../Scene/Skybox.h"
+#include "../scene/Skybox.h"
 
 
 namespace Exp
@@ -48,6 +50,22 @@ namespace Exp
 			ImGui::Checkbox("Wireframe", &wireframe);
 			ImGui::Checkbox("Lights", &displayLights);
 			ImGui::Checkbox("Skybox", &displaySkybox);
+			if (ImGui::TreeNode("Shadows"))
+			{
+				static const int resolutions[] = { 512, 1024, 2048, 4096 };
+				static const char* resolutionNames[] = { "512", "1024", "2048", "4096" };
+				int current = 0;
+				for (int i = 0; i < 4; ++i)
+					if (resolutions[i] == shadowResolution) current = i;
+				if (ImGui::Combo("Resolution", &current, resolutionNames, 4))
+					shadowResolution = resolutions[current];
+				ImGui::DragFloat3("Center", &shadowCenter[0], 0.1f);
+				ImGui::SliderFloat("Distance", &shadowDistance, 5.0f, 200.0f);
+				ImGui::SliderFloat("Normal offset", &shadowNormalOffset, 0.0f, 1.0f);
+				ImGui::SliderFloat("Bias", &shadowBias, 0.0f, 0.01f, "%.5f");
+				ImGui::TreePop();
+			}
+
 			if (ImGui::CollapsingHeader("Lights", ImGuiTreeNodeFlags_DefaultOpen))
 			{
 				ImGui::AlignTextToFramePadding();
@@ -146,6 +164,10 @@ namespace Exp
 		ecsModule = ModuleManager::Get().GetModule<ECSModule>("ECS");
 		// Initialize PostProcessor nneds the Material Library
 		postProcessor = std::make_shared<PostProcessor>(this);
+
+		shadowDepthShader = Resources::LoadShader("shadowDepth",
+			ROOT_DIR "resources/shaders/shadow_depth.vert",
+			ROOT_DIR "resources/shaders/shadow_depth.frag");
 	}
 
 	void RenderingModule::InitGL()
@@ -297,15 +319,16 @@ namespace Exp
 
 	void RenderingModule::PushMesh(SceneNode * node)
 	{
+		PushMesh(node, glm::mat4(1.0f));
+	}
+
+	void RenderingModule::PushMesh(SceneNode* node, const glm::mat4& worldTransform, bool castShadows)
+	{
 		node->UpdateTransform(true);
 
-		//Push the node and all the children for rendering
+		// Push the node and its whole hierarchy (each node exactly once).
 		std::stack<SceneNode*> stackNode;
 		stackNode.push(node);
-		for (unsigned int i = 0; i < node->GetChildCount(); ++i)
-		{
-			stackNode.push(node->GetChildByIndex(i));
-		}
 
 		while (!stackNode.empty())
 		{
@@ -314,7 +337,7 @@ namespace Exp
 
 			if (currentNode->mesh && currentNode->material)
 			{
-				PushMeshRenderCommand(currentNode->mesh, currentNode->material, currentNode->GetTransform());
+				commandBuffer.Push(currentNode->mesh, currentNode->material, worldTransform * currentNode->GetTransform(), castShadows);
 			}
 
 			for (unsigned int i = 0; i < currentNode->GetChildCount(); ++i)
@@ -356,8 +379,10 @@ namespace Exp
 		attachments[3] = GL_NONE;
 		glDrawBuffers(4, attachments);
 
-		//TODO Shadows
-
+		// Shadow maps (uses the same deferred commands as the GBuffer pass).
+		RenderShadowMaps();
+		glBindFramebuffer(GL_FRAMEBUFFER, GBuffer->ID);
+		glViewport(0, 0, renderSize.x, renderSize.y);
 
 		attachments[0] = GL_COLOR_ATTACHMENT0;
 		glDrawBuffers(4, attachments);
@@ -521,22 +546,73 @@ namespace Exp
 			if (dirShader)//TODO put as member
 			{
 				dirShader->Use();
-				dirShader->SetVec3("lightDir", light->direction);
+				dirShader->SetVec3("lightDir", glm::normalize(light->direction));
 				dirShader->SetVec3("lightColor", /*glm::normalize*/(light->color) * light->intensity);
 
 				dirShader->SetInt("gPosition", 0);
 				dirShader->SetInt("gNormal", 1);
 				dirShader->SetInt("gAlbedoSpec", 2);
 
-				if (light->shadowMapRT)
+				const bool hasShadow = light->castShadows && light->shadowMap;
+				dirShader->SetBool("hasShadow", hasShadow);
+				dirShader->SetInt("lightShadowMap", 3);
+				if (hasShadow)
 				{
-					/*dirShader->SetMatrix("lightShadowViewProjection", light->LightSpaceViewProjection);
-					light->ShadowMapRT->GetDepthStencilTexture()->Bind(3);*/
+					dirShader->SetMat4("lightShadowViewProjection", light->lightSpaceViewProjection);
+					dirShader->SetFloat("shadowNormalOffset", shadowNormalOffset);
+					dirShader->SetFloat("shadowBias", shadowBias);
+					light->shadowMap->BindTexture(3);
 				}
 
 				RenderMesh(ndcPlane.get());
 
 			}
+		}
+	}
+
+	void RenderingModule::RenderShadowMaps()
+	{
+		rmt_ScopedCPUSample(ShadowMaps, 0);
+
+		if (!shadowDepthShader || !displayLights)
+			return;
+
+		for (auto& light : directionalLights)
+		{
+			if (!light->visible || !light->castShadows)
+				continue;
+
+			if (!light->shadowMap)
+				light->shadowMap = std::make_unique<ShadowMap>(shadowResolution);
+			else
+				light->shadowMap->Resize(shadowResolution);
+
+			light->lightSpaceViewProjection = ShadowMap::ComputeDirectionalViewProjection(
+				light->direction, shadowCenter, shadowDistance, shadowResolution);
+
+			light->shadowMap->BeginRender();
+
+			GLCache::GetInstance().SetDepthTest(true);
+			GLCache::GetInstance().SetDepthFunc(GL_LESS);
+			GLCache::GetInstance().SetBlend(false);
+			// No culling: open meshes (leaves, planes) must still cast shadows.
+			GLCache::GetInstance().SetCull(false);
+			glEnable(GL_POLYGON_OFFSET_FILL);
+			glPolygonOffset(1.5f, 2.0f);
+
+			shadowDepthShader->Use();
+			shadowDepthShader->SetMat4("lightViewProjection", light->lightSpaceViewProjection);
+
+			for (const RenderCommand& command : commandBuffer.deferredCommands)
+			{
+				if (!command.castShadows)
+					continue;
+				shadowDepthShader->SetMat4("model", command.transform);
+				RenderMesh(command.mesh);
+			}
+
+			glDisable(GL_POLYGON_OFFSET_FILL);
+			GLCache::GetInstance().SetCull(true);
 		}
 	}
 

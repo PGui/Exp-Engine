@@ -3,54 +3,43 @@
 
 namespace Exp
 {
-	ModuleManager::ModuleManager()
-	{
-	}
-
-
-	ModuleManager::~ModuleManager()
-	{
-	}
-
 	void ModuleManager::InitializeModules()
 	{
-		for (auto it = insertOrder.begin(); it != insertOrder.end(); ++it)
+		for (auto& module : modules)
 		{
-			modules[*it]->StartUp();
+			module->StartUp();
 		}
 
-		for (auto it = insertOrder.begin(); it != insertOrder.end(); ++it)
+		for (auto& module : modules)
 		{
-			modules[*it]->PostInitialize();
+			module->PostInitialize();
 		}
 	}
 
 	void ModuleManager::ShutdownModules()
 	{
-		// Shutdown in reverse order
-		for (auto it = insertOrder.rbegin(); it != insertOrder.rend(); ++it)
+		// Shutdown in reverse order, then destroy in reverse order as well.
+		for (auto it = modules.rbegin(); it != modules.rend(); ++it)
 		{
-			modules[*it]->Shutdown();
+			(*it)->Shutdown();
 		}
 
-		//Delete the modules.
-		for (auto it = insertOrder.begin(); it != insertOrder.end(); ++it)
+		while (!modules.empty())
 		{
-			delete modules[*it];
+			modules.pop_back();
 		}
+		lookup.clear();
 	}
 
 	void ModuleManager::DisplayModulesUI()
 	{
 		ImGui::Begin("Exp Engine");
 
-		for (auto it = modules.begin(); it != modules.end(); ++it)
+		for (auto& module : modules)
 		{
-			(*it).second->DisplayUI();
+			module->DisplayUI();
 		}
 
 		ImGui::End();
 	}
-
 }
-

@@ -1,23 +1,20 @@
 #include "EngineModule.h"
+#include "Application.h"
+#include <cmath>
 #include <glad/glad.h>
 
-//#include <memory_lib/tagged_heap.h>
-#include "../Threading/Semaphore.h"
 
 #include "Remotery.h"
 
-#include "../Module/ModuleManager.h"
-#include "../Rendering/RenderingModule.h"
-#include "../Input/InputModule.h"
-#include "../MaterialLibrary/MaterialLibraryModule.h"
+#include "../module/ModuleManager.h"
+#include "../rendering/RenderingModule.h"
+#include "../input/InputModule.h"
+#include "../materialLibrary/MaterialLibraryModule.h"
 #include "ecs/ECSModule.h"
 
-#include "../Scene/SceneNode.h"
-#include "../Scene/Scene.h"
+#include "../scene/SceneNode.h"
+#include "../scene/Scene.h"
 
-#include "../Mesh/Cube.h"
-#include "../Mesh/Sphere.h"
-#include "../Mesh/Plane.h"
 
 #include "WindowParameters.h"
 
@@ -32,6 +29,9 @@ GLFWwindow * Exp::EngineModule::InitWindow(std::string title, bool fullScreen, G
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifndef NDEBUG
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+#endif
 
 	if (visible)
 		glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
@@ -50,44 +50,20 @@ GLFWwindow * Exp::EngineModule::InitWindow(std::string title, bool fullScreen, G
 
 	return win;
 }
-void Exp::EngineModule::RunEngine()
+void Exp::EngineModule::RunEngine(Application& app, int maxFrames)
 {
-	//TEST
-	SceneNode * Bunny = Resources::LoadMesh(nullptr, "bunny", "../resources/models/bunny/bunny.obj");
-	//SceneNode * Nano = Resources::LoadMesh(nullptr, "nano", "../resources/models/nanosuit/nanosuit.obj");
-	//SceneNode * Sponza = Resources::LoadMesh(nullptr, "sponza", "../resources/models/sponza/sponza.obj");
-	Cube myCube;
-	SceneNode* Cube = Scene::MakeSceneNode(&myCube, materialLibraryModule->GetMaterial("default"));
+	application = &app;
+	application->OnStart(*this);
 
-	Sphere mySphere(16, 16);
-	SceneNode* SphereNode = Scene::MakeSceneNode(&mySphere, materialLibraryModule->GetMaterial("default"));
+	lastTime = glfwGetTime();
+	accumulatedTime = 0.0;
 
-	Plane myPlane(10,10);
-	SceneNode* PlaneNode = Scene::MakeSceneNode(&myPlane, materialLibraryModule->CreateMaterial("default"));
-	PlaneNode->SetScale(glm::vec3(30, 1, 30));
-	PlaneNode->SetRotation(glm::vec4(1, 0, 0, 90.0f));
-	PlaneNode->material->SetTexture("material.diffuse", Resources::LoadTexture("wood", "../resources/texture/wood.png", GL_TEXTURE_2D, GL_RGB, false), 0);
-
-	SceneNode* Maple = Resources::LoadMesh(nullptr, "maple", "../resources/models/maple/maple.obj");
-
-	/*DirectionalLight* MyLight = renderingModule->AddDirectionalLight(glm::vec3(1.0, 1.0, 0.0));
-	MyLight->color = glm::vec3(1.0f, 1.0f, 1.0f);
-
-	DirectionalLight* MyLight2 = renderingModule->AddDirectionalLight(glm::vec3(0.0, 1.0, 1.0));
-	MyLight2->color = glm::vec3(1.0f, 1.0f, 0.0f);*/
-
-	//DirectionalLight* MyLight3 = renderingModule->AddDirectionalLight(glm::vec3(0.0, 1.0, 0.0));
-	//MyLight3->color = glm::vec3(0.0f, 1.0f, 1.0f);
-
-	PointLight* MyPL1 = renderingModule->AddPointLight(glm::vec3(3.0, 3.0, 4.0), 26.f);
-	//MyPL1->color = glm::vec3(1.0f, 0.0f, 0.0f);
-
-	while (!glfwWindowShouldClose(mainWindow))
+	int frame = 0;
+	while (!glfwWindowShouldClose(mainWindow) && (maxFrames <= 0 || frame < maxFrames))
 	{
 		rmt_ScopedCPUSample(LogicLoop, 0);
 
 		rmt_BeginCPUSample(PollEvents, 0);
-		// Check for events
 		glfwPollEvents();
 		rmt_EndCPUSample();
 
@@ -96,45 +72,18 @@ void Exp::EngineModule::RunEngine()
 		Update();
 
 		ModuleManager::Get().DisplayModulesUI();
+		application->OnUI(*this);
 
-		for (int i = 0; i < 5; ++i)
-		{
-			for (int j = 0; j < 5; ++j)
-			{
-				Bunny->SetPosition(glm::vec3(i * 5.0f, 1.0f, j * 5.0f));
-				Bunny->SetRotation(glm::vec4(0.0, 1.0, 0.0, sin(glfwGetTime() * 0.2f) * 360.0f));
-				renderingModule->PushMesh(Bunny);
-			}
-		}
-
-		for (int i = 0; i < 5; ++i)
-		{
-			for (int j = 0; j < 5; ++j)
-			{
-				SphereNode->SetPosition(glm::vec3(i * 5.0f, 10.0f, j * 5.0f));
-				SphereNode->SetScale(glm::vec3(1.0f));
-				renderingModule->PushMesh(SphereNode);
-			}
-		}
-
-		SphereNode->SetPosition(glm::vec3(10.0f, 20.0f, 10.0f));
-		SphereNode->SetScale(glm::vec3(3.0f));
-		//renderingModule->PushMesh(SphereNode);
-
-		renderingModule->PushMesh(Maple);
-
-		renderingModule->PushMesh(Cube);
-		renderingModule->PushMesh(PlaneNode);
-		//renderingModule->PushMesh(Sponza);
-		//renderingModule->PushMesh(Nano);
-
-		//Rendering
+		// Gather renderables from the ECS, then draw.
+		ecsModule->SubmitRenderables();
 		renderingModule->Render();
 
 		EndFrame();
+		++frame;
 	}
 
-	delete Cube;
+	application->OnShutdown(*this);
+	application = nullptr;
 }
 
 void Exp::EngineModule::NewFrame()
@@ -150,46 +99,22 @@ void Exp::EngineModule::Update()
 
 	ComputeDeltatime();
 
-	inputModule->Update((float)deltaTime);
+	const float dt = static_cast<float>(deltaTime);
+	inputModule->Update(dt);
+	camera.Update(dt, inputModule);
 
-	camera.Update((float)deltaTime, inputModule);
+	application->OnUpdate(*this, dt);
 
-
-	//TODO Refactor
-
-	int updates = 0;
+	// Fixed-step simulation: consume the accumulated time in constant steps so
+	// gameplay is frame-rate independent and deterministic.
+	const float fixedDt = static_cast<float>(updatePeriod);
 	while (accumulatedTime >= updatePeriod)
 	{
+		rmt_ScopedCPUSample(FixedUpdate, 0);
+		ecsModule->FixedUpdate(fixedDt);
+		application->OnFixedUpdate(*this, fixedDt);
 		accumulatedTime -= updatePeriod;
-		if (accumulatedTime < (1.0 / 59.0) - updatePeriod)
-		{
-			accumulatedTime = 0;
-		}
-		{
-			/*inputModule->Update((float)deltaTime);
-
-			{
-				rmt_ScopedCPUSample(CameraUpdate, 0);
-
-				if (inputModule->IsKeyPressed(GLFW_KEY_W))
-					camera.UpdateKey((float)deltaTime, CameraMovement::FORWARD);
-				if (inputModule->IsKeyPressed(GLFW_KEY_S))
-					camera.UpdateKey((float)deltaTime, CameraMovement::BACKWARD);
-				if (inputModule->IsKeyPressed(GLFW_KEY_A))
-					camera.UpdateKey((float)deltaTime, CameraMovement::LEFT);
-				if (inputModule->IsKeyPressed(GLFW_KEY_D))
-					camera.UpdateKey((float)deltaTime, CameraMovement::RIGHT);
-				if (inputModule->IsKeyPressed(GLFW_KEY_SPACE))
-					camera.UpdateKey((float)deltaTime, CameraMovement::UP);
-				if (inputModule->IsKeyPressed(GLFW_KEY_LEFT_CONTROL))
-					camera.UpdateKey((float)deltaTime, CameraMovement::DOWN);
-				glm::vec2 mouseDelta = inputModule->GetMouseDelta();
-				camera.UpdateMouse(mouseDelta.x, mouseDelta.y);
-				camera.Update((float)deltaTime);
-			}*/
-
-			updates++;
-		}
+		simulationTime += updatePeriod;
 	}
 }
 
@@ -210,21 +135,21 @@ void Exp::EngineModule::ComputeDeltatime()
 	deltaTime = (currentTime - lastTime);/* / updatePeriod;*/
 	lastTime = currentTime;
 
-	if (abs(deltaTime - 1.0 / 120.0) < .0002) {
-		deltaTime = 1.0 / 120.0;
-	}
-	if (abs(deltaTime - 1.0 / 60.0) < .0002) {
-		deltaTime = 1.0 / 60.0;
-	}
-	if (abs(deltaTime - 1.0 / 30.0) < .0002) {
-		deltaTime = 1.0 / 30.0;
+	// Snap to common refresh rates to reduce jitter from timer noise.
+	for (double rate : { 1.0 / 144.0, 1.0 / 120.0, 1.0 / 60.0, 1.0 / 30.0 })
+	{
+		if (std::abs(deltaTime - rate) < .0002)
+		{
+			deltaTime = rate;
+			break;
+		}
 	}
 
 	accumulatedTime += deltaTime;
 
-	// Avoid spiral of death
-	// Drop world time from the update in order to keep up
-	if (accumulatedTime >= updatePeriod * maxUpdatesPerLoop) {
+	// Avoid the spiral of death: if we are too slow, drop simulation time
+	// instead of running an ever growing number of fixed steps.
+	if (accumulatedTime > updatePeriod * maxUpdatesPerLoop) {
 		accumulatedTime = updatePeriod * maxUpdatesPerLoop;
 	}
 }
@@ -247,6 +172,14 @@ void Exp::EngineModule::FramebufferSizeCallback(GLFWwindow * window, int width, 
 		Renderer->ResizeRenderer(width, height);
 	}
 }
+void APIENTRY Exp::EngineModule::GlDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+{
+	if (severity == GL_DEBUG_SEVERITY_HIGH || type == GL_DEBUG_TYPE_ERROR)
+		spdlog::error("[GL] {}", message);
+	else
+		spdlog::warn("[GL] {}", message);
+}
+
 void Exp::EngineModule::GlfwErrorCallback(int error, const char * description)
 {
 	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
@@ -281,6 +214,17 @@ void Exp::EngineModule::StartUp()
 		return;
 	}
 
+#ifndef NDEBUG
+	if (GLAD_GL_VERSION_4_3)
+	{
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(GlDebugCallback, nullptr);
+		// Notifications are too verbose
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
+	}
+#endif
+
 	glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR);
 
 	glfwSetFramebufferSizeCallback(mainWindow, FramebufferSizeCallback);
@@ -306,15 +250,26 @@ void Exp::EngineModule::StartUp()
 
 void Exp::EngineModule::Shutdown()
 {
+	// Engine-owned GPU resources go first, while every module is still alive.
+	Resources::Clean(); //TODO Make a module
+
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 
-	glfwDestroyWindow(mainWindow);
-
-	Resources::Clean(); //TODO Make a module
-
+	// The window (and its GL context) is destroyed in ~EngineModule: modules registered
+	// after the engine (e.g. Rendering) still release GL objects in their destructors.
 	spdlog::info("EngineModule Shutdown");
+}
+
+Exp::EngineModule::~EngineModule()
+{
+	if (mainWindow)
+	{
+		glfwDestroyWindow(mainWindow);
+		mainWindow = nullptr;
+	}
+	glfwTerminate();
 }
 
 void Exp::EngineModule::DisplayUI()
@@ -334,5 +289,5 @@ void Exp::EngineModule::PostInitialize()
 	ecsModule = ModuleManager::Get().GetModule<ECSModule>("ECS");
 
 	renderingModule->SetCamera(&camera);
-	renderingModule->SetSkybox("../resources/Skyboxes/Fjaderholmarna/");
+
 }

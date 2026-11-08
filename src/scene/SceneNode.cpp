@@ -11,6 +11,18 @@ namespace Exp
 
 	SceneNode::~SceneNode()
 	{
+		// A node owns its children (but not the Mesh/Material it references).
+		for (SceneNode* child : children)
+		{
+			child->parent = nullptr;
+			delete child;
+		}
+		children.clear();
+
+		if (parent)
+		{
+			parent->RemoveChild(this);
+		}
 	}
 
 	void SceneNode::SetPosition(glm::vec3 position)
@@ -76,9 +88,10 @@ namespace Exp
 		if (dirty)
 		{
 			transform = glm::mat4(1.0f);
+			// Standard T * R * S order (S before R would shear with non-uniform scales).
 			transform = glm::translate(transform, position);
-			transform = glm::scale(transform, scale);
 			transform = glm::rotate(transform, glm::radians(rotation.w), glm::vec3(rotation));
+			transform = glm::scale(transform, scale);
 			if (parent)
 			{
 				transform = parent->transform * transform;
@@ -106,7 +119,7 @@ namespace Exp
 	{
 		if (node->parent)
 		{
-			node->parent->RemoveChild(node->id);
+			node->parent->RemoveChild(node);
 		}
 		node->parent = this;
 		children.push_back(node);
@@ -114,9 +127,17 @@ namespace Exp
 
 	void SceneNode::RemoveChild(const unsigned int id)
 	{
-		auto it = std::find(children.begin(), children.end(), GetChild(id));
+		RemoveChild(GetChild(id));
+	}
+
+	void SceneNode::RemoveChild(SceneNode* node)
+	{
+		auto it = std::find(children.begin(), children.end(), node);
 		if (it != children.end())
+		{
+			(*it)->parent = nullptr;
 			children.erase(it);
+		}
 	}
 
 	const std::vector<SceneNode*> & SceneNode::GetChildren() const

@@ -1,7 +1,7 @@
 #pragma once
-#include "../Module/ModuleManager.h"
-#include "../Module/ModuleInterface.h"
-#include "../Core/EngineModule.h"
+#include "../module/ModuleManager.h"
+#include "../module/ModuleInterface.h"
+#include "../core/EngineModule.h"
 #include <iostream>
 #include <spdlog/spdlog.h>
 

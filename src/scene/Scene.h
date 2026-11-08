@@ -4,8 +4,8 @@
 
 #include "SceneNode.h"
 
-#include "../Mesh/Mesh.h"
-#include "../Rendering/Material.h"
+#include "../mesh/Mesh.h"
+#include "../rendering/Material.h"
 
 namespace Exp
 {

@@ -1,5 +1,5 @@
 #include "ShaderLoader.h"
-#include "../Rendering/Shader.h"
+#include "../rendering/Shader.h"
 
 namespace Exp
 {

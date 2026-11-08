@@ -12,5 +12,6 @@ namespace Exp
 		std::string title = "Exp Engine";
 	};
 
-	static Exp::WindowParameters WinParameters;
+	// inline: one shared instance across translation units (was one copy per .cpp).
+	inline WindowParameters WinParameters;
 }

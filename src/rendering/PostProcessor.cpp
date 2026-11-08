@@ -1,5 +1,5 @@
-#include "../Module/ModuleManager.h"
-#include "../MaterialLibrary/MaterialLibraryModule.h"
+#include "../module/ModuleManager.h"
+#include "../materialLibrary/MaterialLibraryModule.h"
 #include "PostProcessor.h"
 
 Exp::PostProcessor::PostProcessor(RenderingModule* renderingModule)

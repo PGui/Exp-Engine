@@ -1,4 +1,4 @@
-#include "../Input/InputModule.h"
+#include "../input/InputModule.h"
 #include "Remotery.h"
 #include "Camera.h"
 
@@ -43,9 +43,9 @@ namespace Exp
 			UpdateMouse(mouseDelta.x, mouseDelta.y);
 		}
 
-		position = glm::lerp(position, targetPosition, glm::clamp(1.f - pow(1.f - damping / 60.f, 60.f * deltatime), 0.0f, 1.0f));
-		yaw = glm::lerp(yaw, targetYaw, glm::clamp(1.f - pow(1.f - damping * 2.0f / 60.f, 60.f * deltatime), 0.0f, 1.0f));
-		pitch = glm::lerp(pitch, targetPitch, glm::clamp(1.f - pow(1.f - damping * 2.0f / 60.f, 60.f * deltatime), 0.0f, 1.0f));
+		position = glm::lerp(position, targetPosition, glm::clamp(1.f - std::pow(1.f - damping / 60.f, 60.f * deltatime), 0.0f, 1.0f));
+		yaw = glm::lerp(yaw, targetYaw, glm::clamp(1.f - std::pow(1.f - damping * 2.0f / 60.f, 60.f * deltatime), 0.0f, 1.0f));
+		pitch = glm::lerp(pitch, targetPitch, glm::clamp(1.f - std::pow(1.f - damping * 2.0f / 60.f, 60.f * deltatime), 0.0f, 1.0f));
 
 		glm::vec3 newForward;
 		newForward.x = float(cos(0.0174533 * pitch) * cos(0.0174533 * yaw));
@@ -129,11 +129,29 @@ namespace Exp
 
 	void Camera::SetPerspective(float fovY, float aspectRatio, float nearPlane, float farPlane)
 	{
-		fovY = fovY;
-		aspectRatio = aspectRatio;
-		nearPlane = nearPlane;
-		farPlane = farPlane;
+		this->fovY = fovY;
+		this->aspectRatio = aspectRatio;
+		this->nearPlane = nearPlane;
+		this->farPlane = farPlane;
 		projection = glm::perspective(glm::radians(fovY), aspectRatio, nearPlane, farPlane);
+		viewProjection = projection * view;
+	}
+
+	void Camera::SetTransform(glm::vec3 newPosition, glm::vec3 target)
+	{
+		const glm::vec3 dir = glm::normalize(target - newPosition);
+		pitch = glm::degrees(std::asin(glm::clamp(dir.y, -1.0f, 1.0f)));
+		yaw = glm::degrees(std::atan2(dir.z, dir.x));
+
+		// Snap: no damping towards the new pose.
+		position = targetPosition = newPosition;
+		targetYaw = yaw;
+		targetPitch = pitch;
+
+		forward = dir;
+		right = glm::normalize(glm::cross(forward, worldUp));
+		up = glm::cross(right, forward);
+		UpdateView();
 	}
 
 

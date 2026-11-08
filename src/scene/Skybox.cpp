@@ -1,3 +1,4 @@
+#include "helpers/RootDir.h"
 #include "Skybox.h"
 
 namespace Exp
@@ -7,7 +8,7 @@ namespace Exp
 	{
 		Scene::root->AddChild(this);
 
-		shader = Resources::LoadShader("background", "../resources/shaders/skybox.vert", "../resources/shaders/skybox.frag");
+		shader = Resources::LoadShader("background", ROOT_DIR "resources/shaders/skybox.vert", ROOT_DIR "resources/shaders/skybox.frag");
 		material = new Exp::Material(shader);
 		mesh = new Cube();
 		boxMin = glm::vec3(-99999.0);

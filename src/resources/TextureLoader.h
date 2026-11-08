@@ -5,8 +5,8 @@
 #include <spdlog/spdlog.h>
 
 #include "stb_image.h"
-#include "../Rendering/Texture.h"
-#include "../Rendering/TextureCube.h"
+#include "../rendering/Texture.h"
+#include "../rendering/TextureCube.h"
 
 namespace Exp
 {

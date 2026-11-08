@@ -1,9 +1,9 @@
 #include "ModelLoader.h"
 #include "../scene/SceneNode.h"
-#include "../Module/ModuleManager.h"
-#include "../MaterialLibrary/MaterialLibraryModule.h"
-#include "../Mesh/Mesh.h"
-#include "Rendering/Material.h"
+#include "../module/ModuleManager.h"
+#include "../materialLibrary/MaterialLibraryModule.h"
+#include "../mesh/Mesh.h"
+#include "rendering/Material.h"
 
 
 namespace Exp
@@ -97,7 +97,7 @@ namespace Exp
 
 		positions.resize(aMesh->mNumVertices);
 		normals.resize(aMesh->mNumVertices);
-		if (aMesh->mNumUVComponents > 0)
+		if (aMesh->HasTextureCoords(0))
 		{
 			uv.resize(aMesh->mNumVertices);
 			tangents.resize(aMesh->mNumVertices);

@@ -1,5 +1,5 @@
 #pragma once
-#include "../Module/ModuleInterface.h"
+#include "../module/ModuleInterface.h"
 #include "Remotery.h"
 
 namespace Exp

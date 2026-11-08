@@ -1,5 +1,5 @@
 #pragma once
-#include "../Helpers/Singleton.h"
+#include "../helpers/Singleton.h"
 namespace Exp
 {
 	class IModuleInterface

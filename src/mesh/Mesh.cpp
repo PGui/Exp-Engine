@@ -27,6 +27,14 @@ namespace Exp
 
 	Mesh::~Mesh()
 	{
+		// Requires a current GL context: the EngineModule keeps it alive until all modules are destroyed.
+		if (vao != 0)
+		{
+			glDeleteVertexArrays(1, &vao);
+			glDeleteBuffers(1, &vbo);
+			if (ebo != 0)
+				glDeleteBuffers(1, &ebo);
+		}
 	}
 
 	void Mesh::Finalize(bool interleaved)

@@ -64,6 +64,9 @@ namespace Exp
 
 		void SetPerspective(float fov, float aspectRatio, float nearPlane, float farPlane);
 
+		// Place the camera at 'position', looking at 'target' (no damping).
+		void SetTransform(glm::vec3 position, glm::vec3 target);
+
 	private:
 		void UpdateView();
 

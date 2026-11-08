@@ -74,6 +74,14 @@ namespace Exp
 		// Debug Lighting
 		std::shared_ptr<Cube> debugLightMesh;
 
+		// Directional shadows
+		Shader* shadowDepthShader = nullptr;
+		int shadowResolution = 2048;
+		float shadowDistance = 32.0f;          // half-size of the area covered by the shadow map
+		glm::vec3 shadowCenter = glm::vec3(0.0f);
+		float shadowNormalOffset = 0.12f;
+		float shadowBias = 0.0008f;
+
 		// Skybox
 		std::shared_ptr<Skybox> currentSkybox;
 	private:
@@ -96,6 +104,8 @@ namespace Exp
 		void RenderSkybox();
 
 		void PushMesh(SceneNode * node);
+		// Push a model hierarchy with an extra world transform (e.g. from an ECS Transform).
+		void PushMesh(SceneNode* node, const glm::mat4& worldTransform, bool castShadows = true);
 		void Render();
 
 		void ResizeRenderer(int width, int height);
@@ -107,6 +117,7 @@ namespace Exp
 		void Blit(Texture* src, RenderTarget* dst = nullptr, Material* material=nullptr, std::string textureUniformName = "screenTexture");
 
 		void RenderDeferredDirLight(DirectionalLight* light);
+		void RenderShadowMaps();
 		void PreRenderDeferredPointLight(PointLight* light);
 		void RenderDeferredPointLight(PointLight* light);
 

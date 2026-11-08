@@ -30,7 +30,9 @@ namespace Exp
 		Mesh();
 		Mesh(std::vector<glm::vec3> positions, std::vector<glm::vec3> normals, std::vector<unsigned int> indices);
 		Mesh(std::vector<glm::vec3> positions, std::vector<glm::vec3> normals, std::vector<glm::vec2> uv, std::vector<unsigned int> indices);
-		~Mesh();
+		virtual ~Mesh();
+		Mesh(const Mesh&) = delete;
+		Mesh& operator=(const Mesh&) = delete;
 
 		unsigned int vao = 0;
 		TOPOLOGY topology = TRIANGLES;
@@ -47,8 +49,8 @@ namespace Exp
 		void Finalize(bool interleaved = true);
 
 	protected:
-		unsigned int vbo;
-		unsigned int ebo;
+		unsigned int vbo = 0;
+		unsigned int ebo = 0;
 
 
 	};

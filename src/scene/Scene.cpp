@@ -30,45 +30,36 @@ namespace Exp
 		return node;
 	}
 	// --------------------------------------------------------------------------------------------
+	// Deep copy of a node hierarchy: structure and local transforms are kept,
+	// Mesh/Material pointers are shared (they are owned by Resources/MaterialLibrary).
+	static SceneNode* CloneHierarchy(SceneNode* source)
+	{
+		SceneNode* copy = new SceneNode(Scene::counterID++);
+		copy->mesh = source->mesh;
+		copy->material = source->material;
+		copy->boxMin = source->boxMin;
+		copy->boxMax = source->boxMax;
+		copy->SetPosition(source->GetLocalPosition());
+		copy->SetRotation(source->GetRotation());
+		copy->SetScale(source->GetLocalScale());
+
+		for (SceneNode* child : source->GetChildren())
+		{
+			copy->AddChild(CloneHierarchy(child));
+		}
+		return copy;
+	}
+
 	SceneNode* Scene::MakeSceneNode(SceneNode* node)
 	{
-		SceneNode *newNode = new SceneNode(Scene::counterID++);
-
-		newNode->mesh = node->mesh;
-		newNode->material = node->material;
-		newNode->boxMin = node->boxMin;
-		newNode->boxMax = node->boxMax;
-
-		std::stack<SceneNode*> nodeStack;
-		for (unsigned int i = 0; i < node->GetChildCount(); ++i)
-			nodeStack.push(node->GetChildByIndex(i));
-		while (!nodeStack.empty())
-		{
-			SceneNode* child = nodeStack.top();
-			nodeStack.pop();
-			// similarly, create SceneNode for each child and push to scene node memory list.
-			SceneNode* newChild = new SceneNode(Scene::counterID++);
-			newChild->mesh = child->mesh;
-			newChild->material = child->material;
-			newChild->boxMin = child->boxMin;
-			newChild->boxMax = child->boxMax;
-			newNode->AddChild(newChild);
-
-			for (unsigned int i = 0; i < child->GetChildCount(); ++i)
-				nodeStack.push(child->GetChildByIndex(i));
-		}
-
+		SceneNode* newNode = CloneHierarchy(node);
 		root->AddChild(newNode);
 		return newNode;
 	}
 	// --------------------------------------------------------------------------------------------
 	void Scene::DeleteSceneNode(SceneNode *node)
 	{
-		if (node->GetParent())
-		{
-			node->GetParent()->RemoveChild(node->GetID());
-		}
-
+		// The destructor detaches the node from its parent and deletes its children.
 		delete node;
 	}
 }

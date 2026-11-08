@@ -8,8 +8,9 @@ namespace Exp
 
 	struct RenderCommand
 	{
-		glm::mat4 transform;
-		Mesh* mesh;
-		Material* material;
+		glm::mat4 transform = glm::mat4(1.0f);
+		Mesh* mesh = nullptr;
+		Material* material = nullptr;
+		bool castShadows = true;
 	};
 }

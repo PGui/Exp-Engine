@@ -1,6 +1,6 @@
 #include "InputModule.h"
 #include "Remotery.h"
-#include "../Core/EngineModule.h"
+#include "../core/EngineModule.h"
 
 
 Exp::InputModule::InputModule()

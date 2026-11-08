@@ -12,14 +12,14 @@
 #include "TextureLoader.h"
 //#include "MeshLoader.h"
 
-#include "../Rendering/Shader.h"
-#include "../Rendering/Material.h"
-#include "../Rendering/Texture.h"
-#include "../Rendering/TextureCube.h"
-#include "../Mesh/Mesh.h"
+#include "../rendering/Shader.h"
+#include "../rendering/Material.h"
+#include "../rendering/Texture.h"
+#include "../rendering/TextureCube.h"
+#include "../mesh/Mesh.h"
 
-#include "../Scene/Scene.h"
-#include "../Scene/SceneNode.h"
+#include "../scene/Scene.h"
+#include "../scene/SceneNode.h"
 
 #include "ModelLoader.h"
 

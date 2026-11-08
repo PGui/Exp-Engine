@@ -29,8 +29,8 @@ namespace Exp
 		unsigned int Unit;
 		union
 		{
-			Texture     *Texture;
-			TextureCube* TextureCube;
+			Exp::Texture*     Texture;
+			Exp::TextureCube* TextureCube;
 		};
 
 		UniformValueSampler() {}

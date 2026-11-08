@@ -4,7 +4,7 @@
 #include "Shader.h"
 #include "RenderTarget.h"
 #include "RenderingModule.h"
-#include "../Camera/Camera.h"
+#include "../camera/Camera.h"
 
 namespace Exp
 {

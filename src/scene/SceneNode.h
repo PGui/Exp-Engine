@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
 #include <algorithm>
-#include "../Mesh/Mesh.h"
-#include "../Rendering/Material.h"
+#include "../mesh/Mesh.h"
+#include "../rendering/Material.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -64,6 +64,7 @@ namespace Exp
 		const unsigned int GetID() const;
 		void AddChild(SceneNode * node);
 		void RemoveChild(const unsigned int id);
+		void RemoveChild(SceneNode* node);
 		const std::vector<SceneNode*> & GetChildren() const;
 		unsigned int            GetChildCount();
 		SceneNode              *GetChild(unsigned int id);

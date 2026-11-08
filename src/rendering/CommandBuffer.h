@@ -4,7 +4,7 @@
 
 #include <glm/glm.hpp>
 
-#include "../Mesh/Mesh.h"
+#include "../mesh/Mesh.h"
 
 #include "RenderCommand.h"
 #include "Material.h"
@@ -28,7 +28,7 @@ namespace Exp
 
 	public:
 
-		void Push(Mesh* mesh, Material* material, glm::mat4 transform);
+		void Push(Mesh* mesh, Material* material, const glm::mat4& transform, bool castShadows = true);
 
 		void Clear();
 

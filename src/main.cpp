@@ -1,38 +1,42 @@
+#include <cstdlib>
+#include <cstring>
+
 #include "module/ModuleManager.h"
 #include "core/EngineModule.h"
 #include "rendering/RenderingModule.h"
 #include "materialLibrary/MaterialLibraryModule.h"
 #include "profiling/RemoteryModule.h"
 #include "input/InputModule.h"
-#include "ECS/ECSModule.h"
-//#include <ftl/task_scheduler.h>
+#include "ecs/ECSModule.h"
+#include "sandbox/DemoApplication.h"
 
-void MainJob(/*ftl::TaskScheduler * taskScheduler, void * arg*/)
+int main(int argc, char** argv)
 {
-	//Add modules
-	Exp::ModuleManager::Get().AddModule<Exp::RemoteryModule>("Remotery");
+	// --frames N : quit after N frames (handy for automated runs / CI smoke tests).
+	int maxFrames = 0;
+	for (int i = 1; i + 1 < argc; ++i)
+	{
+		if (std::strcmp(argv[i], "--frames") == 0)
+			maxFrames = std::atoi(argv[i + 1]);
+	}
 
-	Exp::ModuleManager::Get().AddModule<Exp::EngineModule>("Engine");
-	Exp::ModuleManager::Get().AddModule<Exp::RenderingModule>("Rendering");
-	Exp::ModuleManager::Get().AddModule<Exp::MaterialLibraryModule>("MaterialLibrary");
-	Exp::ModuleManager::Get().AddModule<Exp::InputModule>("Input");
-	Exp::ModuleManager::Get().AddModule<Exp::ECSModule>("ECS");
+	Exp::ModuleManager& modules = Exp::ModuleManager::Get();
 
-	//Initialize them
-	Exp::ModuleManager::Get().InitializeModules();
+	// Registration order = startup order (shutdown runs in reverse).
+	modules.AddModule<Exp::RemoteryModule>("Remotery");
+	Exp::EngineModule* engine = modules.AddModule<Exp::EngineModule>("Engine");
+	modules.AddModule<Exp::RenderingModule>("Rendering");
+	modules.AddModule<Exp::MaterialLibraryModule>("MaterialLibrary");
+	modules.AddModule<Exp::InputModule>("Input");
+	modules.AddModule<Exp::ECSModule>("ECS");
 
-	//Launch main loop
-	Exp::EngineModule * EngineModule = Exp::ModuleManager::Get().GetModule<Exp::EngineModule>("Engine");
-	//EngineModule->taskScheduler = taskScheduler;
-	EngineModule->RunEngine();
+	modules.InitializeModules();
 
-	Exp::ModuleManager::Get().ShutdownModules();
-}
+	{
+		Exp::DemoApplication app;
+		engine->RunEngine(app, maxFrames);
+	}
 
-int main()
-{
-	//ftl::TaskScheduler taskScheduler;
-	//taskScheduler.Run(512, MainJob, nullptr, ftl::GetNumHardwareThreads(), ftl::EmptyQueueBehavior::Sleep);
-	MainJob();
+	modules.ShutdownModules();
 	return 0;
 }

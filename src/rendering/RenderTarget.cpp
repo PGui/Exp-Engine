@@ -29,13 +29,6 @@ namespace Exp
 
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, texture.id, 0);
 
-			GLuint depthrenderbuffer;
-			glGenRenderbuffers(1, &depthrenderbuffer);
-			glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
-
-
 			ColorAttachments.push_back(texture);
 		}
 
@@ -62,6 +55,14 @@ namespace Exp
 
 	RenderTarget::~RenderTarget()
 	{
+		for (Texture& texture : ColorAttachments)
+		{
+			glDeleteTextures(1, &texture.id);
+		}
+		if (bHasDepthAndStencil)
+		{
+			glDeleteTextures(1, &DepthStencil.id);
+		}
 		glDeleteFramebuffers(1, &ID);
 	}
 

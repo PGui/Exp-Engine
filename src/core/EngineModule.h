@@ -15,7 +15,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-#include "../Camera/Camera.h"
+#include "../camera/Camera.h"
 #include <GLFW/glfw3.h>
 
 namespace Exp
@@ -24,6 +24,7 @@ namespace Exp
 	class RenderingModule;
 	class MaterialLibraryModule;
 	class ECSModule;
+	class Application;
 
 	class EngineModule:
 		public IModuleInterface
@@ -39,9 +40,9 @@ namespace Exp
 		double deltaTime = 1.0 / 60.0;
 		double lastTime = 0.0;
 		double accumulatedTime = 0.0;
-		const double updatePeriod = 1.0/60.0;
-		//const double m_precisionUpdatePeriod ;
-		const int maxUpdatesPerLoop = 1;
+		double simulationTime = 0.0;           // total time simulated by fixed steps
+		const double updatePeriod = 1.0 / 60.0; // fixed simulation step
+		const int maxUpdatesPerLoop = 5;        // max fixed steps per frame
 
 		//Camera
 		Camera camera = Camera(glm::vec3(0.0f));
@@ -56,7 +57,11 @@ namespace Exp
 		RenderingModule * renderingModule = nullptr;
 		MaterialLibraryModule * materialLibraryModule = nullptr;
 		ECSModule* ecsModule = nullptr;
+	private:
+		Application* application = nullptr;
 	public:
+		~EngineModule() override;
+
 		//IModuleInterface
 		virtual void StartUp();
 		virtual void Shutdown();
@@ -66,8 +71,8 @@ namespace Exp
 		// Methods
 		GLFWwindow * InitWindow(std::string title, bool fullScreen = false, GLFWwindow* shared = nullptr, bool visible = true);
 
-		//Main loop
-		void RunEngine();
+		//Main loop. maxFrames <= 0 runs until the window is closed.
+		void RunEngine(Application& app, int maxFrames = 0);
 
 		void NewFrame();
 		void Update();
@@ -81,5 +86,6 @@ namespace Exp
 		//Callbacks
 		static void FramebufferSizeCallback(GLFWwindow * window, int width, int height);
 		static void GlfwErrorCallback(int error, const char* description);
+		static void APIENTRY GlDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 	};
 }

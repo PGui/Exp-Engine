@@ -1,4 +1,6 @@
 #include "Resources.h"
+#include <set>
+#include <stack>
 
 
 namespace Exp
@@ -21,13 +23,30 @@ namespace Exp
 
 	void Resources::Clean()
 	{
-		// traverse all stored Mesh scene nodes and delete accordingly.
-		// Note that this time we don't care about deleting dangling pointers as each scene node is
-		// unique and shouldn't reference other scene nodes than their children.
-		for (auto it = meshes.begin(); it != meshes.end(); it++)
+		// Scene instances only reference meshes, so destroy them first.
+		Scene::Clear();
+
+		// Template hierarchies own their Mesh objects (allocated by the ModelLoader).
+		std::set<Mesh*> ownedMeshes;
+		for (auto& [id, root] : meshes)
 		{
-			delete it->second;
+			std::stack<SceneNode*> nodes;
+			nodes.push(root);
+			while (!nodes.empty())
+			{
+				SceneNode* node = nodes.top();
+				nodes.pop();
+				if (node->mesh)
+					ownedMeshes.insert(node->mesh);
+				for (SceneNode* child : node->GetChildren())
+					nodes.push(child);
+			}
+			delete root; // recursively deletes children
 		}
+		meshes.clear();
+
+		for (Mesh* mesh : ownedMeshes)
+			delete mesh;
 	}
 
 	// --------------------------------------------------------------------------------------------

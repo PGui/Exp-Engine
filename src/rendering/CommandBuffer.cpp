@@ -6,12 +6,13 @@
 
 namespace Exp
 {
-	void CommandBuffer::Push(Mesh* mesh, Material* material, glm::mat4 transform)
+	void CommandBuffer::Push(Mesh* mesh, Material* material, const glm::mat4& transform, bool castShadows)
 	{
 		RenderCommand command;
 		command.mesh = mesh;
 		command.material = material;
 		command.transform = transform;
+		command.castShadows = castShadows;
 
 		if (material->type == Material::MaterialType::MATERIAL_DEFAULT)
 		{
@@ -32,11 +33,15 @@ namespace Exp
 
 	void CommandBuffer::Sort()
 	{
-		std::sort(deferredCommands.begin(), deferredCommands.end(), [](const RenderCommand& a, const RenderCommand& b) -> bool
+		// Group draws by shader to limit program switches.
+		// (A null shader sorts as 0 so the comparator stays a strict weak ordering.)
+		auto shaderId = [](const RenderCommand& c) -> unsigned int
+		{
+			return c.material->GetShader() ? c.material->GetShader()->id : 0u;
+		};
+		std::sort(deferredCommands.begin(), deferredCommands.end(), [&](const RenderCommand& a, const RenderCommand& b)
 			{
-				if (!a.material->GetShader() || !b.material->GetShader())
-					return false;
-				return a.material->GetShader()->id > b.material->GetShader()->id;
+				return shaderId(a) > shaderId(b);
 			});
 	}
 

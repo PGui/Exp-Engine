@@ -3,10 +3,10 @@
 #include "Scene.h"
 
 #include <glm/glm.hpp>
-#include "../Mesh/Cube.h"
+#include "../mesh/Cube.h"
 
-#include "../Resources/Resources.h"
-#include "../Rendering/Material.h"
+#include "../resources/Resources.h"
+#include "../rendering/Material.h"
 
 namespace Exp
 {

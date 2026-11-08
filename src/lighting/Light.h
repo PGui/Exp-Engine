@@ -1,6 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
-#include "../Rendering/RenderTarget.h"
+#include "../rendering/RenderTarget.h"
 
 namespace Exp
 {
@@ -14,7 +14,6 @@ namespace Exp
 		float intensity = 1.0f;
 
 		bool			castShadows = true;
-		RenderTarget*	shadowMapRT = nullptr;
 		glm::mat4		lightSpaceViewProjection = glm::mat4(1.0f);
 
 
