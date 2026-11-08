@@ -46,6 +46,13 @@ include_directories(${CMAKE_BINARY_DIR}/src)
 #######################################
 
 # Assimp
+# zlib: use the system one when available, otherwise let assimp build its bundled copy.
+# Forced so that a stale cache (e.g. from assimp 5, where the default was OFF) cannot
+# leave ASSIMP_BUILD_ZLIB=OFF on a machine without zlib (typical on Windows).
+find_package(ZLIB QUIET)
+if(NOT ZLIB_FOUND)
+	set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "Build assimp's bundled zlib (no system zlib found)" FORCE)
+endif()
 set(ASSIMP_WARNINGS_AS_ERRORS OFF CACHE BOOL "Do not fail on assimp warnings.")
 set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "No assimp samples.")
 set(ASSIMP_BUILD_DOCS OFF CACHE BOOL "No assimp docs.")
