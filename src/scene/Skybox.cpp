@@ -6,7 +6,8 @@ namespace Exp
 	Skybox::Skybox(): 
 		SceneNode(Scene::counterID++)
 	{
-		Scene::root->AddChild(this);
+		// Not attached to Scene::root: the skybox is owned by the RenderingModule
+		// (shared_ptr) and rendered separately, the scene must never delete it.
 
 		shader = Resources::LoadShader("background", ROOT_DIR "resources/shaders/skybox.vert", ROOT_DIR "resources/shaders/skybox.frag");
 		material = new Exp::Material(shader);

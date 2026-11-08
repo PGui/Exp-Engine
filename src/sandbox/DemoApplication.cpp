@@ -106,7 +106,7 @@ namespace Exp
 		point->color = glm::vec3(0.4f, 0.6f, 1.0f);
 
 		// The skybox textures are not versioned: only use them when present.
-		const char* skyboxFolder = ROOT_DIR "resources/Skyboxes/Fjaderholmarna/";
+		const char* skyboxFolder = ROOT_DIR "resources/skyboxes/Fjaderholmarna/";
 		if (std::filesystem::exists(skyboxFolder))
 			renderer.SetSkybox(skyboxFolder);
 
