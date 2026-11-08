@@ -82,8 +82,8 @@ namespace Exp
 			selected = CreateEntity("Entity");
 		}
 
-		ImGui::BeginChild("EntityList", ImVec2(0, 150), true);
-		registry.each([this](entt::entity entity)
+		ImGui::BeginChild("EntityList", ImVec2(0, 150), ImGuiChildFlags_Borders);
+		for (const entt::entity entity : registry.view<entt::entity>())
 		{
 			const NameComponent* name = registry.try_get<NameComponent>(entity);
 			const std::string label = (name ? name->value : std::string("Entity")) + "##" + std::to_string(entt::to_integral(entity));
@@ -91,7 +91,7 @@ namespace Exp
 			{
 				selected = entity;
 			}
-		});
+		}
 		ImGui::EndChild();
 
 		if (selected != entt::null && registry.valid(selected))

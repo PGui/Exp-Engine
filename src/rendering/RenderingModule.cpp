@@ -69,7 +69,7 @@ namespace Exp
 			if (ImGui::CollapsingHeader("Lights", ImGuiTreeNodeFlags_DefaultOpen))
 			{
 				ImGui::AlignTextToFramePadding();
-				bool dirtreeopen = ImGui::TreeNodeEx("Directional Lights", ImGuiTreeNodeFlags_AllowItemOverlap);
+				bool dirtreeopen = ImGui::TreeNodeEx("Directional Lights", ImGuiTreeNodeFlags_AllowOverlap);
 				ImGui::SameLine();
 				if (ImGui::Button("+"))
 				{
@@ -84,7 +84,7 @@ namespace Exp
 					{
 						ImGui::Separator();
 
-						ImGui::Text(		std::string("Directional Light "    + std::to_string(i)).c_str());
+						ImGui::TextUnformatted(("Directional Light " + std::to_string(i)).c_str());
 						ImGui::SameLine();
 						if (ImGui::Button("-"))
 						{
@@ -103,7 +103,7 @@ namespace Exp
 
 				//Points lights
 				ImGui::AlignTextToFramePadding();
-				bool pointtreeopen = ImGui::TreeNodeEx("Point Lights", ImGuiTreeNodeFlags_AllowItemOverlap);
+				bool pointtreeopen = ImGui::TreeNodeEx("Point Lights", ImGuiTreeNodeFlags_AllowOverlap);
 				ImGui::SameLine();
 				if (ImGui::Button("+"))
 				{
@@ -120,7 +120,7 @@ namespace Exp
 						ImGui::Separator();
 
 
-						ImGui::Text(std::string("Point Light " + std::to_string(i)).c_str());
+						ImGui::TextUnformatted(("Point Light " + std::to_string(i)).c_str());
 						ImGui::SameLine();
 						if (ImGui::Button("-"))
 						{
@@ -145,7 +145,7 @@ namespace Exp
 		{
 			for (auto it = Resources::DebugGetShaders().begin(); it != Resources::DebugGetShaders().end(); ++it)
 			{
-				ImGui::Text(it->second.name.c_str());
+				ImGui::TextUnformatted(it->second.name.c_str());
 				ImGui::SameLine();
 				if (ImGui::Button(std::string("Reload###"+ it->second.name).c_str()))
 				{

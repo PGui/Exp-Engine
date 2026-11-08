@@ -71,7 +71,7 @@ void Exp::PostProcessor::DisplayDebug()
 		ImGui::Separator();
 		const char* tonemappers[] = { "None", "Reinhard", "ACES (Narkowicz)", "ACES (Hill)" };
 		ImGui::Combo("Tonemapper", &tonemapper, tonemappers, 4);
-		ImGui::SliderFloat("Exposure", &exposure, 0.05f, 10.0f, "%.2f", 3.0f); // power curve: finer control at low values
+		ImGui::SliderFloat("Exposure", &exposure, 0.05f, 10.0f, "%.2f", ImGuiSliderFlags_Logarithmic);
 		ImGui::Checkbox("sRGB output", &srgbOutput);
 		if (!srgbOutput)
 			ImGui::SliderFloat("Gamma", &gamma, 1.0f, 3.0f);

@@ -54,12 +54,18 @@ Simulation modes:
 - **Variable**: systems run once per frame with the real frame time (clamped to 100 ms).
 
 ## Dependencies
-- Assimp https://github.com/assimp/assimp
-- Stb https://github.com/nothings/stb
-- CommandBuffer https://github.com/tuxalin/CommandBuffer
-- Glfw https://www.glfw.org/
-- Glm https://github.com/g-truc/glm
-- EnTT https://github.com/skypjack/entt
-- Dear ImGui https://github.com/ocornut/imgui
-- spdlog https://github.com/gabime/spdlog
-- Remotery https://github.com/Celtoys/Remotery
+Git submodules in `thirdparty/` (the engine is C++20, dependencies are built as C++17):
+
+| Library | Version |
+|---|---|
+| [Assimp](https://github.com/assimp/assimp) | 6.0.5 |
+| [GLFW](https://www.glfw.org/) | 3.5.1 |
+| [glm](https://github.com/g-truc/glm) | 1.0.3 |
+| [Dear ImGui](https://github.com/ocornut/imgui) | 1.93.0 |
+| [EnTT](https://github.com/skypjack/entt) | 4.0.0 |
+| [spdlog](https://github.com/gabime/spdlog) | 1.17.0 |
+| [stb](https://github.com/nothings/stb) | master (2026-11) |
+| [Remotery](https://github.com/Celtoys/Remotery) | main (2024-08) |
+| [FiberTaskingLib](https://github.com/RichieSams/FiberTaskingLib) | 2.1.0 (not used yet) |
+| glad | vendored, OpenGL 4.6 core |
+| [CommandBuffer](https://github.com/tuxalin/CommandBuffer) | design reference |
